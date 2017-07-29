@@ -4,7 +4,6 @@
 */
 
 zData = {};  // zData Global Object
-zData.children = {}; // An Object of root element children
 zData.extensions = []; // An array to store z-data extensions
 
 function registerZData(zDataProto){
@@ -45,7 +44,7 @@ function registerZData(zDataProto){
         // if this is a root z-data element, assign a root attribute, create a reference, and delete initial children
         if ( findRootZData(zDataProto) == zDataProto ){ 
             zDataProto.setAttribute("root-z-data", true);
-            Object.defineProperty(zData.children, zDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
+            Object.defineProperty(zData, zDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
             if (zDataProto.isConnected) {deleteExtraElements(zDataProto); }
         } 
 
