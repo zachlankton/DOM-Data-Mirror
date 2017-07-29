@@ -250,9 +250,9 @@ function registerZData(zDataProto){
             evaluateChild(data, child, getElementTree);
         };
 
-//         data.add = function(zChild, data){
-//             element.add(zChild, data);
-//         }
+        data.add = function(zChild, data){
+            element.add(zChild, data);
+        }
 
         return data;
     }
