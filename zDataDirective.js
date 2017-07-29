@@ -281,7 +281,7 @@ function registerZData(zDataProto){
         child.name = child.name || child.getAttribute("name");
         if ( getElementTree ) { data[child.getAttribute("name")] = child;  }
         else { 
-            if (child.value) { 
+            if (typeof(child.value)=="string" ) { 
                 Object.defineProperty(data, child.getAttribute("name"), {
                     get: function(){ return child.value; }, 
                     set: function(newVal){ child.value = newVal; emitDataRendered(child);},
