@@ -1,12 +1,64 @@
 <html>
-  <head>
-    <title>zData</title>
-  </head>
-  <body>
-    <navigation>
-      <li>Intro</li>
-      <li>Installation</li>
-      <li>Basic Usage</li>
-    </navigation>
-  </body>
+    <head>        
+        <title>zData</title>
+        <link rel="stylesheet" href="styles.css"/>
+    </head>
+    <body>
+    <div class="grid-container">
+        <header>
+        	<h1>zData Documentation</h1>
+        </header>
+        
+        <navigation>
+            <h4>Topics</h4>
+        	<li> <a href="#Intro"> 			Intro 			</a> </li>
+        	<li> <a href="#Installation"> 	Installation	</a> </li>
+        	<li> <a href="#BasicUsage"> 	Basic Usage		</a> </li>
+        </navigation>
+        
+        <content>
+        	<section>
+                <a name="Intro"></a>
+        		<h1>Introduction</h1>
+        		<p>
+        			zData is an experiment created in an attempt to accomplish a few tasks... 
+        		</p>
+        		<ul>
+                    <li>Decrease Code Required to create Basic Web Apps</li>
+                    <li>Use as little abstraction as possible</li>
+                    <li>Extend HTML, instead of generating it via templates and controllers</li>
+                    <li>Reduce or eliminate controller code</li>
+                    <li>Reduce or eliminate the need for frameworks</li>
+                    <li>Reduce overhead</li>
+        		</ul>
+
+                <p>
+        		zData, by itself, doesn't necessarily accomplish all of these things.  However, zData
+        		is extendable and included in the code base are some extensions that start pushing zData in that direction. 
+                </p>
+
+                <p>
+        		By writing some simple extensions you can considerably reduce the 
+        		amount of boilerplate required in your app.  We will show how this can be done in the
+        		examples to follow.
+        		</p>
+        	</section>
+        	
+        	<section>
+        	   <a name="Installation"></a>
+        	   <h1>Installation</h1>
+        	   <p>Installing zData is as simple as including the script in the head tag of your project</p>
+        	   <iframe width="100%" height="300" src="http://jsfiddle.net/zachlankton/4gz0qcng/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	</section>
+        	
+        	<section>
+        	   <a name="BasicUsage"></a>
+        	   <h1>Basic Usage</h1>
+        	   <iframe width="100%" height="200" src="http://jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="250" src="http://jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="200" src="http://jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	</section>
+        </content>
+    </div>
+    </body>
 </html>
