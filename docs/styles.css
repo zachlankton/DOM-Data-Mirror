@@ -1,17 +1,20 @@
 .grid-container {
     max-height: 90vh;
     display: grid;
-    grid-template-columns: 1fr 1fr 3fr 1fr; /* four columns  */
+    grid-template-columns: 1fr 3fr 12fr 1fr; /* four columns  */
     grid-template-rows: 70px 1fr; /* three rows  */
     grid-template-areas: "header     header  header  header"
                          "lMargin navigation content rMargin";
+    grid-gap: 20px;
+    font-family: sans-serif;
 }
 
 header {
     grid-area: header;
     text-align: -webkit-center;
-    border: 1px solid;
+    box-shadow: 5px 5px 25px;
     border-radius: 15px;
+    background-color: #bfccde;
 }
 
 navigation {
@@ -28,4 +31,19 @@ content {
     grid-area: content;
     max-height: 100vh;
     overflow: scroll;
+}
+
+section {
+    background-color: rgb(191, 204, 222);
+    padding: 25px;
+    margin: 25px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 25px;
+}
+
+section>h1{
+    position: relative;
+    top: -30px;
+    border-bottom: 1px solid;
+    height: 40px;
 }
