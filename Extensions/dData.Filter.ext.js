@@ -2,16 +2,16 @@
 // FILTER  EXTENSION //
 ///////////////////////
 
-( function zDataFilterExtension(){
+( function dDataFilterExtension(){
 
-    zData.extensions.push({attribute: "filter", setup: setupFilter})
+    dData.extensions.push({attribute: "filter", setup: setupFilter})
 
-    function setupFilter(filter, zdata){
+    function setupFilter(filter, dDataElement){
         
         filter.addEventListener("keyup", function(event){
             var dataToFilter = filter.getAttribute('filter');
             var searchKeys = filter.value.split(" ");
-            var parent = zData.findNearestZDataParent(filter);
+            var parent = dData.findNearestDDataParent(filter);
             var children = parent.querySelectorAll("[name='"+dataToFilter+"']");
             for (var i=0; i<children.length; i++){
                 var f = filterArr_AND(children[i].value, searchKeys);

@@ -1,106 +1,106 @@
 /*
-        z-data web directive
+        d-data web directive
         written by: Zach Lankton 2017       
 */
 
-zData = {};  // zData Global Object
-zData.extensions = []; // An array to store z-data extensions
+dData = {};  // dData Global Object
+dData.extensions = []; // An array to store d-data extensions
 
-function registerZData(zDataProto){
+function registerDData(dDataProto){
         
-    if (zDataProto.hasOwnProperty("value") ){return 0; /* this element has already been registered */ }
+    if (dDataProto.hasOwnProperty("value") ){return 0; /* this element has already been registered */ }
     
-    // these are the core properties of z-data which provide its main functionality
-    Object.defineProperty(zDataProto, "value", { get: valueGetter, set: dataRender, enumerable: true }  );
-    Object.defineProperty(zDataProto, "valueElementTree", { get: valueElementTree}  );
-    Object.defineProperty(zDataProto, "name", { get: nameAttributeGetter,   set: nameAttributeSetter });
+    // these are the core properties of d-data which provide its main functionality
+    Object.defineProperty(dDataProto, "value", { get: valueGetter, set: dataRender, enumerable: true }  );
+    Object.defineProperty(dDataProto, "valueElementTree", { get: valueElementTree}  );
+    Object.defineProperty(dDataProto, "name", { get: nameAttributeGetter,   set: nameAttributeSetter });
 
-    // these are the public methods that are available on an element with the z-data attribute
-    zDataProto.add = addSibling;
-    zDataProto.remove = removeSibling;
+    // these are the public methods that are available on an element with the d-data attribute
+    dDataProto.add = addSibling;
+    dDataProto.remove = removeSibling;
 
-    // these are public utility functions for working with descendant elements of z-data elements
-    // these are available in the global zData Object and can be used by extensions or any other custom code
-    zData.findRootZData = findRootZData;
-    zData.findNearestZDataParent = findNearestZDataParent;
-    zData.findTemplateParent = findTemplateParent;
+    // these are public utility functions for working with descendant elements of d-data elements
+    // these are available in the global dData Object and can be used by extensions or any other custom code
+    dData.findRootDData = findRootDData;
+    dData.findNearestDDataParent = findNearestDDataParent;
+    dData.findTemplateParent = findTemplateParent;
 
     // Initialize this element
-    init(zDataProto);
+    init(dDataProto);
 
-    function init(zDataProto){
-        // all elements with the z-data attribute need a name attribute
-        if (zDataProto.getAttribute("name") == "") {throw ("z-data elements require a name attribute")}
+    function init(dDataProto){
+        // all elements with the d-data attribute need a name attribute
+        if (dDataProto.getAttribute("name") == "") {throw ("d-data elements require a name attribute")}
 
         // we can only setup child templates on elements that are connected to the dom, becuase they need a parentElement
-        if (zDataProto.isConnected){
-            if (!zDataProto.parentElement.childTemplates){ zDataProto.parentElement.childTemplates = {}; } 
-            zDataProto.parentElement.childTemplates[zDataProto.getAttribute("name")] = zDataCloneNode(zDataProto);
-            zDataProto.parentElement.setAttribute("has-z-data-children", true);
+        if (dDataProto.isConnected){
+            if (!dDataProto.parentElement.childTemplates){ dDataProto.parentElement.childTemplates = {}; } 
+            dDataProto.parentElement.childTemplates[dDataProto.getAttribute("name")] = dDataCloneNode(dDataProto);
+            dDataProto.parentElement.setAttribute("has-d-data-children", true);
         }  
 
-        setupChildTemplates(zDataProto);
+        setupChildTemplates(dDataProto);
 
-        // if this is a root z-data element, assign a root attribute, create a reference, and delete initial children
-        if ( findRootZData(zDataProto) == zDataProto ){ 
-            zDataProto.setAttribute("root-z-data", true);
-            Object.defineProperty(zData, zDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
-            if (zDataProto.isConnected) {deleteExtraElements(zDataProto); }
+        // if this is a root d-data element, assign a root attribute, create a reference, and delete initial children
+        if ( findRootDData(dDataProto) == dDataProto ){ 
+            dDataProto.setAttribute("root-d-data", true);
+            Object.defineProperty(dData, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
+            if (dDataProto.isConnected) {deleteExtraElements(dDataProto); }
         } 
 
-        // Setup any extensions that may be available in zData.extensions
-        setupExtensions(zDataProto, zDataProto); 
+        // Setup any extensions that may be available in dData.extensions
+        setupExtensions(dDataProto, dDataProto); 
 
         // Dispatch Event for builtins to respond to
-        var zDataInitEvent = new CustomEvent("zDataInitialized", {bubbles:true});
-        zDataProto.dispatchEvent(zDataInitEvent);
+        var dDataInitEvent = new CustomEvent("dDataInitialized", {bubbles:true});
+        dDataProto.dispatchEvent(dDataInitEvent);
 
     }
 
     function setupChildTemplates(element){
-        var zDataChildren = element.querySelectorAll('[z-data]');
-        for (var i=0; i<zDataChildren.length; i++) {
-            if (!zDataChildren[i].parentElement.childTemplates){zDataChildren[i].parentElement.childTemplates = {};}
-            zDataChildren[i].parentElement.childTemplates[zDataChildren[i].getAttribute('name')] = zDataCloneNode(zDataChildren[i]);  
-            zDataChildren[i].parentElement.setAttribute("has-z-data-children", true);
+        var dDataChildren = element.querySelectorAll('[d-data]');
+        for (var i=0; i<dDataChildren.length; i++) {
+            if (!dDataChildren[i].parentElement.childTemplates){dDataChildren[i].parentElement.childTemplates = {};}
+            dDataChildren[i].parentElement.childTemplates[dDataChildren[i].getAttribute('name')] = dDataCloneNode(dDataChildren[i]);  
+            dDataChildren[i].parentElement.setAttribute("has-d-data-children", true);
         }
     }
 
-    function findRootZData(element){
-        var zdRoot = element;
+    function findRootDData(element){
+        var ddRoot = element;
         if (!element.isConnected){return null;}
         while (element = element.parentElement){
-            if (element.hasAttribute("z-data") ) {zdRoot = element}
+            if (element.hasAttribute("d-data") ) {ddRoot = element}
         }
-        return zdRoot;
+        return ddRoot;
     }
 
-    function findNearestZDataParent(element){
-        var zdRoot = element;
+    function findNearestDDataParent(element){
+        var ddRoot = element;
         while (element = element.parentElement){
-            if (element.hasAttribute("z-data") ) {zdRoot = element; break;}
+            if (element.hasAttribute("d-data") ) {ddRoot = element; break;}
         }
-        return zdRoot;
+        return ddRoot;
     }
 
     function dataRender(v){
-        deleteExtraElements(zDataProto);
-        renderValues(v, zDataProto);
-        renderChildren(v, zDataProto);
+        deleteExtraElements(dDataProto);
+        renderValues(v, dDataProto);
+        renderChildren(v, dDataProto);
 
-        // dispatch zDataRendered Event for Builtins to respond to
-        emitDataRendered(zDataProto);
+        // dispatch dDataRendered Event for Builtins to respond to
+        emitDataRendered(dDataProto);
 
     };
 
     function emitDataRendered(element){
-        var zDataInitEvent = new CustomEvent("zDataRendered", {bubbles:true});
-        element.dispatchEvent(zDataInitEvent);
+        var dDataInitEvent = new CustomEvent("dDataRendered", {bubbles:true});
+        element.dispatchEvent(dDataInitEvent);
     }
 
     function deleteExtraElements(element){
         
-        var extraElements = element.querySelectorAll("[z-data]");
+        var extraElements = element.querySelectorAll("[d-data]");
 
         for (var i=0; i<extraElements.length; i++){
             var ee = extraElements[i];
@@ -130,16 +130,16 @@ function registerZData(zDataProto){
 
     function evaluateValue(values, key, element){
         if (typeof(values[key]) == 'function'){
-            var zdata = findNearestZDataParent(element);
-            var root = findRootZData(element);
-            if (!zdata.computedProps){ zdata.computedProps = []; }
+            var ddata = findNearestDDataParent(element);
+            var root = findRootDData(element);
+            if (!ddata.computedProps){ ddata.computedProps = []; }
             
-            var fun = function(zdata){
-                renderValOrHTML(element, values[key](zdata, root) );
+            var fun = function(ddata){
+                renderValOrHTML(element, values[key](ddata, root) );
             }
-            zdata.computedProps.push(fun);
+            ddata.computedProps.push(fun);
             
-            return values[key](zdata, root);
+            return values[key](ddata, root);
         } else {
             return values[key];
         }
@@ -171,10 +171,10 @@ function registerZData(zDataProto){
 
     function renderHiddenList(element, value, name){
         var div = document.createElement("div");
-        div.setAttribute("z-data", "");
+        div.setAttribute("d-data", "");
         div.setAttribute("name", name);
         element.append(div);
-        registerZData(div);
+        registerDData(div);
         element.removeChild(div);
         renderList(element, value, name);
     }
@@ -182,13 +182,13 @@ function registerZData(zDataProto){
     function addSibling(childName, data){
         if (childName){
             var name = childName;
-            var parent = findTemplateParent(zDataProto, name);
+            var parent = findTemplateParent(dDataProto, name);
             var element = parent.childTemplates[name];
-            var clone = zDataCloneNode(element);
+            var clone = dDataCloneNode(element);
         }else{
-            var name = zDataProto.getAttribute("name");
-            var parent = zDataProto.parentElement;
-            var clone = zDataCloneNode(parent.childTemplates[name]);
+            var name = dDataProto.getAttribute("name");
+            var parent = dDataProto.parentElement;
+            var clone = dDataCloneNode(parent.childTemplates[name]);
         }
 
         var lastSibling = getLastSibling(parent, name);
@@ -198,8 +198,8 @@ function registerZData(zDataProto){
         else { parent.appendChild(clone); }
 
         
-        var zdc = clone.querySelectorAll("[z-data]");  // remove all child zData elements from cloned template
-        for (var i=0; i<zdc.length;i++){zdc[i].parentElement.removeChild(zdc[i]);}
+        var ddc = clone.querySelectorAll("[d-data]");  // remove all child dData elements from cloned template
+        for (var i=0; i<ddc.length;i++){ddc[i].parentElement.removeChild(ddc[i]);}
 
         var inpVals = clone.querySelectorAll("[name]"); //clear all values that may have leaked into the template;
         for (var i=0; i<inpVals.length;i++){renderValOrHTML(inpVals[i], ""); }
@@ -209,7 +209,7 @@ function registerZData(zDataProto){
     }
 
     function removeSibling() {
-        zDataProto.parentElement.removeChild(zDataProto);
+        dDataProto.parentElement.removeChild(dDataProto);
     }
 
     function getLastSibling(parent, name){
@@ -219,10 +219,10 @@ function registerZData(zDataProto){
     }
 
     function findTemplateParent(element, name){
-        if ( element.hasAttribute("has-z-data-children") ){
+        if ( element.hasAttribute("has-d-data-children") ){
             return element
         }else{
-            var templateParent = element.querySelectorAll( "[has-z-data-children]" );
+            var templateParent = element.querySelectorAll( "[has-d-data-children]" );
             for (var i=0; i<templateParent.length;i++){
                 if (templateParent[i].childTemplates[name]){
                     return templateParent[i];
@@ -232,38 +232,42 @@ function registerZData(zDataProto){
         }
     }
 
-    function zDataCloneNode(element){
+    function dDataCloneNode(element){
         var clone = element.cloneNode(true);
-        return registerZData(clone);
+        return registerDData(clone);
     }
     
     function valueElementTree(){
-        return valueGetter(undefined,zDataProto,true);
+        return valueGetter(undefined,dDataProto,true);
     }
 
     function valueGetter(data, element, getElementTree){
+        var rootElement = false;
+        if (data == undefined){rootElement = true;}
         var data = data || {};
-        var element = element || zDataProto;
+        var element = element || dDataProto;
 
         for(var i=0; i<element.childElementCount; i++){
             var child = element.children[i];
             evaluateChild(data, child, getElementTree);
         };
 
-        data.add = function(zChild, data){
-            element.add(zChild, data);
+        if (rootElement){
+            Object.defineProperty(data, "add", {get: function(){
+                return element.add;
+            } });
         }
-
+        
         return data;
     }
 
     function evaluateChild(data, child, getElementTree){
-        if      (child.hasAttribute("z-data") )     { getNestedZData(data, child, getElementTree)   }
+        if      (child.hasAttribute("d-data") )     { getNestedDData(data, child, getElementTree)   }
         else if (child.hasAttribute("name"))    { getElementValue(data, child, getElementTree)  }
         else                                    { valueGetter(data, child, getElementTree)  } //descend into child dom elements recursively
     }
 
-    function getNestedZData(data, child, getElementTree){
+    function getNestedDData(data, child, getElementTree){
         if (data[child.getAttribute("name")] == undefined){
             data[child.getAttribute("name")] = [];
             data[child.getAttribute("name")].add = function(zChild, data){
@@ -297,40 +301,40 @@ function registerZData(zDataProto){
         } 
     }
 
-    function nameAttributeGetter(){return zDataProto.getAttribute("name") || ""; };
-    function nameAttributeSetter(newVal){ zDataProto.setAttribute("name", newVal) };
+    function nameAttributeGetter(){return dDataProto.getAttribute("name") || ""; };
+    function nameAttributeSetter(newVal){ dDataProto.setAttribute("name", newVal) };
 
-    function setupExtensions(element, zDataElement){
+    function setupExtensions(element, dDataElement){
         // extensions provide additional functionality when a given attribute is present on 
-        // any descendant element of z-data, these attributes can be custom or native
+        // any descendant element of d-data, these attributes can be custom or native
         // multiple extensions for the same attribute may be possible, but collisions may occur, this has not been tested
         var children = element.children;
         for (var i=0; i<children.length; i++){
             var child = children[i];
-            if (child.hasAttribute("z-data")){  //then descend no further  
+            if (child.hasAttribute("d-data")){  //then descend no further  
             }else{
-                evaluteElementForExtensions(child, zDataElement);
-                setupExtensions(child, zDataElement); //continue looking through immediate children
+                evaluteElementForExtensions(child, dDataElement);
+                setupExtensions(child, dDataElement); //continue looking through immediate children
             }
         }
     }
 
-    function evaluteElementForExtensions(element, zdata){
-        // extension objects = {attribute: "attribute name", setup: function(element, zData, attributeValue) }
-        var ext = zData.extensions
+    function evaluteElementForExtensions(element, ddata){
+        // extension objects = {attribute: "attribute name", setup: function(element, dData, attributeValue) }
+        var ext = dData.extensions
         for (var i=0; i<ext.length; i++){
             if ( element.hasAttribute( ext[i].attribute ) ){ 
                 var attrVal = element.getAttribute( ext[i].attribute );
-                ext[i].setup(element, zdata, attrVal) 
+                ext[i].setup(element, ddata, attrVal) 
             }
         }   
     }
 
-    return zDataProto;
+    return dDataProto;
 }
 
-// this mutation observer watches for elements with the z-data attribute and registers them
-var zDataObserver = new MutationObserver(function(mutations){
+// this mutation observer watches for elements with the d-data attribute and registers them
+var dDataObserver = new MutationObserver(function(mutations){
     if (typeof(mutationDoneTimer) !== "undefined"){
         clearTimeout(mutationDoneTimer)};
         mutationDoneTimer = setTimeout(function(){
@@ -340,14 +344,14 @@ var zDataObserver = new MutationObserver(function(mutations){
     mutations.forEach(function(mutation){
         if (mutation.type == "childList"){
             mutation.addedNodes.forEach(function(node){
-                if (node.nodeType === 1 && node.hasAttribute("z-data") ){
-                    registerZData(node);
+                if (node.nodeType === 1 && node.hasAttribute("d-data") ){
+                    registerDData(node);
                 }
             });
         }
         if (mutation.type == "attributes"){
-            if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("z-data") ){
-                registerZData(mutation.target);
+            if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
+                registerDData(mutation.target);
             }
             
         }
@@ -355,8 +359,8 @@ var zDataObserver = new MutationObserver(function(mutations){
 });
 
 
-zDataObserver.observe(document, {
+dDataObserver.observe(document, {
     childList: true,
     subtree: true,
-    attributeFilter: ['z-data']
+    attributeFilter: ['d-data']
 });

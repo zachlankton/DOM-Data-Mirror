@@ -1,12 +1,12 @@
 <html>
     <head>        
-        <title>zData</title>
+        <title>DOM Data Mirror Docs</title>
         <link rel="stylesheet" href="styles.css"/>
     </head>
     <body>
     <div class="grid-container">
         <header>
-        	<h1>zData Documentation</h1>
+        	<h1>DOM Data Mirror Documentation</h1>
         </header>
         
         <navigation>
@@ -21,6 +21,12 @@
                 </ul>
             </li>
             <li> <a href="#Arrays"> Arrays (Child Elements) </a> </li>
+            <li>
+                <ul>
+                    <li> <a href="#Arrays"> 	Example 1 - Simple List		</a> </li>
+                    <li> <a href="#ArrayExample2"> 	Example 2 - Simple ToDo		</a> </li>
+                </ul>
+            </li>
         </navigation>
         
         <content>
@@ -28,20 +34,18 @@
                 <a name="Intro"></a>
         		<h1>Introduction</h1>
         		<p>
-        			zData is an experiment created in an attempt to accomplish a few tasks... 
+        			DOM Data Mirror (dData for short) is an experiment created in an attempt to accomplish a few tasks... 
         		</p>
         		<ul>
                     <li>Decrease Code Required to create Basic Web Apps</li>
-                    <li>Use as little abstraction as possible</li>
-                    <li>Extend HTML, instead of generating it via templates and controllers</li>
+                    <li>Extend HTML, instead of abstracting over it</li>
                     <li>Reduce or eliminate controller code</li>
                     <li>Reduce or eliminate the need for frameworks</li>
-                    <li>Reduce overhead</li>
         		</ul>
 
                 <p>
-        		zData, by itself, doesn't necessarily accomplish all of these things.  However, zData
-        		is extendable and included in the code base are some extensions that start pushing zData in that direction. 
+        		dData, by itself, doesn't necessarily accomplish all of these things.  However, dData
+        		is extendable and included in the code base are some extensions that start pushing dData in that direction. 
                 </p>
 
                 <p>
@@ -54,7 +58,8 @@
         	<section>
         	   <a name="Installation"></a>
         	   <h1>Installation</h1>
-        	   <p>Installing zData is as simple as including the script in the head tag of your project</p>
+        	   <p>Installing dData is as simple as including the script in the head tag of your project.  
+        	   It is written using vanilla javascript so there are no dependencies.</p>
         	   <iframe width="100%" height="300" src="https://jsfiddle.net/zachlankton/4gz0qcng/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	</section>
 
@@ -62,23 +67,52 @@
         	<section>
         	   <h1>Basic Usage</h1>
         	   <h3>Example 1</h3>
+        	   
+        	   <p>The <code>d-data</code> attribute may be used on any native html element. </p>
+
+                <p>This attribute extends the element to map values contained inside child elements the have the 
+                <code>name</code> attribute.</p>
+
+                <p>The intended effect is to have the DOM mirror the data in the object and vice versa.
+                <p><code>&lt;div d-data name="test"&gt;&lt;/div&gt; === dData.test // true</code> but not in the sense that dData.test
+                just contains a reference to the Element... this is where some abstraction comes in.</p>
+
+                <p>In this case, the html div code above is the same thing as <code>var test = {};</code>  This is what the d-data 
+                attribute is doing behind the scenes.</p>
+
+        	   <p>dData Elements require a <code>name</code> attribute with a value assigned.  
+        	   Just like <code>&lt;input /&gt;</code> tags typically do. 
+        	   The <code>name</code> attribute value is used as the key name in the object that the values get stored in.</p>
+
+        	   <p>Child Elements of dData do not require a <code>name</code> attribute, but any element with the
+        	   <code>name</code> attribute will be mapped to a key inside of the dData object map. Let's look at some code to hopefully 
+        	   clear up what is meant by all of this...</p>
+
+        	     
+        	   
+        	   
         	   <iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	   <iframe width="100%" height="250" src="https://jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	   <iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
                <a name="BasicUsage2"></a>
         	   <h3>Example 2</h3>
-        	   <iframe width="100%" height="400" src="https://jsfiddle.net/zachlankton/fw9a0dtL/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="400" src="https://jsfiddle.net/zachlankton/tyb4by86/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	</section>
 
         	<a name="Arrays"></a>
         	<section>
         	<h1>Arrays (Child Elements)</h1>
-            <p>zData can be nested infinitely... as long as the root zData element is not an array.</p>
+            <p>dData can be nested infinitely... however the root dData element must be an Object and not an Array</p>
+            <p>All nested dData children are arrays... this allows for them and their content to be duplicated</p>
             <p>Here's an example of just one level deep.</p>
         	<iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	<iframe width="100%" height="250" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	<iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	
+        	<a name="ArrayExample2"></a>
+        	<h2>Simple Todo Example</h2>
+        	<iframe width="100%" height="500" src="https://jsfiddle.net/zachlankton/fw9a0dtL/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	</section>
         </content>
     </div>

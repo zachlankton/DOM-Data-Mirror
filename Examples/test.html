@@ -1,0 +1,26 @@
+<script src="../dData.js"></script>
+<script src="../Extensions/dData.AddRemove.ext.js"></script>
+<script src="../Extensions/dData.Filter.ext.js"></script>
+<script src="../Extensions/dData.Sorting.ext.js"></script>
+<script src="../Extensions/dData.ComputedProps.ext.js"></script>
+<script>
+    function test(dDataElement, root){
+        return "x" + dDataElement.value.childName + "x";
+    }
+</script>
+
+<div d-data name="Profile">
+    First Name: <input name="firstName" />  <br />
+    Last Name: <input name="lastName" />   <br />
+    <button add="children">Add Child</button> 
+    <button sort="children:childName">Sort Asc</button> 
+    <button sort="children:childName:desc">Sort Desc</button> <br />
+    Search: <input filter="children" />
+    <div>
+        <div d-data name="children">
+            Child Name: <input name="childName"/>
+            <span computer="test"></span>
+            <button remove>X</button>
+        </div>
+    </div>
+</div>

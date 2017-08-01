@@ -47,3 +47,9 @@ section>h1{
     border-bottom: 1px solid;
     height: 40px;
 }
+
+code {
+    background-color: grey;
+    padding: 3px;
+    color: darkblue;
+}
