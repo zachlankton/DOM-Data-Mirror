@@ -114,34 +114,17 @@ function registerDData(dDataProto){
         for (var key in values){
             if (tree.hasOwnProperty(key)){
                 if (typeof(tree[key].value) == "string" ){
-                    tree[key].value = evaluateValue(values, key, tree[key]);    
+                    tree[key].value = values[key];    
                 } else {
-                    tree[key].innerHTML = evaluateValue(values, key, tree[key]);    
+                    tree[key].innerHTML = values[key];    
                 }  
             }else if(typeof(values[key]) !== "object" ) {
                 var hiddenInput = document.createElement("input");
                 hiddenInput.type = "hidden";
                 hiddenInput.name = key;
-                hiddenInput.value = evaluateValue(values, key, hiddenInput);
+                hiddenInput.value = values[key];
                 element.append(hiddenInput);
             }
-        }
-    }
-
-    function evaluateValue(values, key, element){
-        if (typeof(values[key]) == 'function'){
-            var ddata = findNearestDDataParent(element);
-            var root = findRootDData(element);
-            if (!ddata.computedProps){ ddata.computedProps = []; }
-            
-            var fun = function(ddata){
-                renderValOrHTML(element, values[key](ddata, root) );
-            }
-            ddata.computedProps.push(fun);
-            
-            return values[key](ddata, root);
-        } else {
-            return values[key];
         }
     }
 
