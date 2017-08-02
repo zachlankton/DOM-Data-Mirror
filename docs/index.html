@@ -24,7 +24,8 @@
             <li>
                 <ul>
                     <li> <a href="#Arrays"> 	Example 1 - Simple List		</a> </li>
-                    <li> <a href="#ArrayExample2"> 	Example 2 - Simple ToDo		</a> </li>
+                    <li> <a href="#ArrayExample2"> 	Example 2 - Simple Table		</a> </li>
+                    <li> <a href="#ArrayExample3"> 	Example 2 - Simple ToDo		</a> </li>
                 </ul>
             </li>
         </navigation>
@@ -70,7 +71,7 @@
         	   
         	   <p>The <code>d-data</code> attribute may be used on any native html element. </p>
 
-                <p>This attribute extends the element to map values contained inside child elements the have the 
+                <p>This attribute extends the element to map values contained inside child elements that have the 
                 <code>name</code> attribute.</p>
 
                 <p>The intended effect is to have the DOM mirror the data in the object and vice versa.
@@ -78,14 +79,21 @@
                 just contains a reference to the Element... this is where some abstraction comes in.</p>
 
                 <p>In this case, the html div code above is the same thing as <code>var test = {};</code>  This is what the d-data 
-                attribute is doing behind the scenes.</p>
+                attribute is doing behind the scenes.  It is a lot like data binding to a template, but in this case the template
+                is generating it's own object to be used elsewhere in the program.</p>
+
+                <p>If the values in the object are updated then the html values (or innerHTML) will be updated and inversely
+                If the DOM is updated, either by user input or another library manipulating the DOM, the object will reflect 
+                those changes.</p>
 
         	   <p>dData Elements require a <code>name</code> attribute with a value assigned.  
         	   Just like <code>&lt;input /&gt;</code> tags typically do. 
-        	   The <code>name</code> attribute value is used as the key name in the object that the values get stored in.</p>
+        	   The <code>name</code> attribute value is used as the key name in the <code>dData[parentName]</code> object that the 
+        	   values get stored in.</p>
 
         	   <p>Child Elements of dData do not require a <code>name</code> attribute, but any element with the
-        	   <code>name</code> attribute will be mapped to a key inside of the dData object map. Let's look at some code to hopefully 
+        	   <code>name</code> attribute will be mapped to a key inside of the <code>dData[parentName][valueName] = value</code> object.
+        	    Let's look at some code to hopefully 
         	   clear up what is meant by all of this...</p>
 
         	     
@@ -111,7 +119,17 @@
         	<iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	
         	<a name="ArrayExample2"></a>
+            <h2>Simple Table Example</h2>
+            <p>For those who are wondering if dData children elements need to be direct descendants of dData parent Elements,
+             here is a simple html table example that shows it does not matter how deeply nested the dData children elements are
+             in the dom structure.</p>
+            <iframe width="100%" height="550" src="//jsfiddle.net/zachlankton/1xaux267/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+            <iframe width="100%" height="450" src="//jsfiddle.net/zachlankton/1xaux267/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+            <iframe width="100%" height="550" src="//jsfiddle.net/zachlankton/1xaux267/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+        	<a name="ArrayExample4"></a>
         	<h2>Simple Todo Example</h2>
+        	<p>This example shows the standard todo list.</p>
         	<iframe width="100%" height="500" src="https://jsfiddle.net/zachlankton/fw9a0dtL/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	</section>
         </content>
