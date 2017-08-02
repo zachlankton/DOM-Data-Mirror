@@ -45,7 +45,6 @@ function registerDData(dDataProto){
         if ( findRootDData(dDataProto) == dDataProto ){ 
             dDataProto.setAttribute("root-d-data", true);
             Object.defineProperty(dData, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
-            if (dDataProto.isConnected) {deleteExtraElements(dDataProto); }
         } 
 
         // Setup any extensions that may be available in dData.extensions
@@ -179,10 +178,6 @@ function registerDData(dDataProto){
         if (lastSibling){ parent.insertBefore(clone, lastSibling.nextElementSibling); }
        
         else { parent.appendChild(clone); }
-
-        
-        var ddc = clone.querySelectorAll("[d-data]");  // remove all child dData elements from cloned template
-        for (var i=0; i<ddc.length;i++){ddc[i].parentElement.removeChild(ddc[i]);}
 
         var inpVals = clone.querySelectorAll("[name]"); //clear all values that may have leaked into the template;
         for (var i=0; i<inpVals.length;i++){renderValOrHTML(inpVals[i], ""); }
