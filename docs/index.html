@@ -16,7 +16,7 @@
         	<li> <a href="#BasicUsage"> 	Basic Usage		</a> </li>
         	<li>
                 <ul>
-                    <li> <a href="#BasicUsage"> 	Example 1		</a> </li>
+                    <li> <a href="#BasicUsage1"> 	Example 1		</a> </li>
                     <li> <a href="#BasicUsage2"> 	Example 2		</a> </li>
                 </ul>
             </li>
@@ -28,6 +28,7 @@
                     <li> <a href="#ArrayExample3"> 	Example 2 - Simple ToDo		</a> </li>
                 </ul>
             </li>
+            <li> <a href="#Overload"> Overloading </a> </li>
         </navigation>
         
         <content>
@@ -67,7 +68,10 @@
         	<a name="BasicUsage"></a>
         	<section>
         	   <h1>Basic Usage</h1>
-        	   <h3>Example 1</h3>
+
+        	   <p> To Understand what dData does, let's start a simple vanilla js example: </p>
+
+                <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/5dc09z46/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	   
         	   <p>The <code>d-data</code> attribute may be used on any native html element. </p>
 
@@ -97,26 +101,26 @@
         	   clear up what is meant by all of this...</p>
 
         	     
-        	   
-        	   
-        	   <iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-        	   <iframe width="100%" height="250" src="https://jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-        	   <iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <a name="BasicUsage1"></a>
+        	   <h3>Example 1</h3>
+        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="250" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
                <a name="BasicUsage2"></a>
         	   <h3>Example 2</h3>
-        	   <iframe width="100%" height="400" src="https://jsfiddle.net/zachlankton/tyb4by86/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="400" src="//jsfiddle.net/zachlankton/tyb4by86/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	</section>
 
         	<a name="Arrays"></a>
         	<section>
         	<h1>Arrays (Child Elements)</h1>
-            <p>dData can be nested infinitely... however the root dData element must be an Object and not an Array</p>
-            <p>All nested dData children are arrays... this allows for them and their content to be duplicated</p>
+            <p>dData can be nested infinitely... the root element with a <code>d-data</code> attribute is an Object.</p>
+            <p>All child html elements with the <code>d-data</code> attribute are arrays... this allows for them and their content to be duplicated</p>
             <p>Here's an example of just one level deep.</p>
-        	<iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-        	<iframe width="100%" height="750" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-        	<iframe width="100%" height="200" src="https://jsfiddle.net/zachlankton/74kqu3d0/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	<iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	<iframe width="100%" height="750" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	<iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	
         	<a name="ArrayExample2"></a>
             <h2>Simple Table Example</h2>
@@ -130,7 +134,27 @@
         	<a name="ArrayExample3"></a>
         	<h2>Simple Todo Example</h2>
         	<p>This example shows the standard todo list.</p>
-        	<iframe width="100%" height="500" src="https://jsfiddle.net/zachlankton/fw9a0dtL/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	<iframe width="100%" height="500" src="//jsfiddle.net/zachlankton/fw9a0dtL/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	</section>
+
+            <a name="Overload"></a>
+        	<section>
+                <h1>Overloading</h1>
+                <p> What happens if you start with an empty root dData element and then assign data to it as we have in all the previous examples?
+                    One, might first assume that it just gets discarded. This could be a problem if you already have an object with data that
+                    needs to stay intact, but you really only want to display certain values from it in the html.
+                </p>
+
+                <p>You could manually create hidden input types <code>&lt;input type="hidden" name="someName" &gt;</code> as a placeholder for data 
+                that you do not want displayed and in some cases you
+                may still want to do it this way, <strong><em>but you don't have to</em></strong>.</p>
+
+                <p>dData will automatically create hidden inputs for data that does not have an element to bind to.  This way, when you go to get your
+                data back out of dData, it's all still intact. Here's an example:</p>
+
+                <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/1nhp1vhc/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/1nhp1vhc/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="500" src="//jsfiddle.net/zachlankton/1nhp1vhc/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	</section>
         </content>
     </div>

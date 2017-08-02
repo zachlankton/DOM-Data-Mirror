@@ -1,5 +1,5 @@
 .grid-container {
-    max-height: 90vh;
+    max-height: 100vh;
     display: grid;
     grid-template-columns: 1fr 3fr 12fr 1fr; /* four columns  */
     grid-template-rows: 70px 1fr; /* three rows  */
@@ -49,7 +49,8 @@ section>h1{
 }
 
 code {
-    background-color: grey;
-    padding: 3px;
-    color: darkblue;
+    background-color: #b5b5b5;
+    padding: 1px;
+    color: #43436d;
+    border-radius: 5px;
 }
