@@ -44,7 +44,7 @@ function registerDData(dDataProto){
         // Setup any extensions that may be available in dData.extensions
         setupExtensions(dDataProto, dDataProto); 
 
-        // if this is a root d-data element, assign a root attribute, create a reference, and delete initial children
+        // if this is a root d-data element, setup scope and initial data
         setupRootDData(dDataProto);
 
         // Dispatch Event for builtins to respond to

@@ -35,7 +35,7 @@
             <ul>
                 <li> <a href="#ScopeExample1"> Example 1 </a> </li>
                 <li> <a href="#ScopeExample2"> Example 2 </a> </li>
-                <li> <a href="#ScopeExample3"> Example 3 </a> </li>
+<!--                 <li> <a href="#ScopeExample3"> Example 3 </a> </li> -->
             </ul>
         </navigation>
         
@@ -238,26 +238,23 @@
 
                 <a name="ScopeExample1"></a>
                 <h2>Example 1</h2>
-                <iframe width="100%" height="250" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
                 <iframe width="100%" height="130" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
                 <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
                 <a name="ScopeExample2"></a>
                 <h2>Example 2</h2>
-                <p>The next example shows what happens if somehow you accidentally use a scope and variable
-                name that already has some data in it. <em>(Or it shows how to set initial values ;-P )</em> On one hand, if it is an accident...
-                the data will stay preserved in hidden fields, but nothing will necessarily alert you to this fact.</p>
+                <p>As shown in the previous example, if the scope does not exist, dData will create it automatically
+                This next example shows that you can create a scope object elsewhere and fill it with initial
+                data and dData will use that object.  However, for this to work, the scope object needs to 
+                be created before the browser
+                renders the d-data element. </p>
 
                 <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/c726Lo15/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
                 <iframe width="100%" height="130" src="//jsfiddle.net/zachlankton/c726Lo15/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
                 <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/c726Lo15/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-                <a name="ScopeExample3"></a>
-                <h2>Example 3</h2>
-                <p>Scope can also use dot notation to go as deep into an object as you need. This example demonstrates this.</p>
-                <iframe width="100%" height="270" src="//jsfiddle.net/zachlankton/4r32vxoj/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-                <iframe width="100%" height="130" src="//jsfiddle.net/zachlankton/4r32vxoj/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-                <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/4r32vxoj/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+               
         	</section>
         </content>
     </div>
