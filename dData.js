@@ -64,18 +64,40 @@ function registerDData(dDataProto){
 
     function setupRootDData(dDataProto){
         if ( findRootDData(dDataProto) == dDataProto ){ 
-            // Setup Scope
-            var scope = dData;  
-            var initialData = false;
+            
+            var scope = dData;      // Setup Scope.
             if ( dDataProto.hasAttribute("scope") ){
-                scope = eval(dDataProto.getAttribute("scope"));
-                if (scope.hasOwnProperty(dDataProto.name) ){ // Look for initial data on the scope
-                    initialData = Object.assign({}, scope[dDataProto.name]);
-                }
+                var scope = setupScope(dDataProto);
+                var initialData = lookForInitialData(scope, dDataProto);
             }
+
             Object.defineProperty(scope, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
             if (initialData) {scope[dDataProto.name] = initialData;}
         } 
+    }
+
+    function setupScope(dDataProto){
+        
+        var scope = dDataProto.getAttribute("scope");
+        if (scope == ""){ return window; }
+        var paths = scope.split(".");
+        var path = window;
+
+        for (i=0; i<paths.length; i++){
+            if ( typeof(path[paths[i]])=="undefined" ){
+                path[paths[i]] = {};
+            }
+            path = path[paths[i]];
+        }
+
+        return path;
+    }
+
+    function lookForInitialData(scope, dDataProto){
+        if (scope.hasOwnProperty(dDataProto.name) ){ // Look for initial data on the scope
+            return Object.assign({}, scope[dDataProto.name]);
+        }
+        return false;
     }
 
     function findRootDData(element){
