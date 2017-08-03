@@ -41,14 +41,11 @@ function registerDData(dDataProto){
 
         setupChildTemplates(dDataProto);
 
-        // if this is a root d-data element, assign a root attribute, create a reference, and delete initial children
-        if ( findRootDData(dDataProto) == dDataProto ){ 
-            dDataProto.setAttribute("root-d-data", true);
-            Object.defineProperty(dData, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
-        } 
-
         // Setup any extensions that may be available in dData.extensions
         setupExtensions(dDataProto, dDataProto); 
+
+        // if this is a root d-data element, assign a root attribute, create a reference, and delete initial children
+        setupRootDData(dDataProto);
 
         // Dispatch Event for builtins to respond to
         var dDataInitEvent = new CustomEvent("dDataInitialized", {bubbles:true});
@@ -63,6 +60,22 @@ function registerDData(dDataProto){
             dDataChildren[i].parentElement.childTemplates[dDataChildren[i].getAttribute('name')] = dDataCloneNode(dDataChildren[i]);  
             dDataChildren[i].parentElement.setAttribute("has-d-data-children", true);
         }
+    }
+
+    function setupRootDData(dDataProto){
+        if ( findRootDData(dDataProto) == dDataProto ){ 
+            // Setup Scope
+            var scope = dData;  
+            var initialData = false;
+            if ( dDataProto.hasAttribute("scope") ){
+                scope = eval(dDataProto.getAttribute("scope"));
+                if (scope.hasOwnProperty(dDataProto.name) ){ // Look for initial data on the scope
+                    initialData = Object.assign({}, scope[dDataProto.name]);
+                }
+            }
+            Object.defineProperty(scope, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );
+            if (initialData) {scope[dDataProto.name] = initialData;}
+        } 
     }
 
     function findRootDData(element){
@@ -109,7 +122,7 @@ function registerDData(dDataProto){
     }
 
     function renderValues(values, element){
-        tree = element.valueElementTree;
+        var tree = element.valueElementTree;
         for (var key in values){
             if (tree.hasOwnProperty(key)){
                 if (typeof(tree[key].value) == "string" ){

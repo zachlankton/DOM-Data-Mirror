@@ -54,3 +54,25 @@ code {
     color: #43436d;
     border-radius: 5px;
 }
+
+aside {
+    border-radius: 5px;
+    background-color: #868686;
+    padding: 20px;
+    color: lightgray;
+}
+
+table td {
+    vertical-align: middle;
+    text-align: center;
+    padding: 15px;
+}
+
+
+#term {
+    width: 200px;
+    font-weight: bold;
+}
+
+#definition {font-weight: bold;}
+

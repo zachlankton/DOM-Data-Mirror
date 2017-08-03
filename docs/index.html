@@ -17,7 +17,9 @@
         	<li>
                 <ul>
                     <li> <a href="#BasicUsage1"> 	Example 1		</a> </li>
+                    <li> <a href="#BasicUsageExplanation"> 	Explanation		</a> </li>
                     <li> <a href="#BasicUsage2"> 	Example 2		</a> </li>
+                    <li> <a href="#Glossary"> 	Glossary		</a> </li>
                 </ul>
             </li>
             <li> <a href="#Arrays"> Arrays (Child Elements) </a> </li>
@@ -29,6 +31,7 @@
                 </ul>
             </li>
             <li> <a href="#Overload"> Overloading </a> </li>
+            <li> <a href="#Scope"> Scope </a> </li>
         </navigation>
         
         <content>
@@ -69,22 +72,41 @@
         	<section>
         	   <h1>Basic Usage</h1>
 
-        	   <p> To Understand what dData does, let's start a simple vanilla js example: </p>
+        	   <p> To Understand what dData does, let's start with a simple vanilla js example: </p>
 
-                <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/5dc09z46/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="380" src="//jsfiddle.net/zachlankton/5dc09z46/embedded/html,result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	   
-        	   <p>The <code>d-data</code> attribute may be used on any native html element. </p>
+        	   <p>Simple, right? Which is the intention, but its not necessarily more useful than vanilla js.
+        	   Let's see how dData can really shine over Vanilla JS in the next example.</p>
+        	     
+        	   <a name="BasicUsage1"></a>
+        	   <h3>Example 1</h3>
+        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="220" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
-                <p>This attribute extends the element to map values contained inside child elements that have the 
+               <a name="BasicUsageExplanation"></a>
+               <h2>d-data Explained</h2>
+               <p>The <code>d-data</code> attribute may be used on any native html element.</p>
+
+                <p>This attribute extends the element to map values contained inside d-data element's children
+                 that have the 
                 <code>name</code> attribute.</p>
 
                 <p>The intended effect is to have the DOM mirror the data in the object and vice versa.
                 <p><code>&lt;div d-data name="test"&gt;&lt;/div&gt; === dData.test // true</code> but not in the sense that dData.test
                 just contains a reference to the Element... this is where some abstraction comes in.</p>
 
-                <p>In this case, the html div code above is the same thing as <code>var test = {};</code>  This is what the d-data 
+                <p>In this case, the html div code above is the same thing as <code>dData.test = {};</code>  This is what the d-data 
                 attribute is doing behind the scenes.  It is a lot like data binding to a template, but in this case the template
                 is generating it's own object to be used elsewhere in the program.</p>
+
+                <aside>
+                    Note: dData is a global object that is the default "scope" where your dData objects
+                    will be stored.  This global object also contains some methods for working with dData
+                    elements.  You can set your own scope using the <code>scope</code> attribute.
+                    <a href="#Scope">See Here for more info about scope</a>
+                </aside>
 
                 <p>If the values in the object are updated then the html values (or innerHTML) will be updated and inversely
                 If the DOM is updated, either by user input or another library manipulating the DOM, the object will reflect 
@@ -95,38 +117,68 @@
         	   The <code>name</code> attribute value is used as the key name in the <code>dData[parentName]</code> object that the 
         	   values get stored in.</p>
 
-        	   <p>Child Elements of dData do not require a <code>name</code> attribute, but any element with the
+        	   <p>Child elements of a d-data element do not require a <code>name</code> attribute, but any element with the
         	   <code>name</code> attribute will be mapped to a key inside of the <code>dData[parentName][valueName] = value</code> object.
-        	    Let's look at some code to hopefully 
-        	   clear up what is meant by all of this...</p>
-
-        	     
-        	   <a name="BasicUsage1"></a>
-        	   <h3>Example 1</h3>
-        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-        	   <iframe width="100%" height="250" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
-        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   </p>
 
                <a name="BasicUsage2"></a>
         	   <h3>Example 2</h3>
+        	   <p>Here is an example that demonstrates what the output of a dData Object is.  Note that
+        	   only d-data element children with the <code>name</code> attribute are included in the output. </p>
         	   <iframe width="100%" height="400" src="//jsfiddle.net/zachlankton/tyb4by86/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+        	   <a name="Glossary"></a>
+        	   <h3>Glossary</h3>
+            
+        	   <table border="1">
+        	       <thead>
+        	           <tr>
+        	               <td id="term">Term</td>
+        	               <td id="definition">Definition</td>
+        	           </tr>
+        	       </thead>
+        	       <tbody>
+        	           <tr>
+        	               <td>d-data element</td>
+        	               <td>Any element that has a <code>d-data</code> attribute.</td>
+        	           </tr>
+        	           <tr>
+        	               <td>d-data child element</td>
+        	               <td>These are also "d-data elements" because they have a <code>d-data</code> attribute. 
+        	               The differnentiator here is that they are descendants of another d-data element. 
+        	               These are explained in the <a href="#Arrays">Arrays (Child Elements)</a> section.</td>
+        	           </tr>
+        	           <tr>
+        	               <td>d-data element children</td>
+        	               <td>Any descendant of a d-data element that has a <code>name</code> attribute.</td>
+        	           </tr>
+        	           <tr>
+        	               <td>d-data object</td>
+        	               <td>The javascript object that gets and set values on d-data elements.</td>
+        	           </tr>
+        	       </tbody>
+        	   </table>
         	</section>
 
         	<a name="Arrays"></a>
         	<section>
         	<h1>Arrays (Child Elements)</h1>
-            <p>dData can be nested infinitely... the root element with a <code>d-data</code> attribute is an Object.</p>
-            <p>All child html elements with the <code>d-data</code> attribute are arrays... this allows for them and their content to be duplicated</p>
-            <p>Here's an example of just one level deep.</p>
+            <p>dData Elements can be nested infinitely... the root d-data element is an Object, 
+                and it inherits its scope from the global environment.</p>
+            <p>All d-data child elements are arrays... this allows for them and their content to be duplicated.</p>
+            <p>dData child elements inherit their scope from their parent d-data element.</p>
+            <p>Defining a d-data element to d-data child element structure is identical to the structure of
+            a javascript object and a lot like writing an object literal.</p>
+            <p>Here's an example...</p>
         	<iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	<iframe width="100%" height="750" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	<iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
         	
         	<a name="ArrayExample2"></a>
             <h2>Simple Table Example</h2>
-            <p>For those who are wondering if dData children elements need to be direct descendants of dData parent Elements,
-             here is a simple html table example that shows it does not matter how deeply nested the dData children elements are
-             in the dom structure.</p>
+            <p>For those who are wondering if dData child elements need to be immediate children of dData parent elements,
+             here is a simple html table example that shows it does not matter how deeply nested the dData child elements are
+             in the DOM structure.</p>
             <iframe width="100%" height="550" src="//jsfiddle.net/zachlankton/1xaux267/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
             <iframe width="100%" height="450" src="//jsfiddle.net/zachlankton/1xaux267/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
             <iframe width="100%" height="550" src="//jsfiddle.net/zachlankton/1xaux267/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
@@ -141,7 +193,7 @@
         	<section>
                 <h1>Overloading</h1>
                 <p> What happens if you start with an empty root dData element and then assign data to it as we have in all the previous examples?
-                    One, might first assume that it just gets discarded. This could be a problem if you already have an object with data that
+                    One might first assume that it just gets discarded. This could be a problem if you already have an object with data that
                     needs to stay intact, but you really only want to display certain values from it in the html.
                 </p>
 
@@ -155,6 +207,31 @@
                 <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/1nhp1vhc/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
                 <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/1nhp1vhc/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
                 <iframe width="100%" height="500" src="//jsfiddle.net/zachlankton/1nhp1vhc/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	</section>
+
+        	<a name="Scope"></a>
+        	<section>
+                <h1>Scope</h1>
+                <p>If you are familiar with Angular, Vue, React, and other JS frameworks, then you are probably familiar
+                with the concept of scope.  Scope helps keep code modular and separated from other code.  
+                Global Variables have a higher chance of overwriting something that already exists, or being overwritten
+                in the future by some other code that comes along.</p>
+
+                <p>When building simple applications, if less than a few people are contributing and 
+                can keep track of the names of their dData objects and everyone elses, using the default <code>dData[objectName]</code>
+                scope should work just fine.
+                </p>
+
+                <p>When building larger, more complex, applications with more contributors, making use of 
+                different scopes becomes imperative to keeping code organized and helping to prevent really
+                strange bugs that are very difficult to track down.  You and you're team will need to 
+                decide the best approach for your application.</p>
+
+                <p> To use your own custom scope with dData, you can use the <code>scope</code> attribute on the root
+                dData Element.  <strong><em>This will not work on d-data child elements. </em></strong> d-data child elements
+                inherit their scope directly from their parent d-data element. </p>
+
+                <p>Here is an Example: </p>
         	</section>
         </content>
     </div>

@@ -7,9 +7,18 @@
     function test(dDataElement, root){
         return "x" + dDataElement.value.childName + "x";
     }
+
+    var testObj = {test: {Profile:  {
+        firstName: "Zach",
+        lastName: "Lankton",
+        children: [
+            {childName:"Karly"},
+            {childName:"Kody"}
+        ]
+    } } };
 </script>
 
-<div d-data name="Profile">
+<div scope="testObj.test" d-data name="Profile">
     First Name: <input name="firstName" />  <br />
     Last Name: <input name="lastName" />   <br />
     <button add="children">Add Child</button> 
