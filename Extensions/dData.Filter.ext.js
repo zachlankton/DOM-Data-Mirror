@@ -9,12 +9,14 @@
     function setupFilter(filter, dDataElement){
         
         filter.addEventListener("keyup", function(event){
-            var dataToFilter = filter.getAttribute('filter');
+            var dataToFilter = filter.getAttribute('filter').split(":")[0];
+            var keyToFilterOn = filter.getAttribute('filter').split(":")[1];
+
             var searchKeys = filter.value.split(" ");
             var parent = dData.findNearestDDataParent(filter);
             var children = parent.querySelectorAll("[name='"+dataToFilter+"']");
             for (var i=0; i<children.length; i++){
-                var f = filterArr_AND(children[i].value, searchKeys);
+                var f = filterArr_AND(children[i].value, keyToFilterOn, searchKeys);
                 if (f || filter.value == "") {
                     children[i].style.display = "" ;   
                 }else{
@@ -25,32 +27,33 @@
         });      
     }
 
-    function filterArr(obj, searchVal){ 
+    function filterArr(obj, keyToFilterOn, searchVal){ 
         // this function will filter a nested array to elements containing searchVal  
         if ( Array.isArray(obj) ){
             var results = []
             for (var i=0; i<obj.length; i++){
-                 var r = filterArr( obj[i], searchVal ) 
+                 var r = filterArr( obj[i], keyToFilterOn, searchVal ) 
                  if (r) { results.push(r) }
             }
             if (results.length == 0 ){ return false } else { return results }
         } else if (typeof(obj)=="object" ) {
             var results = {};
             for (var key in obj) {
-                var r = filterArr( obj[key], searchVal )
-                if (r) { results[key] = r } 
+                if (keyToFilterOn != undefined && key != keyToFilterOn){ continue; }
+                var r = filterArr( obj[key], keyToFilterOn, searchVal )
+                if (r != undefined) { results[key] = r } 
             }
             if (Object.keys(results).length == 0) { return false } else { return obj }
         } else {
-            if (obj && obj.toLowerCase().indexOf(searchVal.toLowerCase()) > -1 ) { return obj; } else { return false; }
+            if (obj != undefined && obj.toString().toLowerCase().indexOf(searchVal.toLowerCase()) > -1 ) { return obj; } else { return undefined; }
         }
     }
 
-    function filterArr_AND(obj, searchKeys){
+    function filterArr_AND(obj, keyToFilterOn, searchKeys){
         // this function will filter a nested array to elements including all search keys
         var results = obj;
         for (var i=0; i<searchKeys.length;i++ ){
-            results = filterArr(results, searchKeys[i]);
+            results = filterArr(results, keyToFilterOn, searchKeys[i]);
             if (results.length == 0 || results == false) {break;}
         }
         return results;

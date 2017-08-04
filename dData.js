@@ -1,6 +1,6 @@
 /*
         d-data web directive
-        written by: Zach Lankton 2017       
+        written by: Zach Lankton & Gavin McGraw 2017       
 */
 
 dData = {};  // dData Global Object
@@ -147,7 +147,9 @@ function registerDData(dDataProto){
         var tree = element.valueElementTree;
         for (var key in values){
             if (tree.hasOwnProperty(key)){
-                if (typeof(tree[key].value) == "string" ){
+                if (tree[key].type == "checkbox" ){
+                    tree[key].checked = values[key] == "" ? false : true ;  
+                } else if (typeof(tree[key].value) == "string" ){
                     tree[key].value = values[key];    
                 } else {
                     tree[key].innerHTML = values[key];    
@@ -163,7 +165,9 @@ function registerDData(dDataProto){
     }
 
     function renderValOrHTML(element, value){
-        if (element.value){
+        if (element.type == "checkbox" ) {
+            element.checked = value == "" ? false : true ;
+        } else if (element.value){
             element.value = value;
         }else{
             element.innerHTML = value;
@@ -298,7 +302,13 @@ function registerDData(dDataProto){
         child.name = child.name || child.getAttribute("name");
         if ( getElementTree ) { data[child.getAttribute("name")] = child;  }
         else { 
-            if (typeof(child.value)=="string" ) { 
+            if (child.type == "checkbox") {
+                Object.defineProperty(data, child.getAttribute("name"), {
+                    get: function(){ return child.checked; }, 
+                    set: function(newVal){ child.checked = newVal; emitDataRendered(child);},
+                    enumerable: true,
+                }); 
+            } else if (typeof(child.value)=="string" ) { 
                 Object.defineProperty(data, child.getAttribute("name"), {
                     get: function(){ return child.value; }, 
                     set: function(newVal){ child.value = newVal; emitDataRendered(child);},
