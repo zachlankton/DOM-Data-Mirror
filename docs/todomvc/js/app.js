@@ -133,6 +133,7 @@
 		for (var i=0; i<items.length; i++){
 			items[i].completed = tglAll.checked;
 		}
+		updateView();
 	}
 
 	todo.clearComplete = function(){
@@ -142,6 +143,7 @@
 				items.remove(i);
 			}
 		}
+		updateView();
 	}
 
 	function pluralize(count, word){
