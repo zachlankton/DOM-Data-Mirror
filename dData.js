@@ -358,34 +358,40 @@ function registerDData(dDataProto){
     return dDataProto;
 }
 
-// this mutation observer watches for elements with the d-data attribute and registers them
-var dDataObserver = new MutationObserver(function(mutations){
-    if (typeof(mutationDoneTimer) !== "undefined"){
-        clearTimeout(mutationDoneTimer)};
-        mutationDoneTimer = setTimeout(function(){
-            var mutationDoneEvent = new Event("MutationDone");
-            document.dispatchEvent(mutationDoneEvent);
-        }, 100);
-    mutations.forEach(function(mutation){
-        if (mutation.type == "childList"){
-            mutation.addedNodes.forEach(function(node){
-                if (node.nodeType === 1 && node.hasAttribute("d-data") ){
-                    registerDData(node);
-                }
-            });
-        }
-        if (mutation.type == "attributes"){
-            if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
-                registerDData(mutation.target);
+
+(function(){
+
+    // this mutation observer watches for elements with the d-data attribute and registers them
+    var dDataObserver = new MutationObserver(function(mutations){
+        if (typeof(mutationDoneTimer) !== "undefined"){
+            clearTimeout(mutationDoneTimer)};
+            mutationDoneTimer = setTimeout(function(){
+                var mutationDoneEvent = new Event("MutationDone");
+                document.dispatchEvent(mutationDoneEvent);
+            }, 100);
+        mutations.forEach(function(mutation){
+            if (mutation.type == "childList"){
+                mutation.addedNodes.forEach(function(node){
+                    if (node.nodeType === 1 && node.hasAttribute("d-data") ){
+                        registerDData(node);
+                    }
+                });
             }
-            
-        }
+            if (mutation.type == "attributes"){
+                if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
+                    registerDData(mutation.target);
+                }
+
+            }
+        });
     });
-});
 
 
-dDataObserver.observe(document, {
-    childList: true,
-    subtree: true,
-    attributeFilter: ['d-data']
-});
+    dDataObserver.observe(document, {
+        childList: true,
+        subtree: true,
+        attributeFilter: ['d-data']
+    });
+
+})();
+
