@@ -371,11 +371,13 @@ function registerDData(dDataProto){
             }, 100);
         mutations.forEach(function(mutation){
             if (mutation.type == "childList"){
-                mutation.addedNodes.forEach(function(node){
-                    if (node.nodeType === 1 && node.hasAttribute("d-data") ){
-                        registerDData(node);
+                var nodes = mutation.addedNodes;
+                for(var i=0;i<nodes.length;i++){
+                    if (nodes[i].nodeType === 1 && nodes[i].hasAttribute("d-data") ){
+                        registerDData(nodes[i]);
                     }
-                });
+                }
+                
             }
             if (mutation.type == "attributes"){
                 if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
