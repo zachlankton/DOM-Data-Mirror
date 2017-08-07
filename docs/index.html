@@ -65,12 +65,15 @@
     </div>
 
     <script>
-        document.querySelectorAll('link[rel=import]').forEach(function(item) {
-            var importedDoc = item.import;
-            var templ = importedDoc.querySelector('template');
-            var elem = document.getElementById(templ.id);
-            elem.appendChild(templ.content.cloneNode(true));
+        document.addEventListener("WebComponentsReady", function(){
+            document.querySelectorAll('link[rel=import]').forEach(function(item) {
+                var importedDoc = item.import || item;
+                var templ = importedDoc.querySelector('template');
+                var elem = document.body.querySelector("#"+templ.id);
+                elem.appendChild(templ.content);
+            });
         });
+            
     </script>
 </body>
 
