@@ -6,6 +6,15 @@
 dData = {};  // dData Global Object
 dData.extensions = []; // An array to store d-data extensions
 
+// Polyfill for element.isConnected
+(function (supported){
+  if (supported) return;
+  Object.defineProperty(window.Node.prototype, 'isConnected', {get})
+  function get() {
+    return document.contains(this);
+  }
+})('isConnected' in window.Node.prototype);
+
 function registerDData(dDataProto){
         
     if (dDataProto.hasOwnProperty("value") ){return 0; /* this element has already been registered */ }

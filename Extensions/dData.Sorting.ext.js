@@ -21,7 +21,7 @@
                 return sort(a,b,key,dir);
             });
             for (var i=0; i<children.length; i++){
-                chParent.append(children[i]);
+                chParent.appendChild(children[i]);
             }
         });
     }
