@@ -42,6 +42,7 @@ function registerDData(dDataProto){
         setupChildTemplates(dDataProto);
 
         // Setup any extensions that may be available in dData.extensions
+        evaluateElementForExtensions(dDataProto, dDataProto);
         setupExtensions(dDataProto, dDataProto); 
 
         // if this is a root d-data element, setup scope and initial data
@@ -332,7 +333,6 @@ function registerDData(dDataProto){
         // extensions provide additional functionality when a given attribute is present on 
         // any descendant element of d-data, these attributes can be custom or native
         // multiple extensions for the same attribute may be possible, but collisions may occur, this has not been tested
-        evaluateElementForExtensions(element, dDataElement);
         var children = element.children;
         for (var i=0; i<children.length; i++){
             var child = children[i];

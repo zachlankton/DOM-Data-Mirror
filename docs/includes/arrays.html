@@ -1,0 +1,28 @@
+<template id="arrays">
+    <h1>Arrays (Child Elements)</h1>
+            <p>dData Elements can be nested infinitely... the root d-data element is an Object, 
+                and it inherits its scope from the global environment.</p>
+            <p>All d-data child elements are arrays... this allows for them and their content to be duplicated.</p>
+            <p>dData child elements inherit their scope from their parent d-data element.</p>
+            <p>Defining a d-data element to d-data child element structure is identical to the structure of
+            a javascript object and a lot like writing an object literal.</p>
+            <p>Here's an example...</p>
+        	<iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	<iframe width="100%" height="750" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	<iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/74kqu3d0/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	
+        	<a name="ArrayExample2"></a>
+            <h2>Simple Table Example</h2>
+            <p>For those who are wondering if dData child elements need to be immediate children of dData parent elements,
+             here is a simple html table example that shows it does not matter how deeply nested the dData child elements are
+             in the DOM structure.</p>
+            <iframe width="100%" height="550" src="//jsfiddle.net/zachlankton/1xaux267/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+            <iframe width="100%" height="450" src="//jsfiddle.net/zachlankton/1xaux267/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+            <iframe width="100%" height="550" src="//jsfiddle.net/zachlankton/1xaux267/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+        	<a name="ArrayExample3"></a>
+        	<h2>Simple Todo Example</h2>
+        	<p>This example shows the standard todo list.</p>
+        	<iframe width="100%" height="500" src="//jsfiddle.net/zachlankton/fw9a0dtL/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+</template>

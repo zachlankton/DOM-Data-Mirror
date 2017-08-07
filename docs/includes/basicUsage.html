@@ -1,0 +1,90 @@
+<template id="basicusage">
+<h1>Basic Usage</h1>
+
+        	   <p> To Understand what dData does, let's start with a simple vanilla js example: </p>
+
+                <iframe width="100%" height="380" src="//jsfiddle.net/zachlankton/5dc09z46/embedded/html,result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   
+        	   <p>Simple, right? Which is the intention, but its not necessarily more useful than vanilla js.
+        	   Let's see how dData can really shine over Vanilla JS in the next example.</p>
+        	     
+        	   <a name="BasicUsage1"></a>
+        	   <h3>Example 1</h3>
+        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="220" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/js/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+        	   <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/e4quj9fj/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+               <a name="BasicUsageExplanation"></a>
+               <h2>d-data Explained</h2>
+               <p>The <code>d-data</code> attribute may be used on any native html element.</p>
+
+                <p>This attribute extends the element to map values contained inside d-data element's children
+                 that have the 
+                <code>name</code> attribute.</p>
+
+                <p>The intended effect is to have the DOM mirror the data in the object and vice versa.
+                <p><code>&lt;div d-data name="test"&gt;&lt;/div&gt; === dData.test // true</code> but not in the sense that dData.test
+                just contains a reference to the Element... this is where some abstraction comes in.</p>
+
+                <p>In this case, the html div code above is the same thing as <code>dData.test = {};</code>  This is what the d-data 
+                attribute is doing behind the scenes.  It is a lot like data binding to a template, but in this case the template
+                is generating it's own object to be used elsewhere in the program.</p>
+
+                <aside>
+                    Note: dData is a global object that is the default "scope" where your dData objects
+                    will be stored.  This global object also contains some methods for working with dData
+                    elements.  You can set your own scope using the <code>scope</code> attribute.
+                    <a href="#Scope">See Here for more info about scope</a>
+                </aside>
+
+                <p>If the values in the object are updated then the html values (or innerHTML) will be updated and inversely
+                If the DOM is updated, either by user input or another library manipulating the DOM, the object will reflect 
+                those changes.</p>
+
+        	   <p>dData Elements require a <code>name</code> attribute with a value assigned.  
+        	   Just like <code>&lt;input /&gt;</code> tags typically do. 
+        	   The <code>name</code> attribute value is used as the key name in the <code>dData[parentName]</code> object that the 
+        	   values get stored in.</p>
+
+        	   <p>Child elements of a d-data element do not require a <code>name</code> attribute, but any element with the
+        	   <code>name</code> attribute will be mapped to a key inside of the <code>dData[parentName][valueName] = value</code> object.
+        	   </p>
+
+               <a name="BasicUsage2"></a>
+        	   <h3>Example 2</h3>
+        	   <p>Here is an example that demonstrates what the output of a dData Object is.  Note that
+        	   only d-data element children with the <code>name</code> attribute are included in the output. </p>
+        	   <iframe width="100%" height="400" src="//jsfiddle.net/zachlankton/tyb4by86/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+        	   <a name="Glossary"></a>
+        	   <h3>Glossary</h3>
+            
+        	   <table border="1">
+        	       <thead>
+        	           <tr>
+        	               <td id="term">Term</td>
+        	               <td id="definition">Definition</td>
+        	           </tr>
+        	       </thead>
+        	       <tbody>
+        	           <tr>
+        	               <td>d-data element</td>
+        	               <td>Any element that has a <code>d-data</code> attribute.</td>
+        	           </tr>
+        	           <tr>
+        	               <td>d-data child element</td>
+        	               <td>These are also "d-data elements" because they have a <code>d-data</code> attribute. 
+        	               The differnentiator here is that they are descendants of another d-data element. 
+        	               These are explained in the <a href="#Arrays">Arrays (Child Elements)</a> section.</td>
+        	           </tr>
+        	           <tr>
+        	               <td>d-data element children</td>
+        	               <td>Any descendant of a d-data element that has a <code>name</code> attribute.</td>
+        	           </tr>
+        	           <tr>
+        	               <td>d-data object</td>
+        	               <td>The javascript object that gets and set values on d-data elements.</td>
+        	           </tr>
+        	       </tbody>
+        	   </table>
+</template>

@@ -1,0 +1,47 @@
+<template id="extensions">
+<h1>Extensions</h1>
+
+                <p>dData is was written with extensibilty in mind.  d-Data Extensions are basically functions that
+                extend any d-data children elements with a given attribute. You can create extensions for any attribute,
+                even native ones.  You're extension function will run for every element that has the attribute you want
+                to extend.
+                </p>
+
+                <p>
+                Currently there are only a couple of dData events you can use to trigger event based functionality
+                But more will be added with each use case that presents itself.</p>
+
+                <a name="ExtHowTo"></a>
+                <h2>Basic How To</h2>
+                <iframe width="100%" height="650" src="//jsfiddle.net/zachlankton/cmgurott/embedded/js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="420" src="//jsfiddle.net/zachlankton/cmgurott/embedded/html/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="100" src="//jsfiddle.net/zachlankton/cmgurott/embedded/result/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+                <a name="ExtAvailable"></a>
+                <h2>Available Extensions</h2>
+                <p>Now that you have a rough idea of how extensions are made, please look at the source
+                of some of the available plugins to get a better idea of some good patterns for developing
+                plugins.</p>
+                <a href="https://github.com/zachlankton/DOM-Data-Mirror/tree/master/Extensions" target="new">View Extensions on GITHUB</a>
+
+                <a name="ExtAddRemove"></a>
+                <h2><a href="https://github.com/zachlankton/DOM-Data-Mirror/blob/master/Extensions/dData.AddRemove.ext.js" target="new">Add &amp; Remove Extension</a></h2>
+                <p>The Add and Remove extensions is the simplest extension there is for dData.
+                It provides 2 attributes "add" and "remove" (I know, right?).</p>
+
+                <p>Whatever element these attributes are attached to get wired up
+                with a click handler that gives you a shortcut to add and remove
+                dData Child Elements.<p>
+
+                <p>The "add" attribute accepts a value that is a string.  This string
+                should be the name of a child element that you want to have added.  This
+                attribute should be use OUTSIDE of the d-data element you want to add.</p>
+
+                <p>The "remove" attribute does not need any arguments.  Simply place it 
+                INSIDE the d-data element you want removed, and it will handle the rest.</p>
+
+                <p>To illustrate this, let's improve our Simple Todo list example from earlier.</p>
+                <iframe width="100%" height="260" src="//jsfiddle.net/zachlankton/yLh249sh/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="100" src="//jsfiddle.net/zachlankton/yLh249sh/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="300" src="//jsfiddle.net/zachlankton/yLh249sh/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+</template>

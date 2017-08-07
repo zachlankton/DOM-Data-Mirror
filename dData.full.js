@@ -475,13 +475,14 @@ dDataObserver.observe(document, {
 
 ( function dDataFilterExtension(){
 
-    dData.extensions.push({attribute: "filter", setup: setupFilter})
+    dData.extensions.push({attribute: "filter", setup: setupFilter});
 
-    function setupFilter(filter, dDataElement){
+    function setupFilter(filter, dDataElement, attrVal){
         
         filter.addEventListener("keyup", function(event){
-            var dataToFilter = filter.getAttribute('filter').split(":")[0];
-            var keyToFilterOn = filter.getAttribute('filter').split(":")[1];
+            var attrSplit = attrVal.split(":");
+            var dataToFilter = attrSplit[0];
+            var keyToFilterOn = attrSplit[1];
 
             var searchKeys = filter.value.split(" ");
             var parent = dData.findNearestDDataParent(filter);
@@ -512,7 +513,7 @@ dDataObserver.observe(document, {
             for (var key in obj) {
                 if (keyToFilterOn != undefined && key != keyToFilterOn){ continue; }
                 var r = filterArr( obj[key], keyToFilterOn, searchVal )
-                if (r != undefined) { results[key] = r } 
+                if (r != undefined && r != false) { results[key] = r } 
             }
             if (Object.keys(results).length == 0) { return false } else { return obj }
         } else {
@@ -524,14 +525,13 @@ dDataObserver.observe(document, {
         // this function will filter a nested array to elements including all search keys
         var results = obj;
         for (var i=0; i<searchKeys.length;i++ ){
-            results = filterArr(results, keyToFilterOn, searchKeys[i]);
-            if (results.length == 0 || results == false) {break;}
+            var test = filterArr(results, keyToFilterOn, searchKeys[i]);
+            if (test.length == 0 || test == false) {break;}
         }
-        return results;
+        return test;
     }
 
 })();
-
 
 ///////////////////////
 // SORTING EXTENSION //

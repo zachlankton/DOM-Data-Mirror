@@ -31,7 +31,7 @@
         }
         dParent.computedProps.push(fun);
 
-        document.addEventListener("dDataRendered", function(event){ 
+        dParent.addEventListener("dDataRendered", function(event){ 
             runComputers(element) 
         });
     }

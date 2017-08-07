@@ -5,9 +5,9 @@
 ( function dDataChildAdderExtension(){
     dData.extensions.push({attribute: "add", setup: setupAdder });
 
-    function setupAdder(element, dData, attrVal){
+    function setupAdder(element, dDataElement, attrVal){
         element.addEventListener("click", function(event){
-            dData.add(attrVal);
+            dDataElement.add(attrVal);
         })
     }
 })();
@@ -15,9 +15,9 @@
 ( function dDataChildRemoverExtension(){
     dData.extensions.push({attribute: "remove", setup: setupRemover });
 
-    function setupRemover(element, dData, attrVal){
+    function setupRemover(element, dDataElement, attrVal){
         element.addEventListener("click", function(event){
-            dData.remove();
+            dDataElement.remove();
         })
     }
 })();

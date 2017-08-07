@@ -1,0 +1,39 @@
+<template id="scope">
+<h1>Scope</h1>
+                <p>If you are familiar with Angular, Vue, React, and other JS frameworks, then you are probably familiar
+                with the concept of scope.  Scope helps keep code modular and separated from other code.  
+                Global Variables have a higher chance of overwriting something that already exists, or being overwritten
+                in the future by some other code that comes along.</p>
+
+                <p>When building simple applications, if less than a few people are contributing and 
+                can keep track of the names of their dData objects and everyone elses, using the default <code>dData[objectName]</code>
+                scope should work just fine.
+                </p>
+
+                <p>When building larger, more complex, applications with more contributors, making use of 
+                different scopes becomes imperative to keeping code organized and helping to prevent really
+                strange bugs that are very difficult to track down.  You and you're team will need to 
+                decide the best approach for your application.</p>
+
+                <p> To use your own custom scope with dData, you can use the <code>scope</code> attribute on the root
+                dData Element.  <strong><em>This will not work on d-data child elements. </em></strong> d-data child elements
+                inherit their scope directly from their parent d-data element. </p>
+
+                <a name="ScopeExample1"></a>
+                <h2>Example 1</h2>
+                <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="130" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/6yfo2fdr/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+                <a name="ScopeExample2"></a>
+                <h2>Example 2</h2>
+                <p>As shown in the previous example, if the scope does not exist, dData will create it automatically
+                This next example shows that you can create a scope object elsewhere and fill it with initial
+                data and dData will use that object.  However, for this to work, the scope object needs to 
+                be created before the browser
+                renders the d-data element. </p>
+
+                <iframe width="100%" height="350" src="//jsfiddle.net/zachlankton/c726Lo15/embedded/html/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="130" src="//jsfiddle.net/zachlankton/c726Lo15/embedded/js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+                <iframe width="100%" height="200" src="//jsfiddle.net/zachlankton/c726Lo15/embedded/result/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>     
+            </template>

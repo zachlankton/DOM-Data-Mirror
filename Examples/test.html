@@ -2,7 +2,7 @@
 <script src="../Extensions/dData.AddRemove.ext.js"></script>
 <script src="../Extensions/dData.Filter.ext.js"></script>
 <script src="../Extensions/dData.Sorting.ext.js"></script>
-<script src="../Extensions/dData.ComputedProps.ext.js"></script>
+<script src="../Extensions/dData.ComputedProps.ext.js"></script> -->
 <script>
     function test(dDataElement, root){
         return "x" + dDataElement.value.childName + "x";
@@ -18,7 +18,7 @@
     } } };
 </script>
 
-<div scope d-data name="Profile">
+<div d-data name="Profile">
     First Name: <input name="firstName" />  <br />
     Last Name: <input name="lastName" />   <br />
     <button add="children">Add Child</button> 
@@ -33,3 +33,72 @@
         </div>
     </div>
 </div>
+
+
+<div d-data name="filter">
+  <h1>Filter Example</h1>
+  <input filter="listItems" placeHolder="Search...">
+  <ul>
+    <li d-data name="listItems">
+      <span name="item">Apple</span>
+      <span name="color">Red</span>
+      <ul>
+        <li d-data name="nestedItems">
+          <span name="type">Fuji</span>
+        </li>
+        <li d-data name="nestedItems">
+          <span name="type">Honey Crisp</span>
+        </li>
+      </ul>
+    </li>
+    <li d-data name="listItems">
+      <span name="item">Banana</span>
+      <span name="color">Yellow</span>
+      <ul>
+        <li d-data name="nestedItems">
+          <span name="type">Chiqita</span>
+        </li>
+        <li d-data name="nestedItems">
+          <span name="type">Monkey</span>
+        </li>
+      </ul>
+    </li>
+    <li d-data name="listItems">
+      <span name="item">Strawberry</span>
+      <span name="color">Red</span>
+      <ul>
+        <li d-data name="nestedItems">
+          <span name="type">Champagne</span>
+        </li>
+        <li d-data name="nestedItems">
+          <span name="type">Chocolate</span>
+        </li>
+      </ul>
+    </li>
+    <li d-data name="listItems">
+      <span name="item">Carrot</span>
+      <span name="color">Orange</span>
+      <ul>
+        <li d-data name="nestedItems">
+          <span name="type">Healthy</span>
+        </li>
+        <li d-data name="nestedItems">
+          <span name="type">Whats up doc</span>
+        </li>
+      </ul>
+    </li>
+    <li d-data name="listItems">
+      <span name="item">Brocolli</span>
+      <span name="color">Green</span>
+      <ul>
+        <li d-data name="nestedItems">
+          <span name="type">Steamed</span>
+        </li>
+        <li d-data name="nestedItems">
+          <span name="type">Grilled</span>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
