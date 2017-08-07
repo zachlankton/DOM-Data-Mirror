@@ -389,8 +389,7 @@ function registerDData(dDataProto){
 
     dDataObserver.observe(document, {
         childList: true,
-        subtree: true,
-        attributeFilter: ['d-data']
+        subtree: true
     });
 
 })();
