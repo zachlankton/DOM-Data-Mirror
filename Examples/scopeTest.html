@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="../dData.full.js"></script>
+    </head>
+    <body>
+        <div d-data scope="myScope" name="app">
+            <ul>
+                <li d-data name="listItem">
+                    <span name="item"></span>
+                </li>
+            </ul>
+        </div>
+
+        <div d-data scope="myOtherScope" name="app">
+            <ul>
+                <li d-data name="listItem">
+                    <span name="item"></span>
+                </li>
+            </ul>
+        </div>
+
+        <script>
+            myScope.app = {
+                listItem: [
+                    {item: "item1"},
+                    {item: "item2"},
+                    {item: "item3"}
+                ]  
+            };
+
+            myOtherScope.app = {
+                listItem: [
+                    {item: "item4"},
+                    {item: "item5"},
+                    {item: "item6"}
+                ]
+            };
+        </script>
+    </body>
+</html>
