@@ -25,7 +25,9 @@ function registerDData(dDataProto){
     Object.defineProperty(dDataProto, "name", { get: nameAttributeGetter,   set: nameAttributeSetter });
 
     // these are the public methods that are available on an element with the d-data attribute
-    dDataProto.add = addSibling;
+    dDataProto.add = function(data){
+        return addSibling(null, data);
+    }
     dDataProto.remove = removeSibling;
 
     // these are public utility functions for working with descendant elements of d-data elements
@@ -74,7 +76,7 @@ function registerDData(dDataProto){
 
     function setupRootDData(dDataProto){
         if ( findRootDData(dDataProto) == dDataProto ){ 
-            
+            dDataProto.add = addSibling;
             var scope = dData;      // Setup Scope.
             if ( dDataProto.hasAttribute("scope") ){
                 var scope = setupScope(dDataProto);
@@ -405,6 +407,8 @@ function registerDData(dDataProto){
     });
 
 })();
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////
 // EXTENSIONS //////////////////////////////////////////////////////////////////////
