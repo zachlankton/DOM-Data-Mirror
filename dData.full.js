@@ -635,14 +635,14 @@ function registerDData(dDataProto){
 
 
 //////////
-// SHOW //
+// HIDE //
 //////////
 
-(function(){  /* Usage: show="nameOfFunction" <--- the function needs to return true of false
-                 Example: show="test"         <---  element.hidden == test()    
+(function(){  /* Usage: hide="nameOfFunction" <--- the function needs to return true of false
+                 Example: hide="test"         <---  element.hidden == test()    
                  function test(){  return expr ? true : false; }               
 */  
-    dData.extensions.push({attribute: "show", setup: setupShow});
+    dData.extensions.push({attribute: "hide", setup: setupShow});
 
     function setupShow(element, dDataElement, attrVal){
 
