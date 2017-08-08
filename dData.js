@@ -232,6 +232,7 @@ function registerDData(dDataProto){
         
         if(data){ clone.value = data; }
 
+        return clone;
     }
 
     function removeSibling() {
