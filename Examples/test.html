@@ -1,8 +1,4 @@
-<script src="../dData.js"></script>
-<script src="../Extensions/dData.AddRemove.ext.js"></script>
-<script src="../Extensions/dData.Filter.ext.js"></script>
-<script src="../Extensions/dData.Sorting.ext.js"></script>
-<script src="../Extensions/dData.ComputedProps.ext.js"></script> -->
+<script src="../dData.full.js"></script>
 <script>
     function test(dDataElement, root){
         return "x" + dDataElement.value.childName + "x";
@@ -27,7 +23,7 @@
     Search: <input filter="children" />
     <div>
         <div d-data name="children">
-            Child Name: <input name="childName"/>
+            Child Name: <input name="childName" value="test"/>
             <span name="test" computer="test"></span>
             <button remove>X</button>
         </div>

@@ -34,6 +34,7 @@
         dParent.addEventListener("dDataRendered", function(event){ 
             runComputers(element) 
         });
+        runComputers(element);
     }
 
 
