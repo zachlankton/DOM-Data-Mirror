@@ -23,6 +23,7 @@
             }
             element.hidden = func(); 
         }
+        showHide();
     }
 
 })();

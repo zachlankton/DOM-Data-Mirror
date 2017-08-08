@@ -659,6 +659,7 @@ function registerDData(dDataProto){
             }
             element.hidden = func(); 
         }
+        showHide();
     }
 
 })();
