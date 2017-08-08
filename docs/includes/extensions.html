@@ -82,7 +82,7 @@
                 <iframe width="100%" height="320" src="//jsfiddle.net/zachlankton/y96j17qu/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
                 <a name="ExtHide"></a>
-                <h2>Hide Extension</h2>
+                <h2><a href="https://github.com/zachlankton/DOM-Data-Mirror/blob/master/Extensions/dData.hide.ext.js" target="new">Hide Extension</a></h2>
 
                 <p>
                       <code>Syntax: hide="functionName"</code> Just, like computers, the hide attribute has 
@@ -90,4 +90,25 @@
                       The function should return true or false. The hide extension will show or hide an 
                       element based on those results.  A true value will hide the element a false value will show the element.
                 </p>
+
+                <iframe width="100%" height="300" src="//jsfiddle.net/zachlankton/v5edv3rw/embedded/result,html,js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+                <a name="ExtDClass"></a>
+                <h2><a href="" target="new">dClass Extension</a></h2>
+
+                <p><code>Syntax: d-class="className:fieldToWatch:valueToMatch" </code></p>
+                
+                <p>
+                      The dClass Extension takes 3 required arguments, separated by colons (:)
+                      <ul>
+                             <li><code>className</code> the class name to be set if condition is true</li>
+                             <li><code>fieldToWatch</code> the name of the field to watch for changes</li>
+                             <li><code>valueToMatch</code> the value to match against the value in <code>fieldToWatch</code></li>
+                      </ul>
+
+                      If the value in <code>fieldToWatch</code> matches 
+                      <code>valueToMatch</code> then set the <code>className</code> on the element.
+                </p>
+
+                <iframe width="100%" height="300" src="//jsfiddle.net/zachlankton/wdr8h89p/embedded/result,html,js,css/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 </template>
