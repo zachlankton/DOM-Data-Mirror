@@ -618,7 +618,7 @@ function registerDData(dDataProto){
         var name = attrSplit[1];
         var expression = attrSplit[2];
         dDataElement.valueElementTree[name].addEventListener("change", dClass);
-        document.addEventListener("dDataRendered", dClass);
+        dDataElement.valueElementTree[name].addEventListener("dDataRendered", dClass);
 
         function dClass(event){
             if (dDataElement.value[name].toString() == expression ){
@@ -626,8 +626,8 @@ function registerDData(dDataProto){
             }else{
                 element.classList.remove(className);
             }
-            document.removeEventListener("dDataRendered", dClass);
         }
+        dClass();
 
     }
 
