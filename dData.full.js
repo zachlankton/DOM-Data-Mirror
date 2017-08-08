@@ -610,7 +610,7 @@ function registerDData(dDataProto){
                //       If the "is_complete" field contains the value "true"
                //       then add class "completed" to this element
     
-    dData.extensions.push({attribute: "dClass", setup: setupDClass});
+    dData.extensions.push({attribute: "d-class", setup: setupDClass});
 
     function setupDClass(element, dDataElement, attrVal){
         var attrSplit = attrVal.split(":");
