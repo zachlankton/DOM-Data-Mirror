@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            textarea {
+                width: 300px;
+                height: 60px;
+
+            }
+        </style>
+        <script src="../dData.full.js"></script>
+    </head>
+    <body>
+        <p>Go ahead and edit these values to see the output update</p>
+        <div d-data name="valueEx1">
+            <p>Example 1 - dData.valueEx = {}</p>
+            <input name="firstName">
+            <input name="lastName">
+        </div>
+        
+        <div d-data name="valueEx2">
+            <p>Example 2 - document.querySelector(elName).value = {}</p>
+            <input name="firstName">
+            <input name="lastName">
+        </div>
+        <hr>
+        <div d-data name="valueEx3">
+            <p>Example 3 - Reading Values From dData Shortcut</p>
+            <textarea name="json"></textarea>
+        </div>
+
+        <div d-data name="valueEx4">
+            <p>Example 4 - Reading values from the d-data elements value property</p>
+            <textarea name="json"></textarea>
+        </div>
+
+        <script>
+            var data = {
+                firstName: "John",
+                lastName: "Smith"
+            };
+
+            // Example 1 & 2 ---- These two variations are identical
+            //              The only difference is the way dData is accessed
+            
+            // This is the BEST PRACTICE because it is easier to read and write
+            // This is actually a shortcut for the code in example 2
+            dData.valueEx1 = data; 
+
+            // The d-data element is where this functionality exists
+            // the element has a value property that can be written to 
+            // just like the previous example
+            document.querySelector("[name=valueEx2]").value = data; 
+
+            function read(){
+                // reading values from d-data is the just as you would expect...
+                // the following two lines are identical
+                var value1 = dData.valueEx1; // <-- BEST PRACTICE
+                var value2 = document.querySelector("[name=valueEx2]").value;
+
+                // here we use the best way to set values in example 3 & 4
+                dData.valueEx3.json = JSON.stringify(value1, null, "\t");
+                dData.valueEx4.json = JSON.stringify(value2, null, "\t");
+            }
+
+            read();
+
+            // let's make this example a little more functional...
+            document.addEventListener("keyup", function(){
+                read();
+            })
+            
+            
+        </script>
+    </body>
+</html>
