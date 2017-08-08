@@ -26,16 +26,19 @@
 
                 <a name="ExtAddRemove"></a>
                 <h2><a href="https://github.com/zachlankton/DOM-Data-Mirror/blob/master/Extensions/dData.AddRemove.ext.js" target="new">Add &amp; Remove Extension</a></h2>
-                <p>The Add and Remove extensions is the simplest extension there is for dData.
+                <p>The Add and Remove extensions are the simplest extensions there are for dData.
                 It provides 2 attributes "add" and "remove" (I know, right?).</p>
 
                 <p>Whatever element these attributes are attached to get wired up
                 with a click handler that gives you a shortcut to add and remove
                 dData Child Elements.<p>
 
-                <p>The "add" attribute accepts a value that is a string.  This string
+                <p><code>Syntax: add="childNameToAdd[:inputToFocus]"</code> 
+                The "add" attribute accepts a value that is a string.  This string
                 should be the name of a child element that you want to have added.  This
-                attribute should be use OUTSIDE of the d-data element you want to add.</p>
+                attribute should be used OUTSIDE of the d-data element you want to add. 
+                Optionally you can append : (colon) and specify the name of the input that should be focused.
+                Otherwise it just focuses the first input field. <code>Example: add="child:inputName"</code></p>
 
                 <p>The "remove" attribute does not need any arguments.  Simply place it 
                 INSIDE the d-data element you want removed, and it will handle the rest.</p>
@@ -54,4 +57,16 @@
                 from every field.... even deeply nested ones.</p>
                 <p>Here is our filter example... with nested items.</p>
                 <iframe width="100%" height="500" src="//jsfiddle.net/zachlankton/yvmmudeg/embedded/result,html,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+                <a name="ExtSorting"></a>
+                <h2><a href="https://github.com/zachlankton/DOM-Data-Mirror/blob/master/Extensions/dData.Sorting.ext.js" target="new">Sorting Extension</a></h2>
+
+                <p><code>Syntax: sort="childToSort:fieldToSortOn[:desc]"</code> 
+                The sort attribute has 2 required arguments and 1 optional.  
+                Arguments are separated by a colon (:).  The first argument 
+                <code>childToSort</code> is the d-data element that will be sorted. 
+                The second argument <code>fieldToSortOn</code> is the field that will 
+                determine the order of the sort.  By default the sort is ascending but you can specify
+                <code>:desc</code> as a third argument to achieve descending sort.</p>
+                <iframe width="100%" height="600" src="//jsfiddle.net/zachlankton/kf4o9nnu/embedded/result,html,js/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 </template>
