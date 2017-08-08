@@ -6,6 +6,15 @@
 dData = {};  // dData Global Object
 dData.extensions = []; // An array to store d-data extensions
 
+// Polyfill for element.isConnected
+(function (supported){
+  if (supported) return;
+  Object.defineProperty(window.Node.prototype, 'isConnected', {get})
+  function get() {
+    return document.contains(this);
+  }
+})('isConnected' in window.Node.prototype);
+
 function registerDData(dDataProto){
         
     if (dDataProto.hasOwnProperty("value") ){return 0; /* this element has already been registered */ }
@@ -42,6 +51,7 @@ function registerDData(dDataProto){
         setupChildTemplates(dDataProto);
 
         // Setup any extensions that may be available in dData.extensions
+        evaluateElementForExtensions(dDataProto, dDataProto);
         setupExtensions(dDataProto, dDataProto); 
 
         // if this is a root d-data element, setup scope and initial data
@@ -124,7 +134,6 @@ function registerDData(dDataProto){
 
         // dispatch dDataRendered Event for Builtins to respond to
         emitDataRendered(dDataProto);
-
     };
 
     function emitDataRendered(element){
@@ -226,7 +235,9 @@ function registerDData(dDataProto){
     }
 
     function removeSibling() {
-        dDataProto.parentElement.removeChild(dDataProto);
+        var parent = dDataProto.parentElement;
+        parent.removeChild(dDataProto);
+        emitDataRendered(parent);
     }
 
     function getLastSibling(parent, name){
@@ -287,8 +298,8 @@ function registerDData(dDataProto){
     function getNestedDData(data, child, getElementTree){
         if (data[child.getAttribute("name")] == undefined){
             data[child.getAttribute("name")] = [];
-            data[child.getAttribute("name")].add = function(zChild, data){
-                child.add(zChild, data);
+            data[child.getAttribute("name")].add = function(data){
+                child.add(null, data);
             };
             data[child.getAttribute("name")].remove = function(index){
                 child.parentElement.querySelectorAll("[name='"+child.getAttribute("name")+"']")[index].remove();
@@ -336,13 +347,13 @@ function registerDData(dDataProto){
             var child = children[i];
             if (child.hasAttribute("d-data")){  //then descend no further  
             }else{
-                evaluteElementForExtensions(child, dDataElement);
+                evaluateElementForExtensions(child, dDataElement);
                 setupExtensions(child, dDataElement); //continue looking through immediate children
             }
         }
     }
 
-    function evaluteElementForExtensions(element, ddata){
+    function evaluateElementForExtensions(element, ddata){
         // extension objects = {attribute: "attribute name", setup: function(element, dData, attributeValue) }
         var ext = dData.extensions
         for (var i=0; i<ext.length; i++){
@@ -356,41 +367,47 @@ function registerDData(dDataProto){
     return dDataProto;
 }
 
-// this mutation observer watches for elements with the d-data attribute and registers them
-var dDataObserver = new MutationObserver(function(mutations){
-    if (typeof(mutationDoneTimer) !== "undefined"){
-        clearTimeout(mutationDoneTimer)};
-        mutationDoneTimer = setTimeout(function(){
-            var mutationDoneEvent = new Event("MutationDone");
-            document.dispatchEvent(mutationDoneEvent);
-        }, 100);
-    mutations.forEach(function(mutation){
-        if (mutation.type == "childList"){
-            mutation.addedNodes.forEach(function(node){
-                if (node.nodeType === 1 && node.hasAttribute("d-data") ){
-                    registerDData(node);
+
+(function(){
+
+    // this mutation observer watches for elements with the d-data attribute and registers them
+    var dDataObserver = new MutationObserver(function(mutations){
+        if (typeof(mutationDoneTimer) !== "undefined"){
+            clearTimeout(mutationDoneTimer)};
+            mutationDoneTimer = setTimeout(function(){
+                var mutationDoneEvent = new Event("MutationDone");
+                document.dispatchEvent(mutationDoneEvent);
+            }, 100);
+        mutations.forEach(function(mutation){
+            if (mutation.type == "childList"){
+                var nodes = mutation.addedNodes;
+                for(var i=0;i<nodes.length;i++){
+                    if (nodes[i].nodeType === 1 && nodes[i].hasAttribute("d-data") ){
+                        registerDData(nodes[i]);
+                    }
                 }
-            });
-        }
-        if (mutation.type == "attributes"){
-            if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
-                registerDData(mutation.target);
+                
             }
-            
-        }
+            if (mutation.type == "attributes"){
+                if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
+                    registerDData(mutation.target);
+                }
+
+            }
+        });
     });
-});
 
 
-dDataObserver.observe(document, {
-    childList: true,
-    subtree: true,
-    attributeFilter: ['d-data']
-});
+    dDataObserver.observe(document, {
+        childList: true,
+        subtree: true
+    });
 
-////////////////
-// EXTENSIONS //
-////////////////
+})();
+
+/////////////////////////////////////////////////////////////////////////////////////
+// EXTENSIONS //////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -401,9 +418,9 @@ dDataObserver.observe(document, {
 ( function dDataChildAdderExtension(){
     dData.extensions.push({attribute: "add", setup: setupAdder });
 
-    function setupAdder(element, dData, attrVal){
+    function setupAdder(element, dDataElement, attrVal){
         element.addEventListener("click", function(event){
-            dData.add(attrVal);
+            dDataElement.add(attrVal);
         })
     }
 })();
@@ -411,9 +428,9 @@ dDataObserver.observe(document, {
 ( function dDataChildRemoverExtension(){
     dData.extensions.push({attribute: "remove", setup: setupRemover });
 
-    function setupRemover(element, dData, attrVal){
+    function setupRemover(element, dDataElement, attrVal){
         element.addEventListener("click", function(event){
-            dData.remove();
+            dDataElement.remove();
         })
     }
 })();
@@ -451,7 +468,7 @@ dDataObserver.observe(document, {
         }
         dParent.computedProps.push(fun);
 
-        document.addEventListener("dDataRendered", function(event){ 
+        dParent.addEventListener("dDataRendered", function(event){ 
             runComputers(element) 
         });
     }
@@ -468,6 +485,7 @@ dDataObserver.observe(document, {
         }
     }
 })();
+
 
 ///////////////////////
 // FILTER  EXTENSION //
@@ -533,6 +551,7 @@ dDataObserver.observe(document, {
 
 })();
 
+
 ///////////////////////
 // SORTING EXTENSION //
 ///////////////////////
@@ -556,7 +575,7 @@ dDataObserver.observe(document, {
                 return sort(a,b,key,dir);
             });
             for (var i=0; i<children.length; i++){
-                chParent.append(children[i]);
+                chParent.appendChild(children[i]);
             }
         });
     }
@@ -567,6 +586,68 @@ dDataObserver.observe(document, {
     function sort(a, b, key, dir) {
         if (dir == "desc"){ return naturalSort(b.value[key].toLowerCase(), a.value[key].toLowerCase() ); }
         else { return naturalSort(a.value[key].toLowerCase(), b.value[key].toLowerCase() ) }   
+    }
+
+})();
+
+///////////
+// CLASS //
+///////////
+
+( function(){  // Usage: d-class="className:fieldToWatch:valueToMatch"  
+               // Example d-class="completed:is_complete:true"
+               //       If the "is_complete" field contains the value "true"
+               //       then add class "completed" to this element
+    
+    dData.extensions.push({attribute: "dClass", setup: setupDClass});
+
+    function setupDClass(element, dDataElement, attrVal){
+        var attrSplit = attrVal.split(":");
+        var className = attrSplit[0];
+        var name = attrSplit[1];
+        var expression = attrSplit[2];
+        dDataElement.valueElementTree[name].addEventListener("change", dClass);
+        document.addEventListener("dDataRendered", dClass);
+
+        function dClass(event){
+            if (dDataElement.value[name].toString() == expression ){
+                element.classList.add(className);
+            }else{
+                element.classList.remove(className);
+            }
+            document.removeEventListener("dDataRendered", dClass);
+        }
+
+    }
+
+})();
+
+
+//////////
+// SHOW //
+//////////
+
+(function(){  /* Usage: show="nameOfFunction" <--- the function needs to return true of false
+                 Example: show="test"         <---  element.hidden == test()    
+                 function test(){  return expr ? true : false; }               
+*/  
+    dData.extensions.push({attribute: "show", setup: setupShow});
+
+    function setupShow(element, dDataElement, attrVal){
+
+        dDataElement.addEventListener("dDataRendered", showHide);
+        dDataElement.addEventListener("change", showHide);
+
+        function showHide(){
+            var attrSplit = attrVal.split(".");
+            var func = window;
+            var i=0;
+            while (typeof(func) != "function" ){
+                func = func[attrSplit[i]];
+                i++;
+            }
+            element.hidden = func(); 
+        }
     }
 
 })();
