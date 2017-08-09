@@ -186,8 +186,12 @@ function registerDData(dDataProto){
     }
 
     function renderChildren(value, element){
+        var elemName = element.getAttribute("name");
+        var parent = element.parentElement;
+        var childTemplate = parent.childTemplates[elemName];
+        var templateValue = childTemplate.value;
         for (var key in value){
-            if (typeof(value[key]) == "object" && element.parentElement.childTemplates[element.getAttribute("name")].value.hasOwnProperty(key) )  {
+            if (typeof(value[key]) == "object" && templateValue.hasOwnProperty(key) )  {
                 renderList(element, value[key], key);
             } else if (Array.isArray(value[key]) ){
                 renderHiddenList(element, value[key], key);
@@ -290,7 +294,7 @@ function registerDData(dDataProto){
             Object.defineProperty(data, "element", {get: function(){
                 return dDataProto;
             }} );
-            Object.defineProperty(data, "elementTree", {get: valueElementTree} );
+            Object.defineProperty(data, "getElementTree", {get: valueElementTree} );
         }
         
         return data;
@@ -303,37 +307,39 @@ function registerDData(dDataProto){
     }
 
     function getNestedDData(data, child, getElementTree){
-        if (data[child.getAttribute("name")] == undefined){
-            data[child.getAttribute("name")] = [];
-            data[child.getAttribute("name")].add = function(data){
+        var childName = child.getAttribute("name");
+        if (data[childName] == undefined){
+            data[childName] = [];
+            data[childName].add = function(data){
                 child.add(null, data);
             };
-            data[child.getAttribute("name")].remove = function(index){
-                child.parentElement.querySelectorAll("[name='"+child.getAttribute("name")+"']")[index].remove();
+            data[childName].remove = function(index){
+                child.parentElement.querySelectorAll("[name='"+childName+"']")[index].remove();
             }
         }
-        if ( getElementTree ){ data[child.getAttribute("name")].push(child.valueElementTree); }
-        else { data[child.getAttribute("name")].push(child.value); }
+        if ( getElementTree ){ data[childName].push(child.valueElementTree); }
+        else { data[childName].push(child.value); }
     }
 
     function getElementValue(data, child, getElementTree){
         child.name = child.name || child.getAttribute("name");
-        if ( getElementTree ) { data[child.getAttribute("name")] = child;  }
+        var childName = child.name;
+        if ( getElementTree ) { data[childName] = child;  }
         else { 
             if (child.type == "checkbox") {
-                Object.defineProperty(data, child.getAttribute("name"), {
+                Object.defineProperty(data, childName, {
                     get: function(){ return child.checked; }, 
                     set: function(newVal){ child.checked = newVal; emitDataRendered(child);},
                     enumerable: true,
                 }); 
             } else if (typeof(child.value)=="string" ) { 
-                Object.defineProperty(data, child.getAttribute("name"), {
+                Object.defineProperty(data, childName, {
                     get: function(){ return child.value; }, 
                     set: function(newVal){ child.value = newVal; emitDataRendered(child);},
                     enumerable: true,
                 }); 
             }else{
-                Object.defineProperty(data, child.getAttribute("name"), {
+                Object.defineProperty(data, childName, {
                     get: function(){ return child.innerHTML; }, 
                     set: function(newVal){ child.innerHTML = newVal; emitDataRendered(child);},
                     enumerable: true
@@ -411,6 +417,7 @@ function registerDData(dDataProto){
     });
 
 })();
+
 
 
 
