@@ -294,7 +294,7 @@ function registerDData(dDataProto){
             Object.defineProperty(data, "element", {get: function(){
                 return dDataProto;
             }} );
-            Object.defineProperty(data, "getElementTree", {get: valueElementTree} );
+            Object.defineProperty(data, "elementTree", {get: valueElementTree} );
         }
         
         return data;
