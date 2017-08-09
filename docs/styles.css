@@ -89,6 +89,19 @@ code {
     padding: 1px;
     color: #43436d;
     border-radius: 5px;
+    font-family:monospace;
+}
+
+code-block {
+    background-color: #b5b5b5;
+    padding: 1px;
+    color: #43436d;
+    border-radius: 5px;
+    font-family:monospace;
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
+    
 }
 
 aside {
@@ -158,4 +171,28 @@ table td {
 .apiReference a {
     font-variant-caps: petite-caps;
     font-size: 10pt;
+}
+
+#APIRef h2 {
+    font-variant-caps: petite-caps;
+    color: #698cab;
+    margin-top: 100px;
+}
+
+#APIRef h3 {
+    border: 3px solid #000000;
+    padding: 12px;
+    border-radius: 5px;
+    background-color: aliceblue;
+    margin-top: 100px;
+}
+
+.tag {border: 1px solid black;border-radius: 5px;padding: 3px;margin-left: 5px;font-size: 10pt;font-variant-caps: all-petite-caps;top: -3px;position: relative;}
+
+.property {background-color: #48d860;}
+
+.method {background-color: #e67d7d;}
+
+.event {
+    background-color: #9595d6;
 }

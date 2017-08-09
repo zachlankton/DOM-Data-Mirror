@@ -5,39 +5,117 @@
     <h2>Properties</h2>
                 
     <a name="valueProp"></a>
-    <p>Value <span class="tag property">Property</span> </p>
+    <h3>Value <span class="tag property">Property</span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>dData.parentName = {}</li>
+            <li>dData.parentName.elementName = "" </li>
+            <li>dData.parentName.child[x].elementName = "" </li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{Global} dData</code> : this is the dData global object, this could be different if you use <a href="#Scope">scope</a></li>
+        <li><code>{object} parentName</code> : this the name of the root d-data element (set in the name attribute of the element)</li>
+        <li><code>{string} elementName</code> : this is the name of the field that you want to get/set.  
+            It is also defined on the element by the <code>name</code> attribute
+        </li>
+        <li><code>{Array} child[x]</code> : this is the name of any d-data child element. See <a href="#Arrays">Arrays<a/></li>
+    </ul>
+
+    <p><strong>Usage</strong><p>
+    <p>You can use this property to get or set any value on the d-data object.  
+    You can use object assignment or dot notation to do either of these.</p>
+    
+    <p><strong>Description</strong><p>
+    <p>The value property is alot like an input value on a standard html input.  
+    For an input you would get/set it's value through the value property 
+    <code>i.e. inputElement.value = "something"</code>.  dData works the exact same way.
+    Any element with a d-data attribute has a value property.
+    You can use this if you would like, but dData creates a shortcut for you...
+    <code>dData.parentName = {}</code> This is the equivalent of using a doc query selector
+    to find the element and then access it's value. <code>i.e. dDataElement.value = {};</code></p>
+
+    <p><strong>Notes</strong><p>
+    <p>Make sure to check out the <a href="#Performance">performance section</a> of these docs... 
+    there are ways to optimize your access to dData values to keep performance up.</p>
+     
+    <p><strong>Examples</strong><p>
+    <p>While almost every example on this page illustrates how this works, the best place
+    to start is <a href="#BasicUsage">Basic Usage</a>.  
+    Going through this guide will help illuminate the <em>value</em> of dData. Pun intended. ;-P</p>
 
     <a name="elementProp">  </a> 
-    <p>Element <span class="tag property">Property</span></p>
+    <h3>Element <span class="tag property">Property</span> - <code> READ ONLY </code></h3>
+    <code-block>
+        Syntax: var elem = dData.parentName.element
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{Global} dData</code> : this is the dData global object, this could be different if you use <a href="#Scope">scope</a></li>
+        <li><code>{object} parentName</code> : this the name of the root d-data element (set in the name attribute of the element)</li>
+        <li><code>{string} element</code> : this is the element property </li>
+        
+    </ul>
+
+    <p><strong>Returns</strong><p>
+    <p>This simply returns a reference to the d-data element node</p>
 
     <a name="elementTreeProp">  </a> 
-    <p>Element Tree <span class="tag property">Property</span> </p>
-    
+    <h3>Element Tree <span class="tag property">Property</span> - <code> READ ONLY </code> </h3>
+    <code-block>
+        Syntax: var elemTree = dData.parentName.elementTree
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{Global} dData</code> : this is the dData global object, this could be different if you use <a href="#Scope">scope</a></li>
+        <li><code>{object} parentName</code> : this the name of the root d-data element (set in the name attribute of the element)</li>
+        <li><code>{string} elementTree</code> : this is the elementTree property </li>
+        
+    </ul>
+
+    <p><strong>Returns</strong><p>
+    <p>This returns a on enumerable object of the d-data object element tree.  
+    This is identical to the value property except that instead of values, this returns references to the elements themselves.</p>
+
+    <p><strong>Example</strong><p>
+    <code-block>
+        // this code <br>
+        var elem = dData.parentName.elementTree.elementName; <br>
+        // is identical to this code <br>
+        var elem = document.querySelector(elementName); <br>
+    </code-block>
+
+
     <a name="Methods">  </a>
     <h2>Methods</h2> 
                 
     <a name="AddMethod">  </a> 
-    <p> Add <span class="tag method"> Method </span> </p>
+    <h3> Add <span class="tag method"> Method </span> </h3>
 
     <a name="RemoveMethod">  </a> 
-    <p> Remove <span class="tag method"> Method </span> </p>
+    <h3> Remove <span class="tag method"> Method </span> </h3>
 
     <a name="FindNearestDDataParent">  </a> 
-    <p> Find Nearest d-Data Parent <span class="tag method"> Method </span> </p>
+    <h3> Find Nearest d-Data Parent <span class="tag method"> Method </span> </h3>
 
     <a name="FindDDataRoot">  </a> 
-    <p> Find d-Data Root Element <span class="tag method"> Method </span> </p>
+    <h3> Find d-Data Root Element <span class="tag method"> Method </span> </h3>
 
     <a name="FindTemplateParent"> </a> 
-    <p> Find Template Parent <span class="tag method"> Method </span> </p>
+    <h3> Find Template Parent <span class="tag method"> Method </span> </h3>
                 
     <a name="Events">  </a>
     <h2>Events</h2> 
                 
     <a name="dDataInitialized">  </a> 
-    <p> d-Data Initialized <span class="tag event"> Event </span> </p>
+    <h3> d-Data Initialized <span class="tag event"> Event </span> </h3>
 
     <a name="dDataRendered">  </a> 
-    <p> d-Data Rendered <span class="tag event"> Event </span> </p>
+    <h3> d-Data Rendered <span class="tag event"> Event </span> </h3>
                 
 </template>
