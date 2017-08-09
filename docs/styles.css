@@ -155,3 +155,7 @@ table td {
     color: black;
 }
 
+.apiReference a {
+    font-variant-caps: petite-caps;
+    font-size: 10pt;
+}
