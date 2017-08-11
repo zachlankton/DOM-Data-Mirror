@@ -5,6 +5,8 @@
 
 dData = {};  // dData Global Object
 dData.extensions = []; // An array to store d-data extensions
+dData.elementRenderHandler = {}; // An Object to store custom element render handlers;
+dData.elementValueHandler = {}; // An Object to store custom element value handlers
 
 // Polyfill for element.isConnected
 (function (supported){
@@ -158,21 +160,35 @@ function registerDData(dDataProto){
         var tree = element.valueElementTree;
         for (var key in values){
             if (tree.hasOwnProperty(key)){
-                if (tree[key].type == "checkbox" ){
-                    tree[key].checked = values[key] == "" ? false : true ;  
-                } else if (typeof(tree[key].value) == "string" ){
-                    tree[key].value = values[key];    
-                } else {
-                    tree[key].innerHTML = values[key];    
-                }  
+                elementRenderHandler(tree[key], values[key])
             }else if(typeof(values[key]) !== "object" ) {
-                var hiddenInput = document.createElement("input");
-                hiddenInput.type = "hidden";
-                hiddenInput.name = key;
-                hiddenInput.value = values[key];
-                element.append(hiddenInput);
+                createHiddenInput(element, values, key)
             }
         }
+    }
+
+    function createHiddenInput(element, values, key){
+        var hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = key;
+        hiddenInput.value = values[key];
+        element.append(hiddenInput);
+    }
+
+    function elementRenderHandler( element, value ){
+        var tagName = element.nodeName;
+        var erHandler = dData.elementRenderHandler;
+        if (erHandler[tagName]){
+            erHandler[tagName](element, value);
+            return 0;
+        }
+
+        // default element handler works with value and innerHTML;
+        if (typeof(element.value) == "string" ){
+            element.value = value;    
+        } else {
+            element.innerHTML = value;    
+        }  
     }
 
     function renderValOrHTML(element, value){
@@ -326,26 +342,29 @@ function registerDData(dDataProto){
         var childName = child.name;
         if ( getElementTree ) { data[childName] = child;  }
         else { 
-            if (child.type == "checkbox") {
-                Object.defineProperty(data, childName, {
-                    get: function(){ return child.checked; }, 
-                    set: function(newVal){ child.checked = newVal; emitDataRendered(child);},
-                    enumerable: true,
-                }); 
-            } else if (typeof(child.value)=="string" ) { 
-                Object.defineProperty(data, childName, {
-                    get: function(){ return child.value; }, 
-                    set: function(newVal){ child.value = newVal; emitDataRendered(child);},
-                    enumerable: true,
-                }); 
-            }else{
-                Object.defineProperty(data, childName, {
-                    get: function(){ return child.innerHTML; }, 
-                    set: function(newVal){ child.innerHTML = newVal; emitDataRendered(child);},
-                    enumerable: true
-                }); 
-            } 
+            elementValueHandler(data, child, childName);
         } 
+    }
+
+    function elementValueHandler(data, child, childName){
+        var tagName = child.nodeName;
+        var evHandler = dData.elementValueHandler;
+        if (evHandler[tagName]){
+            evHandler[tagName](data, child, childName, emitDataRendered);
+            return;
+        }
+
+        // default Element Value Handler works with value attribute and innerHTML
+        var childAttr = "";
+        if (typeof(child.value)=="string" ) 
+            { childAttr = "value"; }
+        else{ childAttr = "innerHTML"; } 
+
+        Object.defineProperty(data, childName, {
+            get: function(){ return child[childAttr]; }, 
+            set: function(newVal){ child[childAttr] = newVal; emitDataRendered(child);},
+            enumerable: true,
+        }); 
     }
 
     function nameAttributeGetter(){return dDataProto.getAttribute("name") || ""; };
@@ -417,8 +436,6 @@ function registerDData(dDataProto){
     });
 
 })();
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -677,4 +694,73 @@ function registerDData(dDataProto){
         showHide();
     }
 
+})();
+
+////////////////////////////////////////////////////////////////////////
+////////////////// DEFAULT ELEMENT HANDLER EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
+
+
+( function(){
+    var evHandler = dData.elementValueHandler;
+    var ERHandler = dData.elementRenderHandler;
+
+    ERHandler.INPUT = function(element, value){
+        var elmAttr = "";
+        if (element.type == "text"){elmAttr = "value";}
+        if (element.type == "checkbox"){elmAttr = "checked";};
+        if (element.type == "radio"){ setRadio(element, value); return;}
+
+        element[elmAttr] = value;
+    }
+
+    function setRadio(element,value){
+        var dParent = dData.findNearestDDataParent(element);
+        dParent.querySelector("input[value='"+value+"']").checked = true;
+    }
+
+    evHandler.INPUT = function(data, element, elementName, emitDataRendered){
+        var elmAttr = "";
+        
+        if (element.type == "checkbox"){elmAttr = "checked";};
+        if (element.type == "radio"){ handleRadios(data, element, elementName, emitDataRendered); return; }
+        else { elmAttr = "value";} 
+
+        Object.defineProperty(data, elementName, {
+            get: function(){ return element[elmAttr]; }, 
+            set: function(newVal){ element[elmAttr] = newVal; emitDataRendered(element);},
+            enumerable: true
+        }); 
+    }
+
+    function handleRadios(data, element, elementName, emitDataRendered){
+        
+        var radioGet = function(){
+            var dParent = dData.findNearestDDataParent(element);
+            var radios = dParent.querySelectorAll("[name='"+elementName+"']");
+            var radioCount = radios.length;
+            for (var i=0; i<radioCount; i++){
+                if (radios[i].checked){return radios[i].value}
+            }
+        }
+
+        var radioSet = function(newVal){
+            setRadio(element,newVal);
+        }
+
+        var propObj = {
+            get: radioGet,
+            set: radioSet,
+            enumerable: true
+        }
+
+        var isDefined = data.hasOwnProperty(elementName);
+        if ( isDefined ){
+            return ;
+        }else {
+            Object.defineProperty(data, elementName, propObj);    
+        }
+        
+    }
+       
 })();
