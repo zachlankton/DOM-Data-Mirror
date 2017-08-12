@@ -4,38 +4,49 @@
         <script src="../dData.full.js"></script>
     </head>
     <body>
-        <div d-data scope="myScope" name="app">
-            <ul>
-                <li d-data name="listItem">
-                    <span name="item"></span>
-                </li>
-            </ul>
+        <div d-data scope="scope" name="app">
+             <div d-data name="test">
+                  <span name="testElement1">Test Value 1</span>
+             </div>
+        </div>
+        <div d-data name="app"> 
+             <div d-data name="test2">
+                  <span name="testElement2">Test Value 2</span>
+             </div>
         </div>
 
-        <div d-data scope="myOtherScope" name="app">
-            <ul>
-                <li d-data name="listItem">
-                    <span name="item"></span>
-                </li>
-            </ul>
+        <div d-data scope="scope2" name="app"> 
+             <div d-data name="test3">
+                  <span name="testElement3">Test Value 3</span>
+             </div>
         </div>
 
         <script>
-            myScope.app = {
-                listItem: [
-                    {item: "item1"},
-                    {item: "item2"},
-                    {item: "item3"}
-                ]  
+            scope.app = {
+                 test: [
+                      {testElement1: "Test Value 1.0"},
+                      {testElement1: "Test Value 1.1"},
+                      {testElement1: "Test Value 1.2"}
+                 ]
             };
 
-            myOtherScope.app = {
-                listItem: [
-                    {item: "item4"},
-                    {item: "item5"},
-                    {item: "item6"}
-                ]
+            dData.app = {
+                 test2: [
+                      {testElement2: "Test Value 2.0"},
+                      {testElement2: "Test Value 2.1"},
+                      {testElement2: "Test Value 2.2"}
+                 ]
             };
+
+            scope2.app = {
+                 test3: [
+                      {testElement3: "Test Value 3.0"},
+                      {testElement3: "Test Value 3.1"},
+                      {testElement3: "Test Value 3.2"}
+                 ]
+            };
+            
+           
         </script>
     </body>
 </html>
