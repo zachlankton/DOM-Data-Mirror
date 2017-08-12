@@ -9,13 +9,12 @@
 
     ERHandler.INPUT = function(element, value){
         var elmAttr = "";
-        if (element.type == "text"){elmAttr = "value";}
-        if (element.type == "checkbox"){elmAttr = "checked";};
-        if (element.type == "radio"){ setRadio(element, value); return;}
+        if (element.type == "checkbox"){elmAttr = "checked";}
+        else if (element.type == "radio"){ setRadio(element, value); return;}
+        else { elmAttr = "value";}
 
         element[elmAttr] = value;
     }
-
     function setRadio(element,value){
         var dParent = dData.findNearestDDataParent(element);
         dParent.querySelector("input[value='"+value+"']").checked = true;
@@ -24,8 +23,8 @@
     evHandler.INPUT = function(data, element, elementName, emitDataRendered){
         var elmAttr = "";
         
-        if (element.type == "checkbox"){elmAttr = "checked";};
-        if (element.type == "radio"){ handleRadios(data, element, elementName, emitDataRendered); return; }
+        if (element.type == "checkbox"){elmAttr = "checked";}
+        else if (element.type == "radio"){ handleRadios(data, element, elementName, emitDataRendered); return; }
         else { elmAttr = "value";} 
 
         Object.defineProperty(data, elementName, {
