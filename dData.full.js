@@ -47,12 +47,12 @@ function registerDData(dDataProto){
 
         // we can only setup child templates on elements that are connected to the dom, becuase they need a parentElement
         if (dDataProto.isConnected){
-            if (!dDataProto.parentElement.childTemplates){ dDataProto.parentElement.childTemplates = {}; } 
-            dDataProto.parentElement.childTemplates[dDataProto.getAttribute("name")] = dDataCloneNode(dDataProto);
-            dDataProto.parentElement.setAttribute("has-d-data-children", true);
+            var templateParent = dDataProto.parentElement;
+            if ( findRootDData(dDataProto) == dDataProto ){ templateParent = dDataProto; }
+            if (!templateParent.childTemplates){ templateParent.childTemplates = {}; } 
+            templateParent.childTemplates[dDataProto.getAttribute("name")] = dDataCloneNode(dDataProto);
+            templateParent.setAttribute("has-d-data-children", true);
         }  
-
-        setupChildTemplates(dDataProto);
 
         // Setup any extensions that may be available in dData.extensions
         evaluateElementForExtensions(dDataProto, dDataProto);
@@ -65,15 +65,6 @@ function registerDData(dDataProto){
         var dDataInitEvent = new CustomEvent("dDataInitialized", {bubbles:true});
         dDataProto.dispatchEvent(dDataInitEvent);
 
-    }
-
-    function setupChildTemplates(element){
-        var dDataChildren = element.querySelectorAll('[d-data]');
-        for (var i=0; i<dDataChildren.length; i++) {
-            if (!dDataChildren[i].parentElement.childTemplates){dDataChildren[i].parentElement.childTemplates = {};}
-            dDataChildren[i].parentElement.childTemplates[dDataChildren[i].getAttribute('name')] = dDataCloneNode(dDataChildren[i]);  
-            dDataChildren[i].parentElement.setAttribute("has-d-data-children", true);
-        }
     }
 
     function setupRootDData(dDataProto){
@@ -204,7 +195,9 @@ function registerDData(dDataProto){
     function renderChildren(value, element){
         var elemName = element.getAttribute("name");
         var parent = element.parentElement;
-        var childTemplate = parent.childTemplates[elemName];
+        var templateParent = findTemplateParent(element, elemName);
+        if (!templateParent){return 0;}
+        var childTemplate = templateParent.childTemplates[elemName];
         var templateValue = childTemplate.value;
         for (var key in value){
             if (typeof(value[key]) == "object" && templateValue.hasOwnProperty(key) )  {
@@ -270,8 +263,8 @@ function registerDData(dDataProto){
     }
 
     function findTemplateParent(element, name){
-        if ( element.hasAttribute("has-d-data-children") ){
-            return element
+        if ( element.hasAttribute("has-d-data-children") && element.childTemplates[name]){
+            return element;
         }else{
             var templateParent = element.querySelectorAll( "[has-d-data-children]" );
             for (var i=0; i<templateParent.length;i++){
@@ -707,13 +700,12 @@ function registerDData(dDataProto){
 
     ERHandler.INPUT = function(element, value){
         var elmAttr = "";
-        if (element.type == "text"){elmAttr = "value";}
-        if (element.type == "checkbox"){elmAttr = "checked";};
-        if (element.type == "radio"){ setRadio(element, value); return;}
+        if (element.type == "checkbox"){elmAttr = "checked";}
+        else if (element.type == "radio"){ setRadio(element, value); return;}
+        else { elmAttr = "value";}
 
         element[elmAttr] = value;
     }
-
     function setRadio(element,value){
         var dParent = dData.findNearestDDataParent(element);
         dParent.querySelector("input[value='"+value+"']").checked = true;
@@ -722,8 +714,8 @@ function registerDData(dDataProto){
     evHandler.INPUT = function(data, element, elementName, emitDataRendered){
         var elmAttr = "";
         
-        if (element.type == "checkbox"){elmAttr = "checked";};
-        if (element.type == "radio"){ handleRadios(data, element, elementName, emitDataRendered); return; }
+        if (element.type == "checkbox"){elmAttr = "checked";}
+        else if (element.type == "radio"){ handleRadios(data, element, elementName, emitDataRendered); return; }
         else { elmAttr = "value";} 
 
         Object.defineProperty(data, elementName, {
