@@ -96,26 +96,152 @@
                 
     <a name="AddMethod">  </a> 
     <h3> Add <span class="tag method"> Method </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>dData.parentName.add("childName" [,data] )</li>
+            <li>dData.parentName.child[x].add("childName" [,data] ) </li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{function} add </code> : this is the add function that will add a d-data child element </li>
+        <li><code>{string} childName </code> : this is the name of the d-data child to be added </li>
+        <li><code>{object} data </code> : OPTIONAL - an object containing data to populate the new child with</li>
+        
+    </ul>
+
+    <p><strong>Returns</strong><p>
+    <p>Returns a reference to the d-data child element node that was added</p>
+
+    <p><strong>Examples</strong></p>
+    <p>
+        <ul>
+            <li><a href="#Arrays">Simple List</a></li>
+            <li><a href="#ArrayExample2">Simple Table</a></li>
+            <li><a href="#ArrayExample3">Simple Todo</a></li>
+        </ul>
+    </p>
 
     <a name="RemoveMethod">  </a> 
     <h3> Remove <span class="tag method"> Method </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>dData.parentName.child.remove(index) // d-data shortcut</li>
+            <li>dDataChildElement.remove()      // element node method </li> 
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{Array} child </code> : this is the d-data child element array</li>
+        <li><code>{Element Node} dDataChildElement </code> : this a reference to the d-data child element node</li>
+        <li><code>{function} remove </code> : this function is a method of any d-data child array or the element node itself </li>
+        <li><code>{integer} index </code> : this is the index of the child you want to remove </li>
+    </ul>
+
+    <p><strong>Usage</strong></p>
+    <p>You can access the <code>remove</code> method on either the d-data object array itself or the DOM Element Node.  
+    The d-data method needs an index.  The element node method removes itself.</p>
+
+    <p><strong>Returns</strong><p>
+    <p>Returns nothing.</p>
+
+    <p><strong>Examples</strong></p>
+    <p>
+        <ul>
+            <li><a href="#Arrays">Simple List</a> - d-data object array method example</li>
+            <li><a href="#ArrayExample3">Simple Todo</a> - element node method example </li>
+        </ul>
+    </p>
 
     <a name="FindNearestDDataParent">  </a> 
     <h3> Find Nearest d-Data Parent <span class="tag method"> Method </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>dData.findNearestDDataParent(elementNode)</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{function} findNearestDDataParent </code> : this function is a method of the dData global object </li>
+        <li><code>{Element Node} elementNode </code> : any reference to an element node </li>
+    </ul>
+
+    <p><strong>Returns</strong><p>
+    <p>Returns a reference to the nearest d-data parent element node</p>
+
+    <p><strong>Usage</strong><p>
+    <p>This function is used to find the nearest d-data parent of any element.  
+    This is useful for performing operations on a set of data or elements where an 
+    event handler is placed on a child element that needs to know which d-data
+    parent it is a member of.</p>
+
+    <p><strong>Examples</strong></p>
+    <p>
+        <ul>
+            <li><a href="#ArrayExample3">Simple Todo</a></li>
+        </ul>
+    </p>
 
     <a name="FindDDataRoot">  </a> 
     <h3> Find d-Data Root Element <span class="tag method"> Method </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>dData.findRootDData(elementNode)</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{function} findRootDData </code> : this function is a method of the dData global object </li>
+        <li><code>{Element Node} elementNode </code> : any reference to an element node </li>
+    </ul>
+
+    <p><strong>Usage</strong><p>
+    <p>This function is identical to <code>findNearestDDataParent</code> except that it returns
+    the root d-data element of any nested d-data child element, no matter how deeply nested.</p>
+
+    <p><strong>Returns</strong><p>
+    <p>Returns a reference to the root d-data element node</p>
+
+
 
     <a name="FindTemplateParent"> </a> 
     <h3> Find Template Parent <span class="tag method"> Method </span> </h3>
+    <p>Currently a placeholder... not sure if this function needs to be pulic at all.</p>
                 
     <a name="Events">  </a>
     <h2>Events</h2> 
                 
     <a name="dDataInitialized">  </a> 
     <h3> d-Data Initialized <span class="tag event"> Event </span> </h3>
+    <p>The d-data initialized event gets fired anytime a new d-data element is initialized and
+    appeneded to the DOM.  This is most useful for wiring up special event handlers to your
+    d-data child elements.  Because they may be added or removed at any time and lose
+    their original event handlers, this is a place you can hook into to accomplish your tasks.</p>
+
+    <p><strong>Example</strong><p>
+    <code-block>
+        document.addEventListener("dDataInitialized", function(ev){ <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;var elm = ev.target; // <-- the d-data element that has been initialized. <br>
+        })
+    </code-block>
+
 
     <a name="dDataRendered">  </a> 
     <h3> d-Data Rendered <span class="tag event"> Event </span> </h3>
-                
+    <p>d-Data Rendered is a pretty simple event... any time a new value is assigned using the 
+    <code>dData.parentName</code> shortcut this event fires... it's a lot like the native 'change' event.</p> 
+
+    <code-block>
+        document.addEventListener("dDataRendered", function(ev){ <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;var elm = ev.target; // <-- the d-data element that has been rendered. <br>
+        })
+    </code-block>   
 </template>

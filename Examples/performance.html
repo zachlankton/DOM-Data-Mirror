@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <script src="../dData.full.js"></script>
+    </head>
+    <body>
+        <ul d-data name="list">
+          <li d-data name="listItem">
+            <p name="item"></p>
+          </li>
+        </ul>
+
+        <div d-data name="test">
+          <h1>Test Results</h1>
+          <h3><span name="tests"></span> Tests Each</h3>
+          <p>Results are the average time taken for each test</p>
+          <hr>
+          <p><span>dData Dot Notation</span> <span class="ms r" name="dDataTime"></span> <span>ms</span></p>
+          <p><span>dData Dot Notation Optimized</span> <span class="ms y" name="dDataTimeOpt"></span> <span>ms</span></p>
+          <p><span>dData Object Assignment</span> <span class="ms y" name="dDataObjAsgn"></span> <span>ms</span></p>
+          <p><span>Vanilla JS</span> <span class="ms g" name="VanillaTime"></span> <span>ms</span></p>
+        </div>
+        <script>
+            var numOfTests = 100;
+            dData.list = {};
+
+            ////////////////////////////////////////////////////////////////////////////////	
+            ////////////////////// dData Dot Notation ///////////////////////////
+            ////////////////////////////////////////////////////////////////
+            var time = window.performance.now()
+            for (var i=0;i<numOfTests;i++){
+              dData.list.add("listItem", {item: "test"+i});
+            }
+            var myRem = dData.list.listItem.remove;
+            for (var i=numOfTests-1;i>-1;i--){
+              dData.list.listItem.remove(i);
+            }
+            var dDataTime = (window.performance.now()-time)/numOfTests;
+
+            ////////////////////////////////////////////////////////////////////////////////	
+            ////////////////////// dData Dot Notation Optimized ////////////////////
+            ////////////////////////////////////////////////////////////////
+            var time = window.performance.now()
+            var listAdd = dData.list.add;
+            for (var i=0;i<numOfTests;i++){
+              listAdd("listItem", {item: "test"+i});
+            }
+            var itemRem = dData.list.listItem.remove;
+            for (var i=numOfTests-1;i>-1;i--){
+              itemRem(i);
+            }
+            var dDataTimeOpt = (window.performance.now()-time)/numOfTests;
+
+            ////////////////////////////////////////////////////////////////////////////////
+            //////////////////////// dData Object Assignment //////////////////////
+            ////////////////////////////////////////////////////////////////
+            var time = window.performance.now()
+            var arr = [];
+            for (var i=0;i<numOfTests;i++){
+              arr.push({item: "test"+i});
+            }
+            dData.list = {listItem:arr}
+
+            for (var i=numOfTests-1;i>-1;i--){
+                var parent = document.querySelector("[name=list]");
+                parent.removeChild(parent.children[i]);
+            }
+            var dDataObjAsgn = (window.performance.now()-time)/numOfTests;
+
+            ////////////////////////////////////////////////////////////////////////////////
+            //////////////////////// Vanilla JS //////////////////////////////////
+            ////////////////////////////////////////////////////////////////
+            time = window.performance.now();
+            for (var i=0;i<numOfTests;i++){
+              var dDataElem = document.querySelector("[name=list]");
+                var clone = dDataElem.childTemplates.listItem.cloneNode(true);
+              clone.querySelector("[name=item]").innerHTML = "Test"+i
+              dDataElem.append(clone);
+            }
+
+            for (var i=numOfTests-1;i>-1;i--){
+                  var dDataElem = document.querySelector("[name=list]");
+                var children = dDataElem.children;
+                dDataElem.removeChild(children[i]);
+            }
+
+            var vanillaTime = (window.performance.now()-time)/numOfTests;
+
+            dData.test.tests = numOfTests;
+            dData.test.dDataTime = (dDataTime).toFixed(2);
+            dData.test.dDataTimeOpt = (dDataTimeOpt).toFixed(2);
+            dData.test.dDataObjAsgn = (dDataObjAsgn).toFixed(2);
+            dData.test.VanillaTime = (vanillaTime).toFixed(2);
+        </script>
+    </body>
+</html>
