@@ -1,11 +1,52 @@
-<script src="../dData.js"></script>
-<script src="../Extensions/dData.AddRemove.ext.js"></script>
+<script src="../dData.full.js"></script>
+<!-- <script src="../Extensions/dData.AddRemove.ext.js"></script>
 <script src="../Extensions/dData.ComputedProps.ext.js"></script>
 <script src="../Extensions/dData.Filter.ext.js"></script>
 <script src="../Extensions/dData.Sorting.ext.js"></script>
 <script src="../Extensions/dData.dClass.ext.js"></script>
 <script src="../Extensions/dData.hide.ext.js"></script>
-<script src="../Extensions/dData.elementHandlers.ext.js"></script>
+<script src="../Extensions/dData.elementHandlers.ext.js"></script> -->
+<h1>Tests</h1>
+<ol>
+  <li id="initialData">Initial Data Test</li>
+  <li id="initialHTML">Initial HTML Test</li>
+  <li id="scopeTest"> Scope Test <a href="https://github.com/zachlankton/DOM-Data-Mirror/issues/1">(GitHub Issue #1)</a></li>
+  <li id="setFirstName">Set First Name</li>
+  <li id="initCheckBox">Initial Check Box Value</li>
+  <li id="checkBox">Check the Check Box</li>
+  <li id="initRadio">Initial Radio Value</li>
+  <li id="radioTest">Set Radio Value <a href="https://github.com/zachlankton/DOM-Data-Mirror/issues/2">(GitHub Issue #2)</a></li>
+  <li id="initSelectTest">Initial Select Value</li>
+  <li id="selectTest">Set Select Value</li>
+  <li id="addChild">Add Child Test</li>
+  <li id="initChildName">Initial Child Name</li>
+  <li id="setChildName">Set Child Name</li>
+  <li id="sortAscTest">Sort Asc Test</li>
+  <li id="sortDescTest">Sort Desc Test</li>
+  <li id="computerTest">Computed Property Test</li>
+  <li id="initialToyCount">Initial Child Toy Count</li>
+  <li id="addToy">Add Toy Test</li>
+  <li id="setToy1">Set Toy1 Train</li>
+  <li id="setToy2">Set Toy2 Bike</li>
+  <li id="filterTest1a">Filter Test 1a - asdf</li>
+  <li id="filterTest1b">Filter Test 1b - asdf</li>
+  <li id="filterTest2a">Filter Test 2a - bike - nested search</li>
+  <li id="filterTest2b">Filter Test 2b - bike - nested search</li>
+  <li id="filterTest3a">Filter Test 3a - test</li>
+  <li id="filterTest3b">Filter Test 3b - test</li>
+  <li id="filterTest4a">Filter Test 4a - asdfasdfasdf</li>
+  <li id="filterTest4b">Filter Test 4b - asdfasdfasdf</li>
+  <li id="removeToysWButton">remove Toys with Button</li>
+  <li id="removeChildrenWFunction">remove Children with dData Function</li>
+  <li id="addChildWithData">Add Child With Data</li>
+  <li id="checkChildName">Check Child Name</li>
+  <li id="checkToy">Check Toy Name</li>
+  <li id="testFindNearest">Test Find Nearest DData</li>
+  <li id="testFindRootDData">Test Find Root DData</li>
+  <li id="setEmptyObjectTest">Set dData to empty object</li>
+  <li id="objectAssignmentTest">dData Object Assignment Test</li>
+</ol>
+<hr>
 
 <script>
     function test(dDataElement, root){
@@ -20,8 +61,20 @@
         selectTest: "test3",
         browser: "Chrome",
         children: [
-            {childName:"Karly"},
-            {childName:"Kody"}
+            {
+               childName:"Karly",
+               toys: [
+                  {toy: "doll"},
+                  {toy: "barbie"}
+               ]
+            },
+            {
+              childName:"Kody",
+              toys: [
+                {toy: "train"},
+                {toy: "race car"}
+              ]
+            }
         ]
     } } };
 
@@ -57,6 +110,12 @@
         <div d-data name="children">
             Child Name: <input name="childName" value="test"/>
             <span name="test" computer="test"></span>
+            <div>
+              <div d-data name="toys">
+                Toy: <input name="toy"> <button remove>x</button>
+              </div>
+            </div>
+            <button add="toys">Add Toy</button>
             <button remove>X</button>
         </div>
     </div>
@@ -129,4 +188,255 @@
     </li>
   </ul>
 </div>
+    <div id="scopeTestHTML">
+        <div d-data scope="scope" name="app">
+             <div d-data name="test">
+                  <span name="testElement1">Test Value 1</span>
+             </div>
+        </div>
+        <div d-data name="app"> 
+             <div d-data name="test2">
+                  <span name="testElement2">Test Value 2</span>
+             </div>
+        </div>
+
+        <div d-data scope="scope2" name="app"> 
+             <div d-data name="test3">
+                  <span name="testElement3">Test Value 3</span>
+             </div>
+        </div>
+      </div>
+
+        <script>
+            scope.app = {
+                 test: [
+                      {testElement1: "Test Value 1.0"},
+                      {testElement1: "Test Value 1.1"},
+                      {testElement1: "Test Value 1.2"}
+                 ]
+            };
+
+            dData.app = {
+                 test2: [
+                      {testElement2: "Test Value 2.0"},
+                      {testElement2: "Test Value 2.1"},
+                      {testElement2: "Test Value 2.2"}
+                 ]
+            };
+
+            scope2.app = {
+                 test3: [
+                      {testElement3: "Test Value 3.0"},
+                      {testElement3: "Test Value 3.1"},
+                      {testElement3: "Test Value 3.2"}
+                 ]
+            };
+            
+           
+        </script>
+
+<script>
+  function equal(id, value1, value2){
+      var elem = document.getElementById(id);
+      if (value1 == value2){
+        elem.style.backgroundColor = "green";
+      }else{
+        elem.style.backgroundColor = "red";
+      }
+  }
+  var initialDData = '{"firstName":"","lastName":"","checkTest":false,"selectTest":"test1","browser":"","children":[{"childName":"test","test":"xtestx","toys":[{"toy":""}]}]}';
+  
+  var initialHTML = `
+    First Name: <input name="firstName">  <br>
+    Last Name: <input name="lastName">   <br>
+    Married: <input type="checkbox" name="checkTest"> <br>
+    <label>Hair Color: </label>
+    Blonde<input type="radio" name="radioTest" value="blonde">
+    Brown<input type="radio" name="radioTest" value="brown">
+    Red<input type="radio" name="radioTest" value="red"><br>
+    <select name="selectTest">
+      <option value="test1">Test1</option>
+      <option value="test2">Test2</option>
+      <option value="test3">Test3</option>
+    </select><br>
+    Browser: <input list="browsers" name="browser">
+      <datalist id="browsers">
+        <option value="Internet Explorer">
+        </option><option value="Firefox">
+        </option><option value="Chrome">
+        </option><option value="Opera">
+        </option><option value="Safari">
+      </option></datalist>
+    <hr>
+    <button add="children">Add Child</button> 
+    <button sort="children:childName">Sort Asc</button> 
+    <button sort="children:childName:desc">Sort Desc</button> <br>
+    Search: <input filter="children">
+    <div>
+        <div d-data="" name="children" has-d-data-children="true">
+            Child Name: <input name="childName" value="test">
+            <span name="test" computer="test">xtestx</span>
+            <div>
+              <div d-data="" name="toys">
+                Toy: <input name="toy"> <button remove="">x</button>
+              </div>
+            </div>
+            <button add="toys">Add Toy</button>
+            <button remove="">X</button>
+        </div>
+    </div>
+`;
+
+var scopeTestHTML = `
+        <div d-data="" scope="scope" name="app" has-d-data-children="true">
+             
+        <div d-data="" name="test">
+                  <span name="testElement1">Test Value 1.0</span>
+             </div><div d-data="" name="test">
+                  <span name="testElement1">Test Value 1.1</span>
+             </div><div d-data="" name="test">
+                  <span name="testElement1">Test Value 1.2</span>
+             </div></div>
+        <div d-data="" name="app" has-d-data-children="true"> 
+             
+        <div d-data="" name="test2">
+                  <span name="testElement2">Test Value 2.0</span>
+             </div><div d-data="" name="test2">
+                  <span name="testElement2">Test Value 2.1</span>
+             </div><div d-data="" name="test2">
+                  <span name="testElement2">Test Value 2.2</span>
+             </div></div>
+
+        <div d-data="" scope="scope2" name="app" has-d-data-children="true"> 
+             
+        <div d-data="" name="test3">
+                  <span name="testElement3">Test Value 3.0</span>
+             </div><div d-data="" name="test3">
+                  <span name="testElement3">Test Value 3.1</span>
+             </div><div d-data="" name="test3">
+                  <span name="testElement3">Test Value 3.2</span>
+             </div></div>
+      `;
+
+
+  equal("initialData", initialDData, JSON.stringify(dData.Profile) );
+  equal("initialHTML", initialHTML, dData.Profile.element.innerHTML);
+  equal("scopeTest", scopeTestHTML, document.getElementById("scopeTestHTML").innerHTML);
+
+  dData.Profile.elementTree.firstName.value = "John"
+  equal("setFirstName", dData.Profile.firstName, "John");
+
+  equal("initCheckBox", dData.Profile.checkTest, false);
+  dData.Profile.elementTree.checkTest.click();
+  equal("checkBox", dData.Profile.checkTest, true);
+  
+
+  equal("initRadio", dData.Profile.radioTest, undefined);
+  dData.Profile.element.querySelector("[value=brown]").click()
+  equal("radioTest", dData.Profile.radioTest, "brown");
+
+  equal("initSelectTest", dData.Profile.selectTest, "test1");
+  dData.Profile.elementTree.selectTest.value = "test3";
+  equal("selectTest", dData.Profile.selectTest, "test3");
+
+  document.querySelector("[add=children]").click();
+  equal("addChild", dData.Profile.children.length, 2);
+  equal("initialToyCount", dData.Profile.children[1].toys.length, 1);
+
+  equal("initChildName", dData.Profile.children[1].childName, "");
+  dData.Profile.children[1].elementTree.childName.value = "child name";
+  equal("setChildName", dData.Profile.children[1].childName, "child name");
+
+  document.querySelector("[sort='children:childName']").click();
+  equal("sortAscTest", dData.Profile.children[0].childName, "child name");
+
+  document.querySelector("[sort='children:childName:desc']").click();
+  equal("sortDescTest", dData.Profile.children[0].childName, "test");
+
+  dData.Profile.children[1].childName = "asdf";
+  equal("computerTest", dData.Profile.children[1].test, "xasdfx");
+
+  dData.Profile.children[1].element.querySelector("[add=toys]").click();
+  equal("addToy", dData.Profile.children[1].toys.length, 2);
+
+  dData.Profile.children[1].toys[0].toy = "Train";
+  dData.Profile.children[1].toys[1].toy = "Bike";
+  equal("setToy1", dData.Profile.children[1].toys[0].elementTree.toy.value, "Train");
+  equal("setToy2", dData.Profile.children[1].toys[1].elementTree.toy.value, "Bike");
+
+  document.querySelector("[filter=children]").value = "asdf";
+  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  equal("filterTest1a", dData.Profile.children[0].element.hidden, true);
+  equal("filterTest1b", dData.Profile.children[1].element.hidden, false);
+
+
+  document.querySelector("[filter=children]").value = "bike";
+  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  equal("filterTest2a", dData.Profile.children[0].element.hidden, true);
+  equal("filterTest2b", dData.Profile.children[1].element.hidden, false);
+
+  document.querySelector("[filter=children]").value = "test";
+  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  equal("filterTest3a", dData.Profile.children[0].element.hidden, false);
+  equal("filterTest3b", dData.Profile.children[1].element.hidden, true);
+
+  document.querySelector("[filter=children]").value = "asdfasdfasdf";
+  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  equal("filterTest4a", dData.Profile.children[0].element.hidden, true);
+  equal("filterTest4b", dData.Profile.children[1].element.hidden, true);
+
+  document.querySelector("[filter=children]").value = "";
+  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+
+
+  dData.Profile.children[1].toys[0].element.querySelector("button").click();
+  dData.Profile.children[1].toys[0].element.querySelector("button").click();
+  equal("removeToysWButton", dData.Profile.children[1].toys, undefined);
+
+  dData.Profile.children.remove(0);
+  dData.Profile.children.remove(0);
+  equal("removeChildrenWFunction", dData.Profile.children, undefined);
+
+  dData.Profile.add("children", {childName:"Karly", toys: [{toy:"barbie"}]})
+  equal("addChildWithData", dData.Profile.children.length, 1);
+
+  equal("checkChildName", dData.Profile.children[0].childName, "Karly");
+  equal("checkToy", dData.Profile.children[0].toys[0].toy, "barbie");
+
+  equal("testFindNearest", dData.findNearestDDataParent( dData.Profile.children[0].toys[0].elementTree.toy).getAttribute("name"), "toys");
+  equal("testFindRootDData", dData.findRootDData( dData.Profile.children[0].toys[0].elementTree.toy).getAttribute("name"), "Profile");
+
+  // Empty Object Assignment Test;
+  dData.Profile = {};
+  var eot = dData.Profile.firstName == "";
+  var eot = eot && dData.Profile.checkTest == false;
+  var eot = eot && dData.Profile.radioTest == undefined;
+  var eot = eot && dData.Profile.selectTest == "";
+  var eot = eot && dData.Profile.children == undefined;
+  equal("setEmptyObjectTest", eot, true);
+
+  // dData Object Assignment Test
+  dData.Profile = testObj.test.Profile;
+  var profile = dData.Profile;
+  var child1 = dData.Profile.children[0];
+  var child2 = dData.Profile.children[1];
+  var toys1 = child1.toys;
+  var toys2 = child2.toys;
+  var oat = profile.firstName == "Zach";
+  oat = oat && profile.lastName == "Lankton";
+  oat = oat && profile.checkTest == true;
+  oat = oat && profile.radioTest == "red";
+  oat = oat && profile.selectTest == "test3";
+  oat = oat && profile.browser == "Chrome";
+  oat = oat && child1.childName == "Karly";
+  oat = oat && child2.childName == "Kody";
+  oat = oat && child1.test == "xKarlyx";
+  oat = oat && child2.test == "xKodyx";
+  oat = oat && toys1[0].toy == "doll";
+  oat = oat && toys1[1].toy == "barbie";
+  oat = oat && toys2[0].toy == "train";
+  oat = oat && toys2[1].toy == "race car";
+  equal("objectAssignmentTest", oat, true);
+</script>
+
 
