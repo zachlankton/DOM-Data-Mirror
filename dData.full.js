@@ -44,13 +44,8 @@ function registerDData(dDataProto){
         if (dDataProto.getAttribute("name") == "") {throw ("d-data elements require a name attribute")}
 
         // we can only setup child templates on elements that are connected to the dom, becuase they need a parentElement
-        if (dDataProto.isConnected){
-            var templateParent = dDataProto.parentElement;
-            if ( findRootDData(dDataProto) == dDataProto ){ templateParent = dDataProto; }
-            if (!templateParent.childTemplates){ templateParent.childTemplates = {}; } 
-            templateParent.childTemplates[dDataProto.getAttribute("name")] = dDataCloneNode(dDataProto);
-            templateParent.setAttribute("has-d-data-children", true);
-        }  
+        setupTemplates(dDataProto);
+        setupChildTemplates(dDataProto);
 
         // Setup any extensions that may be available in dData.extensions
         evaluateElementForExtensions(dDataProto, dDataProto);
@@ -63,6 +58,27 @@ function registerDData(dDataProto){
         var dDataInitEvent = new CustomEvent("dDataInitialized", {bubbles:true});
         dDataProto.dispatchEvent(dDataInitEvent);
 
+    }
+
+    function setupTemplates(dDataProto){
+        if (dDataProto.isConnected){
+            var templateParent = findNearestDDataParent(dDataProto);
+            if ( findRootDData(dDataProto) == dDataProto ){ templateParent = dDataProto; }
+            if (!templateParent.childTemplates){ templateParent.childTemplates = {}; }
+            if ( !templateParent.childTemplates[dDataProto.getAttribute("name")] ){
+                templateParent.childTemplates[dDataProto.getAttribute("name")] = dDataCloneNode(dDataProto);    
+                templateParent.setAttribute("has-d-data-children", true);
+            } 
+        }  
+    }
+
+    function setupChildTemplates(dDataProto){
+        var childDDataElements = dDataProto.querySelectorAll("[d-data]");
+        var childLen = childDDataElements.length;
+        for (var i=0; i<childLen; i++){
+            setupTemplates(childDDataElements[i]);
+            registerDData(childDDataElements[i]);
+        }
     }
 
     function setupRootDData(dDataProto){
