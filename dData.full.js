@@ -121,6 +121,9 @@ function registerDData(dDataProto){
     }
 
     function dataRender(v){
+        if (Object.keys(v).length == 0){
+            resetValues();
+        }
         deleteExtraElements(dDataProto);
         renderValues(v, dDataProto);
         renderChildren(v, dDataProto);
@@ -128,6 +131,16 @@ function registerDData(dDataProto){
         // dispatch dDataRendered Event for Builtins to respond to
         emitDataRendered(dDataProto);
     };
+
+    function resetValues(){
+        var dataSet = dDataProto.value;
+        var keys = Object.keys(dataSet);
+        var keysLen = keys.length;
+        for (var i=0; i<keysLen; i++){
+            var key = keys[i];
+            dataSet[key] = undefined;
+        } 
+    }
 
     function emitDataRendered(element){
         var dDataInitEvent = new CustomEvent("dDataRendered", {bubbles:true});
@@ -702,9 +715,14 @@ function registerDData(dDataProto){
         else if (element.type == "radio"){ setRadio(element, value); return;}
         else { elmAttr = "value";}
 
-        element[elmAttr] = value;
+        element[elmAttr] = value || "";
     }
     function setRadio(element,value){
+        var name = element.getAttribute("name");
+        if (value == undefined){
+            document.querySelector("input[name='"+name+"']:checked").checked = false;
+            return 0;
+        }
         var dParent = dData.findNearestDDataParent(element);
         dParent.querySelector("input[value='"+value+"']").checked = true;
     }
@@ -718,7 +736,7 @@ function registerDData(dDataProto){
 
         Object.defineProperty(data, elementName, {
             get: function(){ return element[elmAttr]; }, 
-            set: function(newVal){ element[elmAttr] = newVal; emitDataRendered(element);},
+            set: function(newVal){ element[elmAttr] = newVal || ""; emitDataRendered(element);},
             enumerable: true
         }); 
     }
