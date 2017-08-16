@@ -247,11 +247,9 @@ function registerDData(dDataProto){
             var clone = dDataCloneNode(parent.childTemplates[name]);
         }
 
-        var lastSibling = getLastSibling(parent, name);
-       
-        if (lastSibling){ parent.insertBefore(clone, lastSibling.nextElementSibling); }
-       
-        else { parent.appendChild(clone); }
+        parent.appendChild(clone);
+        setupTemplates(clone);
+        setupChildTemplates(clone);
 
         var inpVals = clone.querySelectorAll("[name]"); //clear all values that may have leaked into the template;
         for (var i=0; i<inpVals.length;i++){renderValOrHTML(inpVals[i], ""); }
