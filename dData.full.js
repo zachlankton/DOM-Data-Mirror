@@ -283,7 +283,10 @@ function registerDData(dDataProto){
                     return templateParent[i];
                     break;
                 }
-            }   
+            } 
+            while (element = element.parentElement){
+                if (element.hasAttribute("has-d-data-children") && element.childTemplates[name] ) {return element; break;}
+            }  
         }
     }
 
