@@ -62,7 +62,7 @@ function registerDData(dDataProto){
 
     function setupTemplates(dDataProto){
         if (dDataProto.isConnected){
-            var templateParent = findNearestDDataParent(dDataProto);
+            var templateParent = dDataProto.parentElement;
             if ( findRootDData(dDataProto) == dDataProto ){ templateParent = dDataProto; }
             if (!templateParent.childTemplates){ templateParent.childTemplates = {}; }
             if ( !templateParent.childTemplates[dDataProto.getAttribute("name")] ){
