@@ -493,7 +493,7 @@ function registerDData(dDataProto){
         if (!dParent.computedProps){ dParent.computedProps = []; }
 
         var fun = function(dDataElement, root){
-            if (!computer){ return 0; }/* Make sure computer function is defined */ 
+            if (!typeof(computer) == 'function' ){ return 0; }/* Make sure computer function is defined */ 
             if (element.value){
                 element.value = computer( dDataElement, root ) ;
             } else {
