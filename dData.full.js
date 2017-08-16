@@ -27,9 +27,7 @@ function registerDData(dDataProto){
     Object.defineProperty(dDataProto, "name", { get: nameAttributeGetter,   set: nameAttributeSetter });
 
     // these are the public methods that are available on an element with the d-data attribute
-    dDataProto.add = function(data){
-        return addSibling(null, data);
-    }
+    dDataProto.add = addSibling;
     dDataProto.remove = removeSibling;
 
     // these are public utility functions for working with descendant elements of d-data elements
