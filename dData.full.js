@@ -252,7 +252,10 @@ function registerDData(dDataProto){
         setupChildTemplates(clone);
 
         var inpVals = clone.querySelectorAll("[name]"); //clear all values that may have leaked into the template;
-        for (var i=0; i<inpVals.length;i++){renderValOrHTML(inpVals[i], ""); }
+        for (var i=0; i<inpVals.length;i++){
+            if (inpVals[i].hasAttribute("d-data")){continue;}
+            renderValOrHTML(inpVals[i], ""); 
+        }
         
         if(data){ clone.value = data; }
 
