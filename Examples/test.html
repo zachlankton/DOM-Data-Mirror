@@ -25,9 +25,13 @@
   <li id="sortDescTest">Sort Desc Test</li>
   <li id="computerTest">Computed Property Test</li>
   <li id="initialToyCount">Initial Child Toy Count</li>
+  <li id="addPet">Add Pet Test</li>
   <li id="addToy">Add Toy Test</li>
   <li id="setToy1">Set Toy1 Train</li>
   <li id="setToy2">Set Toy2 Bike</li>
+  <li id="setPet1">Set Pet1 Dog</li>
+  <li id="setPet2">Set Pet2 Cat</li>
+  <li id="checkSiblingHTML">Check Toys and Pets HTML Layout - "PROCESS" MULTIPLE SIBLING CHILDREN BUG</li>
   <li id="filterTest1a">Filter Test 1a - asdf</li>
   <li id="filterTest1b">Filter Test 1b - asdf</li>
   <li id="filterTest2a">Filter Test 2a - bike - nested search</li>
@@ -66,6 +70,10 @@
                toys: [
                   {toy: "doll"},
                   {toy: "barbie"}
+               ],
+               pets: [
+                  {pet: "Dog"},
+                  {pet: "Cat"}
                ]
             },
             {
@@ -73,6 +81,10 @@
               toys: [
                 {toy: "train"},
                 {toy: "race car"}
+              ],
+              pets: [
+                {pet: "Rat"},
+                {pet: "Rattle Snake"}
               ]
             }
         ]
@@ -109,14 +121,20 @@
     <div>
         <div d-data name="children">
             Child Name: <input name="childName" value="test"/>
-            <span name="test" computer="test"></span>
+            <span name="test" computer="test"></span><button remove>X</button>
             <div>
               <div d-data name="toys">
                 Toy: <input name="toy"> <button remove>x</button>
               </div>
             </div>
             <button add="toys">Add Toy</button>
-            <button remove>X</button>
+             <div>
+              <div d-data name="pets">
+                Pet: <input name="pet"> <button remove>x</button>
+              </div>
+            </div>
+            <button add="pets">Add Pet</button>
+            
         </div>
     </div>
 </div>
@@ -244,7 +262,7 @@
         elem.style.backgroundColor = "red";
       }
   }
-  var initialDData = '{"firstName":"","lastName":"","checkTest":false,"selectTest":"test1","browser":"","children":[{"childName":"test","test":"xtestx","toys":[{"toy":""}]}]}';
+  var initialDData = '{"firstName":"","lastName":"","checkTest":false,"selectTest":"test1","browser":"","children":[{"childName":"test","test":"xtestx","toys":[{"toy":""}],"pets":[{"pet":""}]}]}';
   
   var initialHTML = `
     First Name: <input name="firstName">  <br>
@@ -272,17 +290,23 @@
     <button sort="children:childName">Sort Asc</button> 
     <button sort="children:childName:desc">Sort Desc</button> <br>
     Search: <input filter="children">
-    <div>
-        <div d-data="" name="children" has-d-data-children="true">
+    <div has-d-data-children="true">
+        <div d-data="" name="children">
             Child Name: <input name="childName" value="test">
-            <span name="test" computer="test">xtestx</span>
-            <div>
+            <span name="test" computer="test">xtestx</span><button remove="">X</button>
+            <div has-d-data-children="true">
               <div d-data="" name="toys">
                 Toy: <input name="toy"> <button remove="">x</button>
               </div>
             </div>
             <button add="toys">Add Toy</button>
-            <button remove="">X</button>
+             <div has-d-data-children="true">
+              <div d-data="" name="pets">
+                Pet: <input name="pet"> <button remove="">x</button>
+              </div>
+            </div>
+            <button add="pets">Add Pet</button>
+            
         </div>
     </div>
 `;
@@ -317,6 +341,28 @@ var scopeTestHTML = `
                   <span name="testElement3">Test Value 3.2</span>
              </div></div>
       `;
+
+  var siblingDataHTMLLayout = `
+            Child Name: <input name="childName" value="test">
+            <span name="test" computer="test">xasdfx</span><button remove="">X</button>
+            <div has-d-data-children="true">
+              <div d-data="" name="toys">
+                Toy: <input name="toy"> <button remove="">x</button>
+              </div>
+            <div d-data="" name="toys">
+                Toy: <input name="toy"> <button remove="">x</button>
+              </div></div>
+            <button add="toys">Add Toy</button>
+             <div has-d-data-children="true">
+              <div d-data="" name="pets">
+                Pet: <input name="pet"> <button remove="">x</button>
+              </div>
+            <div d-data="" name="pets">
+                Pet: <input name="pet"> <button remove="">x</button>
+              </div></div>
+            <button add="pets">Add Pet</button>
+            
+        `;
 
 
   equal("initialData", initialDData, JSON.stringify(dData.Profile) );
@@ -356,6 +402,9 @@ var scopeTestHTML = `
   dData.Profile.children[1].childName = "asdf";
   equal("computerTest", dData.Profile.children[1].test, "xasdfx");
 
+  dData.Profile.children[1].element.querySelector("[add=pets]").click();
+  equal("addPet", dData.Profile.children[1].pets.length, 2);
+
   dData.Profile.children[1].element.querySelector("[add=toys]").click();
   equal("addToy", dData.Profile.children[1].toys.length, 2);
 
@@ -363,6 +412,13 @@ var scopeTestHTML = `
   dData.Profile.children[1].toys[1].toy = "Bike";
   equal("setToy1", dData.Profile.children[1].toys[0].elementTree.toy.value, "Train");
   equal("setToy2", dData.Profile.children[1].toys[1].elementTree.toy.value, "Bike");
+
+  dData.Profile.children[1].pets[0].pet = "Dog";
+  dData.Profile.children[1].pets[1].pet = "Cat";
+  equal("setPet1", dData.Profile.children[1].pets[0].elementTree.pet.value, "Dog");
+  equal("setPet2", dData.Profile.children[1].pets[1].elementTree.pet.value, "Cat");
+
+  equal("checkSiblingHTML", dData.Profile.children[1].element.innerHTML, siblingDataHTMLLayout);
 
   document.querySelector("[filter=children]").value = "asdf";
   document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
@@ -422,6 +478,8 @@ var scopeTestHTML = `
   var child2 = dData.Profile.children[1];
   var toys1 = child1.toys;
   var toys2 = child2.toys;
+  var pets1 = child1.pets;
+  var pets2 = child2.pets;
   var oat = profile.firstName == "Zach";
   oat = oat && profile.lastName == "Lankton";
   oat = oat && profile.checkTest == true;
@@ -436,6 +494,10 @@ var scopeTestHTML = `
   oat = oat && toys1[1].toy == "barbie";
   oat = oat && toys2[0].toy == "train";
   oat = oat && toys2[1].toy == "race car";
+  oat = oat && pets1[0].pet == "Dog";
+  oat = oat && pets1[1].pet == "Cat";
+  oat = oat && pets2[0].pet == "Rat";
+  oat = oat && pets2[1].pet == "Rattle Snake";
   equal("objectAssignmentTest", oat, true);
 </script>
 
