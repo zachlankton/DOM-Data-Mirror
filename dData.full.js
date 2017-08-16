@@ -555,9 +555,9 @@ function registerDData(dDataProto){
             for (var i=0; i<children.length; i++){
                 var f = filterArr_AND(children[i].value, keyToFilterOn, searchKeys);
                 if (f || filter.value == "") {
-                    children[i].style.display = "" ;   
+                    children[i].hidden = false ;   
                 }else{
-                    children[i].style.display = "none";
+                    children[i].hidden = true;
                 }
 
             }
