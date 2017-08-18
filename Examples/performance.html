@@ -16,6 +16,7 @@
           <hr>
           <p><span>dData Dot Notation</span> <span class="ms r" name="dDataTime"></span> <span>ms</span></p>
           <p><span>dData Dot Notation Optimized</span> <span class="ms y" name="dDataTimeOpt"></span> <span>ms</span></p>
+          <p><span>dData Element Access</span> <span class="ms y" name="dDataElemAccess"></span> <span>ms</span></p>
           <p><span>dData Object Assignment</span> <span class="ms y" name="dDataObjAsgn"></span> <span>ms</span></p>
           <p><span>Vanilla JS</span> <span class="ms g" name="VanillaTime"></span> <span>ms</span></p>
         </div>
@@ -49,6 +50,20 @@
               itemRem(i);
             }
             var dDataTimeOpt = (window.performance.now()-time)/numOfTests;
+
+            ////////////////////////////////////////////////////////////////////////////////	
+            ////////////////////// dData Element Access ////////////////////
+            ////////////////////////////////////////////////////////////////
+            var time = window.performance.now()
+            var listElem = dData.list.element;
+            for (var i=0;i<numOfTests;i++){
+              listElem.add("listItem", {item: "test"+i});
+            }
+            var items = dData.list.elementTree.listItem;
+            for (var i=numOfTests-1;i>-1;i--){
+              items[i].item.remove();
+            }
+            var dDataElemAccess = (window.performance.now()-time)/numOfTests;
 
             ////////////////////////////////////////////////////////////////////////////////
             //////////////////////// dData Object Assignment //////////////////////
@@ -88,6 +103,7 @@
             dData.test.tests = numOfTests;
             dData.test.dDataTime = (dDataTime).toFixed(2);
             dData.test.dDataTimeOpt = (dDataTimeOpt).toFixed(2);
+            dData.test.dDataElemAccess = (dDataElemAccess).toFixed(2);
             dData.test.dDataObjAsgn = (dDataObjAsgn).toFixed(2);
             dData.test.VanillaTime = (vanillaTime).toFixed(2);
         </script>

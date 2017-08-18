@@ -1,0 +1,144 @@
+<html>
+    <head>
+        
+        <title>Simple Router</title>
+        <script src="dData.full.js"></script>
+        <script src="router.js"></script>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+        <script>
+            var app = {products: [
+              {id: 1, name: 'Angular', description: 'Superheroic JavaScript MVW Framework.', price: 100},
+              {id: 2, name: 'Ember', description: 'A framework for creating ambitious web applications.', price: 100},
+              {id: 3, name: 'React', description: 'A JavaScript Library for building user interfaces.', price: 100}
+            ]};
+        </script>
+    </head>
+    <body>
+
+    <div class="container">
+      <header class="page-header">
+        <div class="branding">
+          <h1>dData CRUD application</h1>
+          <p>Ported from: <a href="https://codepen.io/-a/pen/amOYGp">Vue.js CRUD application</a></p>
+        </div>
+      </header>
+      <main router-view>
+        
+      </main>
+    </div>
+
+    <template route="/">
+        <div d-data name="app" set="app">
+            <button class="btn btn-default" set-route="/add-product">Add Product</button>
+            <div class="filters row">
+              <div class="form-group col-sm-3">
+                <label for="search-element">Product Search</label>
+                <input class="form-control" id="search-element" filter="products"/>
+              </div>
+            </div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th class="col-sm-2">Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr d-data name="products">
+                <td name="name" set-route="/product/:id"></td>
+                <td name="description"></td>
+                <td>
+                  $<span name="price"></span>
+                </td>
+                <td>
+                  <button class="btn btn-warning btn-xs" set-route="/product/:id/edit">Edit</button>
+                  <button class="btn btn-danger btn-xs" set-route="/product/:id/delete">Delete</button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+    </template>
+
+    <template route="/add-product">
+        <div d-data name="newProduct">
+            <h2>Add new product</h2>
+            <div>
+                <input type="hidden" name="id" set="Math.random()" >
+                <div class="form-group">
+                    <label for="add-name">Name</label>
+                    <input class="form-control" name="name" required/>
+                </div>
+                <div class="form-group">
+                    <label for="add-description">Description</label>
+                    <textarea class="form-control" rows="10" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="add-price">Price, <span class="glyphicon glyphicon-euro"></span></label>
+                    <input type="number" class="form-control" name="price"/>
+                </div>
+                <button push="app.products"  set-route="/" class="btn btn-primary">Create</button>
+                <button class="btn btn-default" set-route="/">Cancel</button>
+            </div>
+        </div>
+    </template>
+
+    <template id="productDetail" route="/product/:product_id">
+        <div d-data name="detail" set="app.products.get({id: router.product_id})">
+                <h2 name="name"></h2>
+                <b>Description: </b>
+                <div name="description"></div>
+                <b>Price:</b>
+                $<span name="price"></span>
+                <br/>
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                <button set-route="/">Back to product list</button>
+       </div>
+    </template>
+
+    <template id="productEdit" route="/product/:product_id/edit">
+        <div d-data name="productEdit" set="app.products.get({id: router.product_id})">
+            <h2>Edit product</h2>
+            <div>
+                  <div class="form-group">
+                    <label for="edit-name">Name</label>
+                    <input class="form-control" name="name" required/>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <textarea class="form-control" rows="3" name="description"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-price">Price, <span class="glyphicon glyphicon-euro"></span></label>
+                    <input type="number" class="form-control" name="price"/>
+                  </div>
+                  <button save="app.products.get({id: router.product_id})"  
+                    set-route="/" class="btn btn-primary">Save</button>
+                  <button class="btn btn-default" set-route="/">Cancel</button>
+            </div>
+          </div>
+    </template>
+
+    <template id="productDelete" route="/product/:product_id/delete">
+        <div d-data name="deleteProd" set="app.products.get({id: router.product_id})">
+            <h2>Delete product <span name="name"></span></h2>
+            
+              <p>The action cannot be undone.</p>
+              <button eval="app.products.delete({id: router.product_id})" set-route="/" 
+                class="btn btn-danger">Delete</button>
+              <button class="btn btn-default" set-route="/">Cancel</button>
+            
+          </div>
+    </template>
+
+    <template id="errorTemplate">
+        <h1>Route not found!</h1>
+    </template>
+
+    </body>
+</html>

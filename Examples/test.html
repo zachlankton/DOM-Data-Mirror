@@ -49,6 +49,7 @@
   <li id="testFindRootDData">Test Find Root DData</li>
   <li id="setEmptyObjectTest">Set dData to empty object</li>
   <li id="objectAssignmentTest">dData Object Assignment Test</li>
+  <li id="overloadingTest">OVERLOADING Test</li>
 </ol>
 <hr>
 
@@ -85,6 +86,10 @@
               pets: [
                 {pet: "Rat"},
                 {pet: "Rattle Snake"}
+              ],
+              cars: [
+                {car: "Trailblazer"},
+                {car: "Cobalt"}
               ]
             }
         ]
@@ -421,28 +426,28 @@ var scopeTestHTML = `
   equal("checkSiblingHTML", dData.Profile.children[1].element.innerHTML, siblingDataHTMLLayout);
 
   document.querySelector("[filter=children]").value = "asdf";
-  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  document.querySelector("[filter=children]").dispatchEvent(new Event("input"));
   equal("filterTest1a", dData.Profile.children[0].element.hidden, true);
   equal("filterTest1b", dData.Profile.children[1].element.hidden, false);
 
 
   document.querySelector("[filter=children]").value = "bike";
-  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  document.querySelector("[filter=children]").dispatchEvent(new Event("input"));
   equal("filterTest2a", dData.Profile.children[0].element.hidden, true);
   equal("filterTest2b", dData.Profile.children[1].element.hidden, false);
 
   document.querySelector("[filter=children]").value = "test";
-  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  document.querySelector("[filter=children]").dispatchEvent(new Event("input"));
   equal("filterTest3a", dData.Profile.children[0].element.hidden, false);
   equal("filterTest3b", dData.Profile.children[1].element.hidden, true);
 
   document.querySelector("[filter=children]").value = "asdfasdfasdf";
-  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  document.querySelector("[filter=children]").dispatchEvent(new Event("input"));
   equal("filterTest4a", dData.Profile.children[0].element.hidden, true);
   equal("filterTest4b", dData.Profile.children[1].element.hidden, true);
 
   document.querySelector("[filter=children]").value = "";
-  document.querySelector("[filter=children]").dispatchEvent(new Event("keyup"));
+  document.querySelector("[filter=children]").dispatchEvent(new Event("input"));
 
 
   dData.Profile.children[1].toys[0].element.querySelector("button").click();
@@ -480,6 +485,7 @@ var scopeTestHTML = `
   var toys2 = child2.toys;
   var pets1 = child1.pets;
   var pets2 = child2.pets;
+  var cars2 = child2.cars;
   var oat = profile.firstName == "Zach";
   oat = oat && profile.lastName == "Lankton";
   oat = oat && profile.checkTest == true;
@@ -499,6 +505,10 @@ var scopeTestHTML = `
   oat = oat && pets2[0].pet == "Rat";
   oat = oat && pets2[1].pet == "Rattle Snake";
   equal("objectAssignmentTest", oat, true);
+
+  oat = oat && cars2[0].car == "Trailblazer";
+  oat = oat && cars2[1].car == "Cobalt";
+  equal("overloadingTest", oat, true);
 </script>
 
 

@@ -863,9 +863,7 @@ function registerDData(dDataProto){
 
 Array.prototype.get = function(obj){
 
-    // this function searches an array of objects
-    // and returns the first object that matches 
-    // the keys/values inside the search Object
+    // this function allows obj searches on an array of objects
     // Syntax: arr.get({id: "123"});
 
     var len = this.length;
@@ -893,9 +891,7 @@ Array.prototype.get = function(obj){
 
 Array.prototype.delete = function(obj){
 
-    // this function finds an object in an array of objects
-    // that matches the keys/values in the search object 
-    // and performs an Array slice operation on that index
+    // this function allows obj searches on an array of objects
     // Syntax: arr.delete({id: "123"});
 
     var len = this.length;
