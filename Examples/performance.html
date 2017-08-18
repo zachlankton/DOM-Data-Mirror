@@ -4,9 +4,11 @@
     </head>
     <body>
         <ul d-data name="list">
-          <li d-data name="listItem">
-            <p name="item"></p>
-          </li>
+            <div>
+              <li d-data name="listItem">
+                <p name="item"></p>
+              </li>
+            </div>
         </ul>
 
         <div d-data name="test">
@@ -76,7 +78,7 @@
             dData.list = {listItem:arr}
 
             for (var i=numOfTests-1;i>-1;i--){
-                var parent = document.querySelector("[name=list]");
+                var parent = document.querySelector("[name=listItem]").parentElement;
                 parent.removeChild(parent.children[i]);
             }
             var dDataObjAsgn = (window.performance.now()-time)/numOfTests;
@@ -84,18 +86,33 @@
             ////////////////////////////////////////////////////////////////////////////////
             //////////////////////// Vanilla JS //////////////////////////////////
             ////////////////////////////////////////////////////////////////
+
+            function fastAdd(parentName, childName, data, index){
+
+                  var dDataElem = document.querySelector("[name='"+parentName+"']");
+                  var templateParent = dData.findTemplateParent(dDataElem, childName);
+                  var clone = templateParent.childTemplates[childName].cloneNode(true);
+                  templateParent.appendChild(clone);
+                  if (data){
+                      clone.addEventListener("dDataInitialized", function(){
+                          clone.value = data;
+                      });
+                  }
+            }
+
+            function fastRemove(parentName, childName, index){
+                var dDataElem = document.querySelector("[name='"+parentName+"']");
+                var children = dDataElem.querySelectorAll("[name='"+childName+"']");
+                dDataElem.removeChild(children[i]);
+            }
+
             time = window.performance.now();
             for (var i=0;i<numOfTests;i++){
-              var dDataElem = document.querySelector("[name=list]");
-                var clone = dDataElem.childTemplates.listItem.cloneNode(true);
-              clone.querySelector("[name=item]").innerHTML = "Test"+i
-              dDataElem.append(clone);
+                fastAdd("list", "listItem", {item: "test"+i})
             }
 
             for (var i=numOfTests-1;i>-1;i--){
-                  var dDataElem = document.querySelector("[name=list]");
-                var children = dDataElem.children;
-                dDataElem.removeChild(children[i]);
+                fastRemove("list", )
             }
 
             var vanillaTime = (window.performance.now()-time)/numOfTests;
