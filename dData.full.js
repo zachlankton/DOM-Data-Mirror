@@ -263,7 +263,8 @@ function registerDData(dDataProto){
         }else{
             var name = dDataProto.getAttribute("name");
             var parent = dDataProto.parentElement;
-            var clone = dDataCloneNode(parent.childTemplates[name]);
+            var element = parent.childTemplates[name];
+            var clone = dDataCloneNode(element);
         }
 
         parent.appendChild(clone);
