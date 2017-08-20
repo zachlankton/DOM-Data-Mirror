@@ -263,7 +263,8 @@ function registerDData(dDataProto){
         }else{
             var name = dDataProto.getAttribute("name");
             var parent = dDataProto.parentElement;
-            var clone = dDataCloneNode(parent.childTemplates[name]);
+            var element = parent.childTemplates[name];
+            var clone = dDataCloneNode(element);
         }
 
         parent.appendChild(clone);
@@ -798,7 +799,9 @@ function registerDData(dDataProto){
        
 })();
 
-
+////////////////////////////////////////////////////////////////////////
+////////////////// DDATA SET INITIAL VALUE EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
 
 
 ( function dDataSetValue(){
@@ -818,6 +821,10 @@ function registerDData(dDataProto){
 
 })();
 
+////////////////////////////////////////////////////////////////////////
+////////////////// DDATA PUSH TO ARRAY ON CLICK EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
+
 ( function dDataPush(){
     dData.extensions.push({attribute: "push", setup: pushValue });
 
@@ -831,12 +838,16 @@ function registerDData(dDataProto){
 
 })();
 
+////////////////////////////////////////////////////////////////////////
+////////////////// DDATA OBJ ASSIGN ON CLICK EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
+
 ( function dDataSave(){
-    dData.extensions.push({attribute: "save", setup: saveValue });
+    dData.extensions.push({attribute: "assign", setup: saveValue });
 
     function saveValue(element, dDataElement, attrVal){
         element.addEventListener("click", function(){
-            var obj = eval(attrVal);
+            var obj = eval(attrVal);  // GET OBJECT TO SAVE TO
             var keys = Object.keys(obj);
             var keyLen = keys.length;
             for (var i=0; i<keyLen; i++){
@@ -848,6 +859,10 @@ function registerDData(dDataProto){
 
 
 })();
+
+////////////////////////////////////////////////////////////////////////
+////////////////// DDATA EVAL ON CLICK EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
 
 ( function dDataEval(){
     dData.extensions.push({attribute: "eval", setup: deleteValue });
@@ -861,9 +876,132 @@ function registerDData(dDataProto){
 
 })();
 
+////////////////////////////////////////////////////////////////////////
+////////////////// dDATA ROUTER EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
+
+( function(){
+    window.router = {};
+    var hash = location.hash.substr(1);
+    var viewPort = undefined;
+    var templates = undefined;
+    var errorTemplate = undefined;
+    var templateRouteIndex = [];
+
+    if (hash == ""){
+        location.hash = "/";
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+        viewPort = document.querySelector("[router-view]");
+
+        templates = document.getElementsByTagName("template");
+
+        errorTemplate = document.getElementById("errorTemplate");
+        updateRouteIndex();
+
+        updateView();
+    });
+
+    window.addEventListener("hashchange", function(){
+
+        hash = location.hash.substr(1);
+        if (hash == ""){
+            location.hash = "/";
+        }
+        updateView();
+
+    });
+
+    function updateView(){
+        var template = getTemplate();
+        template = template || errorTemplate;
+        var clone = document.importNode(template.content, true);
+        viewPort.innerHTML = "";
+        viewPort.appendChild(clone);
+    }
+
+    function updateRouteIndex(){
+        var tempLen = templates.length;
+        for (var i=0; i<tempLen; i++){
+            if (!templates[i].hasAttribute("route")){continue;}
+            var routes = templates[i].getAttribute("route").split("/");
+            
+            templateRouteIndex.push({routes});
+        }
+    }
+
+    function getTemplate(){
+        var len = templateRouteIndex.length;
+        
+        var hashRoutes = hash.split("/");
+        var hashRouteLen = hashRoutes.length;
+
+        for (var i=0; i<len; i++){  // search through the index to find a matching route
+            var tempRoutes = templateRouteIndex[i].routes;
+            var tempRouteLen = tempRoutes.length;
+
+            // if the template route does not have the same number of arguments, continue
+            if (hashRouteLen != tempRouteLen){ continue; }
+
+            if ( routes_match(tempRoutes, hashRoutes) ){ return templates[i]; }
+
+        }
+    }
+
+    function routes_match(templateRoute, hashRoute){
+        var len = templateRoute.length;
+
+        for (var i=0; i<len; i++){
+            var tr = templateRoute[i];
+            var hr = hashRoute[i];
+            if( tr.indexOf(":") == 0 ){ // if this parameter is a variable
+                var param = tr.substr(1);
+                window.router[param] = hr;
+                continue;
+            } 
+            if (tr != hr){return false;}
+        }
+
+        return true;
+    }
+
+    
+} )();
+
+
+( function dDataSetRoute(){
+    dData.extensions.push({attribute: "set-route", setup: setRoute });
+
+    function setRoute(element, dDataElement, attrVal){
+        
+        element.addEventListener("click", function(){
+            var hashRoute = attrVal.split("/");
+            hashRoute.shift();
+            var len = hashRoute.length;
+            var hashStr = "";
+            for (var i=0; i<len; i++){
+                var param = hashRoute[i];
+                if (param.indexOf(":") == 0){ param = dDataElement.value[ param.substr(1) ]; }
+                hashStr += "/" + param;
+            }
+            location.hash = hashStr;
+        });
+        
+    }
+})();
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////////// DEFAULT ELEMENT HANDLER EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
+
 Array.prototype.get = function(obj){
 
-    // this function allows obj searches on an array of objects
+    // this function searches an array of objects
+    // and returns the first object that matches 
+    // the keys/values inside the search Object
     // Syntax: arr.get({id: "123"});
 
     var len = this.length;
@@ -891,7 +1029,9 @@ Array.prototype.get = function(obj){
 
 Array.prototype.delete = function(obj){
 
-    // this function allows obj searches on an array of objects
+    // this function finds an object in an array of objects
+    // that matches the keys/values in the search object 
+    // and performs an Array slice operation on that index
     // Syntax: arr.delete({id: "123"});
 
     var len = this.length;
