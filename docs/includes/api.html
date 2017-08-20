@@ -244,4 +244,255 @@
         &nbsp;&nbsp;&nbsp;&nbsp;var elm = ev.target; // <-- the d-data element that has been rendered. <br>
         })
     </code-block>   
+
+    <a name="Attributes">  </a>
+    <h2>Attributes</h2> 
+
+    <a name="addAttr"></a> 
+    <h3>Add <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>add="childName[:inputToFocus]"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{string} childName </code> : the name of the dData Child Element to add </li>
+        <li><code>{string} inputToFocus </code> : (OPTIONAL) name of field (input) of the dData child to focus </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>This attribute is meant to be used on buttons, but can be used on any element.
+    This attribute wires up a click handler to the element that will add the dData Child Element
+    that is specified in the arguments.
+    It is important the the element this attribute is used on is an ancestor
+     of the d-data child you want to add.  It will not work properly if it is used as a child element.</p>
+
+     <p>By default this attribute will focus on the first named input in the dData child that was added. 
+     Optionally you can supply the name of the element that you want to be focused on add.</p>
+
+    <a name="removeAttr">  </a> 
+    <h3>Remove <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>remove</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li>No Arguments</li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>This attribute is the complement of the add attribute.  Like the add attribute, this
+    attribute wires up a click event to the element that will remove the d-data child element
+    that it is a child of.  Unlike the add attribute, this element should be a child element of the 
+    d-data child element you want removed. It will not work if it is a sibling or an ancestor.</p>
+    
+    <a name="filterAttr">  </a> 
+    <h3>Filter <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>filter="childName[:fieldToFilterOn]"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{string} childName </code> : the name of the dData Child Elements to Filter </li>
+        <li><code>{string} fieldToFilterOn </code> : (OPTIONAL) name of field (input) of the dData child to filter on </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The filter attribute is meant to be used on an input element.  It wires up an 'input'
+    event handler for the element it is used on.  When that event fires it will sort the list
+    of children that you specified in the arguments based on the value in the input.
+    The filter is not case sensitive and it will search through deeply nested children as well.
+    </p>
+
+    <p>Any value of any key that matches (even partially matches) the value in the filter input will be displayed in the results. Optionally
+    you can specify a specific field to compare the value with and the filter will only look at those keys values.</p>
+
+    <p>
+    Like the add attribute, it is important that the filter attribute input element is an ancestor 
+    of the children being sorted... It will not work if it is a child element of
+    items being sorted. </p>
+    
+    <a name="sortAttr">  </a> 
+    <h3>Sort <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>sort="childName:fieldName[:desc]"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{string} childName </code> : the name of the dData Child Elements to sort </li>
+        <li><code>{string} fieldName </code> : name of field (input) of the dData child to sort on </li>
+        <li><code>{CONST} desc </code> : (OPTIONAL) sort descending instead of ascending, which is default </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The sort attribute wires up a click handler on the element it is attached to.  When that element is clicked
+    it runs a sort on the children specified in the arguments using the field (key) specified.  By default the 
+    sort is ascending, you can optionally specify the "desc" parameter to sort descending.</p>
+
+    <p>Like the filter attribute, the element that this attribute is attached to needs to be an ancestor 
+    of the d-data child elements being sorted.  It will not work as a child element.  <p>
+    
+    <a name="computerAttr">  </a> 
+    <h3>Computer <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>computer="compFunction"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{function} compFunction </code> : the name of the function (on the global window scope, can use dot notation) </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The computer attribute is for performing computed properties.  The function that is passed into this attribute 
+    needs to return a string.  The string returned is what will be assigned to the value of the element that this attribute
+    is attached to.</p>
+    
+    <a name="hideAttr">  </a> 
+    <h3>Hide <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>hide="hideFunction"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{function} compFunction </code> : the name of the function (on the global window scope, can use dot notation) </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The hide attribute is for hiding the element that it is attached to depending on the value returned from the function.
+    The function should return a boolean. If it returns false, the element will be shown.  If it returns true, the element will 
+    be hidden.</p>
+    
+    <a name="dClassAttr">  </a> 
+    <h3>D-Class <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>d-class="className:fieldToWatch:valueToMatch"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{string} className </code> : the class to be set if condition returns true </li>
+        <li><code>{string} fieldToWatch </code> : name of field (input) of the dData child to watch for changes on </li>
+        <li><code>{string} valueToMatch </code> : the value to compare with the value in the field to watch</li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>This attribute is for assigning classes to an element based on a condition.  The condition is an equality function.
+    If the value of the <code>fieldToWatch</code> is equal to the <code>valueToMatch</code> then it returns true, else false.
+    If the condition is true the class will be assigned to the element, and vice versa if the condition is false.</p>
+    
+    <a name="loadAttr">  </a> 
+    <h3>Load <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>load="expression"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{expression} expression </code> : any valid javascript expression </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The load attribute is for loading initial data when the element finishes loading.
+    It is designed to be used on any element with a <code>name</code> attribute. The element can be either a
+    d-data element itself or child element of a d-data element (a field element).  This attribute will load inital data 
+    into the value of the element it is attached to.</p>
+
+    <p>If the load attribute is used on a d-data element, the expression should return an object.  This object will be assigned
+    to the value of the d-data element the same way the <a href="valueProp">value assignment</a> property works </p>
+
+    <p>If the load attribute is used on a field element, the expression should return a string value.  This value will be assigned
+    to the value of the element it is attached to.</p>
+    
+    <a name="pushAttr">  </a> 
+    <h3>Push <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>push="expression"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{expression} expression </code> : any valid javascript expression </li>
+    </ul>
+    
+    <p><strong>Description</strong><p>
+    <p>The push attribute is for pushing the d-data element it belongs to onto an array.  It is meant to be used on a button,
+    this attribute will wire up a click handler.  The expression should return 
+    a reference to an array that you want to push this data onto.  When the element is clicked it will push the value of 
+    the d-data element it is inside of
+    into the array returned by the expression. This attribute is similar to the remove attribute
+    in the respect that it will use the d-data element that it is inside of. </p>
+
+    <a name="assignAttr">  </a> 
+    <h3>Assign <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>assign="expression"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{expression} expression </code> : any valid javascript expression </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The assign attribute is similar to the push attribute and modeled after the native <code>Object.assign</code> 
+    method. It is meant to be used on a button and will wire up a click handler.  The expression should return a
+    reference to the object that you want to assign values to.  When the element is clicked, just like the push attribute, 
+    it will assign the values of 
+    the d-data element it is inside of
+    into the object returned by the expression.</p>
+    
+    <a name="evalAttr">  </a> 
+    <h3>Eval <span class="tag attribute"> Attribute </span> </h3>
+    <code-block>
+        Syntax:
+        <ul>
+            <li>eval="expression"</li>
+        </ul>
+    </code-block>
+
+    <p><strong>Arguments</strong><p>
+    <ul>
+        <li><code>{expression} expression </code> : any valid javascript expression </li>
+    </ul>
+
+    <p><strong>Description</strong><p>
+    <p>The eval attribute is also meant to be used on a button.  It will wire up a click handler and
+    execute whatever expression it contains when the element is clicked.  It is like the native onclick attribute,
+    but instead of passing in a function, you can pass in any valid javascript expression.</p>
+
 </template>
