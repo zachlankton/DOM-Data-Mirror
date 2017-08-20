@@ -103,7 +103,8 @@
             function fastRemove(parentName, childName, index){
                 var dDataElem = document.querySelector("[name='"+parentName+"']");
                 var children = dDataElem.querySelectorAll("[name='"+childName+"']");
-                dDataElem.removeChild(children[i]);
+                var parent = children[index].parentElement;
+                parent.removeChild(children[index]);
             }
 
             time = window.performance.now();
@@ -112,7 +113,7 @@
             }
 
             for (var i=numOfTests-1;i>-1;i--){
-                fastRemove("list", )
+                fastRemove("list", "listItem", i);
             }
 
             var vanillaTime = (window.performance.now()-time)/numOfTests;
