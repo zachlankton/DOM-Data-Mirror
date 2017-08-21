@@ -800,12 +800,12 @@ function registerDData(dDataProto){
 })();
 
 ////////////////////////////////////////////////////////////////////////
-////////////////// DDATA SET INITIAL VALUE EXTENSION ///////////////////
+////////////////// DDATA LOAD INITIAL VALUE EXTENSION ///////////////////
 ////////////////////////////////////////////////////////////////////////
 
 
 ( function dDataSetValue(){
-    dData.extensions.push({attribute: "set", setup: setValue });
+    dData.extensions.push({attribute: "load", setup: setValue });
 
     function setValue(element, dDataElement, attrVal){
 
