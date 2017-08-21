@@ -273,6 +273,9 @@
      <p>By default this attribute will focus on the first named input in the dData child that was added. 
      Optionally you can supply the name of the element that you want to be focused on add.</p>
 
+     <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtAddRemove">Here</a></p>
+
     <a name="removeAttr">  </a> 
     <h3>Remove <span class="tag attribute"> Attribute </span> </h3>
     <code-block>
@@ -292,6 +295,9 @@
     attribute wires up a click event to the element that will remove the d-data child element
     that it is a child of.  Unlike the add attribute, this element should be a child element of the 
     d-data child element you want removed. It will not work if it is a sibling or an ancestor.</p>
+
+    <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtAddRemove">Here</a></p>
     
     <a name="filterAttr">  </a> 
     <h3>Filter <span class="tag attribute"> Attribute </span> </h3>
@@ -322,6 +328,9 @@
     Like the add attribute, it is important that the filter attribute input element is an ancestor 
     of the children being sorted... It will not work if it is a child element of
     items being sorted. </p>
+
+    <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtFilter">Here</a></p>
     
     <a name="sortAttr">  </a> 
     <h3>Sort <span class="tag attribute"> Attribute </span> </h3>
@@ -346,6 +355,9 @@
 
     <p>Like the filter attribute, the element that this attribute is attached to needs to be an ancestor 
     of the d-data child elements being sorted.  It will not work as a child element.  <p>
+
+    <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtSorting">Here</a></p>
     
     <a name="computerAttr">  </a> 
     <h3>Computer <span class="tag attribute"> Attribute </span> </h3>
@@ -365,6 +377,9 @@
     <p>The computer attribute is for performing computed properties.  The function that is passed into this attribute 
     needs to return a string.  The string returned is what will be assigned to the value of the element that this attribute
     is attached to.</p>
+
+    <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtComputer">Here</a></p>
     
     <a name="hideAttr">  </a> 
     <h3>Hide <span class="tag attribute"> Attribute </span> </h3>
@@ -384,6 +399,9 @@
     <p>The hide attribute is for hiding the element that it is attached to depending on the value returned from the function.
     The function should return a boolean. If it returns false, the element will be shown.  If it returns true, the element will 
     be hidden.</p>
+
+    <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtHide">Here</a></p>
     
     <a name="dClassAttr">  </a> 
     <h3>D-Class <span class="tag attribute"> Attribute </span> </h3>
@@ -406,6 +424,9 @@
     If the value of the <code>fieldToWatch</code> is equal to the <code>valueToMatch</code> then it returns true, else false.
     If the condition is true the class will be assigned to the element, and vice versa if the condition is false.</p>
     
+    <p><strong>Example</strong><p>
+     <p>See example <a href="#ExtDClass">Here</a></p>
+     
     <a name="loadAttr">  </a> 
     <h3>Load <span class="tag attribute"> Attribute </span> </h3>
     <code-block>

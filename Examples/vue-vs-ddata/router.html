@@ -89,7 +89,7 @@
     </template>
 
     <template id="productDetail" route="/product/:product_id">
-        <div d-data name="detail" set="app.products.get({id: router.product_id})">
+        <div d-data name="detail" load="app.products.get({id: router.product_id})">
                 <h2 name="name"></h2>
                 <b>Description: </b>
                 <div name="description"></div>
@@ -102,7 +102,7 @@
     </template>
 
     <template id="productEdit" route="/product/:product_id/edit">
-        <div d-data name="productEdit" set="app.products.get({id: router.product_id})">
+        <div d-data name="productEdit" load="app.products.get({id: router.product_id})">
             <h2>Edit product</h2>
             <div>
                   <div class="form-group">
