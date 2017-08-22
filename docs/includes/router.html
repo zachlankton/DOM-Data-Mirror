@@ -1,0 +1,125 @@
+<template id="router">
+    <h1>dData Router</h1>
+    <p> dData Router is a simple router that requires little or no javascript to use.  
+    This is a client side router so it uses hashtag # style routing.  In other words... 
+    All the routes in the
+    location bar need to be prefixed with a #. (ie: yoururl.com#/your/route).
+    </p>
+
+    <p>To use the router, simply include the router extension script in your head after dData, 
+    specify a view port using the <code>router-view</code> attribute and define 
+    the routes using the <code>route</code> attribute. </p>
+
+    <a name="RouterBasic">  </a>
+    <h2>Basic Usage</h2>
+
+    <pre ><code class="language-markup">
+        &lt;script src=&quot;dData.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;dData.router.ext.js&quot;&gt;&lt;/script&gt;
+
+        &lt;div router-view&gt; &lt;/div&gt;
+
+        &lt;template route=&quot;/&quot;&gt;
+            &lt;h1&gt;Main Route&lt;/h1&gt;
+        &lt;/template&gt;
+    </code></pre>
+
+    <a name="RouterAdvance">   </a> 
+    <h2>Advanced Usage</h2>  
+
+    <pre><code class="language-markup">
+        &lt;div router-view&gt; &lt;/div&gt;
+
+        &lt;template route=&quot;/&quot;&gt;
+            &lt;div d-data name=&quot;mainRoute&quot;&gt;
+                &lt;h1&gt;Main Route&lt;/h1&gt;
+                &lt;input name=&quot;dDataVar&quot; value=&quot;hello!&quot;&gt; &lt;!-- The key/value we will pass into 'set-route' --&gt;
+                &lt;button set-route=&quot;/test/:dDataVar&quot;&gt; &lt;!-- set route to &quot;/test/hello!&quot; --&gt;
+                    Goto Test
+                &lt;/button&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+
+        &lt;template route=&quot;/test/:testVar&quot;&gt; &lt;!-- Route with Variable 'testVar'--&gt;
+            &lt;div d-data name=&quot;testRoute&quot;&gt;
+                &lt;p load=&quot;router.testVar&quot;&gt;&lt;/p&gt; &lt;!-- Will have the value 'hello!' --&gt;
+            &lt;/div&gt;
+        &lt;/template&gt;
+
+        &lt;!-- Use id=&quot;errorTemplate&quot; as a default handler for routes that are not defined --&gt;
+        &lt;template id=&quot;errorTemplate&quot;&gt;
+            &lt;h1&gt;Route Not Found!&lt;/h1&gt;
+        &lt;/template&gt;
+    </code></pre> 
+
+    <a name="RouterGLOBAL">   </a> 
+    <h2>Global Object</h2>
+
+    <a name="routerGlobal">  </a> 
+    <h3>router <span class="tag property">Object</span></h3>
+
+    <p> The global router object is where the variables from the routes are stored.</p>
+
+    <p> Route Variables are declared by using a colon (:) as a prefix.</p>
+
+    <p>Example: <code>route="/test/:testVar</code> as in the advanced usage example above, will
+    match any route that starts with <code>/test/</code>.  Anything after that will be stored in
+    <code>router.testVar</code>.<p>
+
+    <p> If the route is set to <code>/test/helloWorld!</code> then 
+    <code>router.testVar == 'helloWorld!'</code></p>
+
+    <a name="RouterAttributes">  </a> 
+    <h2>Attributes</h2>
+
+    <a name="routerView">  </a> 
+    <h3> router-view <span class="tag attribute">Attribute</span></h3>
+    <p>This attribute defines the view port to be used by the router.
+    See <a href="#RouterBasic">the basic usage example</a></p>
+
+    <a name="routerRoute">  </a> 
+    <h3> route <span class="tag attribute">Attribute</span></h3>
+
+    <p> This attribute defines the route.  This must be used in a <code>&lt;template&gt;</code> tag.
+    Any combination of static route names and route variables can be used.
+    Route Variables are defined with a colon (:) prefix.</p>
+
+    <h5>Examples:</h5>
+    <pre><code class="language-markup">
+        &lt;template route=&quot;/&quot;&gt;
+        &lt;template route=&quot;/add_product&quot;&gt;
+        &lt;template route=&quot;/product/:product_id&quot;&gt;
+        &lt;template route=&quot;/product/:product_id/edit&quot;&gt;
+    </code></pre>
+
+    <a name="routerSet">  </a> 
+    <h3> set-route <span class="tag attribute">Attribute</span></h3>
+    <p>This attribute is meant to be used on clickable elements.  This will wire up a click event
+    on whatever element it is attached to.  When the click event is fired it will set the route
+    to whatever value it has.  Variables can be used from the local d-data scope that the element
+    using this attribute is a member of.  Variable use is designated with a colon (:) prefix.</p>
+
+    <h5>Examples:</h5>
+    <pre><code class="language-markup">
+        &lt;button set-route=&quot;/&quot;&gt;
+        &lt;button set-route=&quot;/add_product&quot;&gt;
+        &lt;button set-route=&quot;/product/:localVar&quot;&gt;  &lt;!-- See advanced usage for example --&gt;
+        &lt;button set-route=&quot;/product/:localVar/edit&quot;&gt;  &lt;!-- See advanced usage for example --&gt;
+    </code></pre>
+
+    <a name="router404">  </a> 
+    <h3> 404 Error <span class="tag">OTHER</span></h3>
+    <p> In the event that a route entered into the location bar is not defined in the project,
+        it is good to have a default route for such situations.  Simply create a template
+        like the one in the example below and this will be the default landing page for undefined
+        routes.
+    </p>
+
+    <h5>Examples:</h5>
+    <pre><code class="language-markup">
+        &lt;!-- Use id=&quot;errorTemplate&quot; as a default handler for routes that are not defined --&gt;
+        &lt;template id=&quot;errorTemplate&quot;&gt;
+            &lt;h1&gt;Route Not Found!&lt;/h1&gt;
+        &lt;/template&gt;
+    </code></pre>
+<template>

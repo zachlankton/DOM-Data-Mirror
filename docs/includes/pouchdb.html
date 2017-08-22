@@ -1,0 +1,80 @@
+<template id="pouchdb">
+    <h1>PouchDB Extension</h1>
+
+    <a name="PouchBasicUsage"></a>
+    <h2>Basic Usage (with Router)</h2>
+    <p> This is a complete working example of the basic usage of the pouch db extension.
+
+    <pre><code class="language-markup">
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;pouchdb.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;pouchdb.find.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;dData.full.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;Extensions/dData.PouchDB.ext.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;Extensions/dData.router.ext.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+    &lt;div router-view&gt;&lt;/div&gt;
+
+        &lt;template route=&quot;/&quot;&gt;
+
+            &lt;div d-data name=&quot;addNew&quot;&gt;
+                &lt;input type=&quot;hidden&quot; name=&quot;_id&quot; load=&quot;generateUUID()&quot;&gt;
+                &lt;input type=&quot;hidden&quot; name=&quot;type&quot; value=&quot;children&quot;&gt;
+                &lt;button save=&quot;children&quot; set-route=&quot;/:_id&quot;&gt;Add New&lt;/button&gt;
+            &lt;/div&gt;
+
+            &lt;div d-data name=&quot;test&quot; &gt;
+
+                &lt;h1&gt;List&lt;/h1&gt;
+
+                &lt;div d-data name=&quot;children&quot; pouch-list set-route=&quot;/:_id&quot;&gt;
+                    &lt;p&gt;
+                        &lt;span name=&quot;_id&quot;&gt;&lt;/span&gt; - 
+                        &lt;span name=&quot;child&quot;&gt;Child&lt;/span&gt;
+                        &lt;button delete &gt;Delete&lt;/button&gt;
+                    &lt;/p&gt;
+                &lt;/div&gt;
+
+            &lt;/div&gt;
+        &lt;/template&gt;
+
+        &lt;template route=&quot;/:id&quot;&gt;
+
+            &lt;div d-data name=&quot;childForm&quot; pouch-load=&quot;router.id&quot;&gt;
+                &lt;h1&gt;Form&lt;/h1&gt;
+                &lt;button save=&quot;children&quot; &gt;Save&lt;/button&gt; &lt;br&gt;
+                &lt;p name=&quot;_id&quot;&gt;&lt;/p&gt;
+                ChildName: &lt;input name=&quot;child&quot;&gt;
+            &lt;/div&gt;
+
+        &lt;/template&gt;
+    
+    &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+
+<a name="PouchDBAttributes"></a>
+<h2>Attributes</h2>
+
+<a name="pouchLoad"> </a> 
+<h3> pouch-load <span class="tag attribute">Attribute</span></h3>
+
+<a name="pouchList"> </a> 
+<h3> pouch-list <span class="tag attribute">Attribute</span></h3>
+
+<a name="pouchNew">  </a> 
+<h3> new <span class="tag attribute">Attribute</span></h3>
+
+<a name="pouchSave">  </a> 
+<h3> save <span class="tag attribute">Attribute</span></h3>
+
+<a name="pouchDelete">  </a> 
+<h3> delete <span class="tag attribute">Attribute</span></h3>
+
+<a name="pouchForm">  </a> 
+<h3> form <span class="tag attribute">Attribute</span></h3>
+                    
+
+</template>

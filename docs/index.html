@@ -4,6 +4,7 @@
 <head>
     <title>DOM Data Mirror Docs</title>
     <link rel="stylesheet" href="styles.css" />
+    <link href="prism.css" rel="stylesheet" />
 
     <script src="webcomponent-lite.js"></script>
 
@@ -16,6 +17,8 @@
     <link rel="import" href="includes/scope.html">
     <link rel="import" href="includes/api.html">
     <link rel="import" href="includes/extensions.html">
+    <link rel="import" href="includes/router.html">
+    <link rel="import" href="includes/pouchdb.html">
     <link rel="import" href="includes/performance.html">
 
 </head>
@@ -51,6 +54,12 @@
             <a name="Extensions"></a>
             <section id="extensions"> </section>
 
+            <a name="RouterExtension"></a>
+            <section id="router"> </section>
+
+            <a name="PouchDBExtension"></a>
+            <section id="pouchdb"> </section>
+
             <a name="APIRef"></a>
             <section id="APIRef"> </section>
                     
@@ -68,10 +77,12 @@
                 var templ = importedDoc.querySelector('template');
                 var elem = document.body.querySelector("#"+templ.id);
                 elem.appendChild(templ.content);
+                Prism.highlightAll();
             });
         });
             
     </script>
+    <script src="prism.js"></script>
 </body>
 
 </html>

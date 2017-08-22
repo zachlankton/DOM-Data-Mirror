@@ -84,7 +84,7 @@ section>h1{
     
 }
 
-code {
+code:not([class]) {
     background-color: #b5b5b5;
     padding: 1px;
     color: #43436d;
@@ -173,13 +173,13 @@ table td {
     font-size: 10pt;
 }
 
-#APIRef h2 {
+#APIRef h2, #router h2, #pouchdb h2 {
     font-variant-caps: petite-caps;
     color: #698cab;
     margin-top: 100px;
 }
 
-#APIRef h3 {
+#APIRef h3, #router h3, #pouchdb h3 {
     border: 3px solid #000000;
     padding: 12px;
     border-radius: 5px;
@@ -187,7 +187,7 @@ table td {
     margin-top: 100px;
 }
 
-.tag {border: 1px solid black;border-radius: 5px;padding: 3px;margin-left: 5px;font-size: 10pt;font-variant-caps: all-petite-caps;top: -3px;position: relative;}
+.tag:not(.token) {border: 1px solid black;border-radius: 5px;padding: 3px;margin-left: 5px;font-size: 10pt;font-variant-caps: all-petite-caps;top: -3px;position: relative;}
 
 .property {background-color: #48d860;}
 
