@@ -99,7 +99,10 @@ function generateUUID() {
 	};
 
 	function setupSave(element, dDataElement, attrVal){
-		attrVal = attrVal || dDataElement.getAttribute("name");
+		if (attrVal == ""){
+			console.log(element);
+			throw "dData PouchDB Extension: save attribute requires an argument!";
+		}
 		if (dbChangeHandlers[attrVal] == undefined){dbChangeHandlers[attrVal] = {};}
 		var dRoot = dData.findRootDData(element);
 
@@ -134,6 +137,7 @@ function generateUUID() {
 		 element.addEventListener("click", function(event){
 			var obj = dRoot.value;
 			obj._id = obj._id || generateUUID();
+			obj.type = obj.type || attrVal;
 			selfSaved = true;
 			db.put(obj).then(function(doc){
 				dRoot.value = {_id: doc.id, _rev: doc.rev};

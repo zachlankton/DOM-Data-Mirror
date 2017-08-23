@@ -1,9 +1,33 @@
 <template id="pouchdb">
     <h1>PouchDB Extension</h1>
+    <p> The PouchDB Extension registers a single database defined in the top line of the extension itself.
+        A "type" field (aka doctype) is used to filter groups or categories of documents.
+        Because documents can have any structure and there is no schema to define them, it is helpful to
+        have a "type" to help us group similar documents.  This is similar to the "table" pattern in 
+        SQL style databases... in fact, here they are practically identical... "doctype" == "table". 
+        So where you may have a table in an SQL db named 'PurchaseOrders', here you have a field named
+        "type" that has the value "PurchaseOrders" inside the purchase order document itself.  
+    </p>
+
+    <p>The PouchDB Extension uses the "type" field to ensure basic lists of similar documents (or tables)
+    are able to be quickly and accurately generated.  Almost, all the attributes on this extension will require a "type"
+    parameter.</p>
+
+    <p>This extension provides you with several attributes that enable you to quickly create lists,
+    tables, and forms that are wired up to:
+        <ul>
+            <li>Provide basic CRUD Operation functions</li>
+            <li>Listen for and respond to changes on a list or table of documents</li>
+            <li>Listen for and respond to changes on a document</li>
+            <li>All of the above with little or no javascript</li>
+        </ul>
+    </p>
 
     <a name="PouchBasicUsage"></a>
     <h2>Basic Usage (with Router)</h2>
-    <p> This is a complete working example of the basic usage of the pouch db extension.
+    <p> This is a complete working example of the basic usage of the pouch db extension with the router.
+        
+    </p>
 
     <pre><code class="language-markup">
 &lt;html&gt;
@@ -60,21 +84,101 @@
 
 <a name="pouchLoad"> </a> 
 <h3> pouch-load <span class="tag attribute">Attribute</span></h3>
+<code-block>
+    Syntax: pouch-load="expression"
+</code-block>
+
+<h5>Arguments</h5>
+<ul>
+    <li><code>{expression} expression</code>: any valid javascript expression</li>
+</ul>
+
+<p>This attribute will load the d-data element it is attached to with the data 
+returned by the expression.  It is required that the element this attribute is attached to
+is also a d-Data element (has the d-data attribute)</p>
 
 <a name="pouchList"> </a> 
 <h3> pouch-list <span class="tag attribute">Attribute</span></h3>
+<code-block>
+    Syntax: pouch-list="doctype"
+</code-block>
+
+<br><strong>Arguments</strong>
+<ul>
+    <li><code>{string} doctype</code>: the value of the "type" field to filter the pouchdb list results with</li>
+</ul>
+
+<p>This attribute will fetch a list of all documents that are of the type defined in the parameter of the attribute.
+It will then generate a list using the d-data element it is attached to.  It is expected
+that this attribute will be used on d-data child elements. (d-data elements
+that are nested inside of other d-data elements)</p>
 
 <a name="pouchNew">  </a> 
 <h3> new <span class="tag attribute">Attribute</span></h3>
+<code-block>
+    Syntax: new="doctype"
+</code-block>
+
+<br><strong>Arguments</strong>
+<ul>
+    <li><code>{string} doctype</code>: the value of the "type" field to set in the reset form</li>
+</ul>
+
+<p>An attribute for reseting forms.
+This attribute is designed to be attached to clickable elements like buttons.  It will wire 
+up a click handler to whatever element it is attached to.  When this element is clicked
+it will reset the nearest ancestor d-data element's named fields to empty values, except
+the 'type' field.</p>
 
 <a name="pouchSave">  </a> 
 <h3> save <span class="tag attribute">Attribute</span></h3>
+<code-block>
+    Syntax: save="doctype"
+</code-block>
+
+<br><strong>Arguments</strong>
+<ul>
+    <li><code>{string} doctype</code>: the value of the "type" field to save to</li>
+</ul>
+
+<p>This attribute is for saving forms to the database.  It is meant to be used on clickable
+elements, such as buttons.  It will wire up a click handler to whatever element it is attached
+to.  When the element is clicked it will get the nearest ancestor d-data element's value and then
+save that to the database.  If the form has a "type" field, it will use this as the doctype to save to.
+If not, it will use the doctype defined in the parameter of the attribute.</p>
 
 <a name="pouchDelete">  </a> 
 <h3> delete <span class="tag attribute">Attribute</span></h3>
+<code-block>
+    Syntax: delete
+</code-block>
+
+<br><strong>No Arguments<strong>
+
+<p>The delete attribute is designed to be used on clickable elements, such as buttons.  It will wire up
+a click handler on whatever element it is attached to.  When the element is clicked it will get the 
+nearest ancestor d-data element's '_id' field and delete that document in the database.</p>
 
 <a name="pouchForm">  </a> 
 <h3> form <span class="tag attribute">Attribute</span></h3>
-                    
+<code-block>
+    Syntax: 
+    <ul>
+        <li>form="dData.elemName"</li>
+        <li>form="scope.elemName"</li>
+    </ul>
+</code-block>
+
+<br><strong>Arguments</strong>
+<ul>
+    <li><code>{Object} dData</code>: the dData global object</li>
+    <li><code>{Object} scope</code>: the dData global object, different name defined in scope attribute</li>
+    <li><code>{Object} elemName</code>: the dData object name that you want to use</li>
+</ul>
+     
+<p>This attribute is designed to be used on clickable elements, such as a button.  It will wire up
+a click handler on whatever element it is attached to.  When the element is clicked it will get the
+value of the nearest ancestor d-data element and assign it to the value of the d-data element defined
+in the parameter of the attribute.</p>
 
 </template>
