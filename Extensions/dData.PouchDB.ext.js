@@ -1,4 +1,4 @@
-var db = new PouchDB("mmpmg");
+var db = new PouchDB("dDataPouchDB");
 var dbChangeHandlers = {};
 
 db.createIndex({

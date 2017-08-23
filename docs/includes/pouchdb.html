@@ -1,6 +1,9 @@
 <template id="pouchdb">
     <h1>PouchDB Extension</h1>
-    <p> The PouchDB Extension registers a single database defined in the top line of the extension itself.
+    <p> The PouchDB Extension registers a single database on the local machine.
+        This gives the application offline capability out of the box.
+        For more info on PouchDB, visit <a href="https://pouchdb.com/" target="_blank">pouchdb.com</a></p>
+        <p>
         A "type" field (aka doctype) is used to filter groups or categories of documents.
         Because documents can have any structure and there is no schema to define them, it is helpful to
         have a "type" to help us group similar documents.  This is similar to the "table" pattern in 
@@ -90,12 +93,33 @@
 
 <h5>Arguments</h5>
 <ul>
-    <li><code>{expression} expression</code>: any valid javascript expression</li>
+    <li><code>{expression} expression</code>: any valid javascript expression that returns a document id</li>
 </ul>
 
-<p>This attribute will load the d-data element it is attached to with the data 
-returned by the expression.  It is required that the element this attribute is attached to
-is also a d-Data element (has the d-data attribute)</p>
+<p>This attribute will get the pouchdb document that matches the id returned by the expression and assign it to the value
+of the d-data element it is attached to.  It is required that the element this attribute is attached to
+is also a d-Data element (has the d-data attribute).</p>
+
+<h5>Examples</h5>
+<pre><code class="language-markup">
+    &lt;script&gt; 
+        db.put({_id: &quot;test&quot;, testVal: &quot;Hello World!&quot; }); 
+        var testObj = {id: &quot;test&quot;};
+        function getID(){return &quot;test&quot;;}
+    &lt;/script&gt;
+
+    &lt;div d-data name=&quot;loadTest1&quot; pouch-load=&quot;'test'&quot;&gt; &lt;!-- String Expression --&gt;
+        &lt;h1 name=&quot;testVal&quot;&gt;&lt;/h1&gt; &lt;!-- &lt;h1&gt;Hello World!&lt;/h1&gt; --&gt;
+    &lt;/div&gt;
+
+    &lt;div d-data name=&quot;loadTest2&quot; pouch-load=&quot;testObj.id&quot;&gt; &lt;!-- Obj/Var Expression --&gt;
+        &lt;h1 name=&quot;testVal&quot;&gt;&lt;/h1&gt; &lt;!-- &lt;h1&gt;Hello World!&lt;/h1&gt; --&gt;
+    &lt;/div&gt;
+
+    &lt;div d-data name=&quot;loadTest3&quot; pouch-load=&quot;getID()&quot;&gt; &lt;!-- Function Expression --&gt;
+        &lt;h1 name=&quot;testVal&quot;&gt;&lt;/h1&gt; &lt;!-- &lt;h1&gt;Hello World!&lt;/h1&gt; --&gt;
+    &lt;/div&gt;
+</code></pre>
 
 <a name="pouchList"> </a> 
 <h3> pouch-list <span class="tag attribute">Attribute</span></h3>
@@ -112,6 +136,37 @@ is also a d-Data element (has the d-data attribute)</p>
 It will then generate a list using the d-data element it is attached to.  It is expected
 that this attribute will be used on d-data child elements. (d-data elements
 that are nested inside of other d-data elements)</p>
+
+<h5>Examples</h5>
+<pre><code class="language-markup">
+    &lt;script&gt;
+        db.put({_id: &quot;listTest1&quot;, type: &quot;listTest&quot;, item: &quot;Item 1&quot;});
+        db.put({_id: &quot;listTest2&quot;, type: &quot;listTest&quot;, item: &quot;Item 2&quot;});
+        db.put({_id: &quot;listTest3&quot;, type: &quot;listTest&quot;, item: &quot;Item 3&quot;});
+    &lt;/script&gt;
+
+    &lt;ul d-data name=&quot;listExample&quot;&gt;
+        &lt;li d-data name=&quot;listItem&quot; pouch-list=&quot;listTest&quot;&gt;
+            &lt;p name=&quot;item&quot;&gt;&lt;/p&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;!-- THIS WILL RENDER INTO 
+
+    &lt;ul d-data name=&quot;listExample&quot;&gt;
+        &lt;li d-data name=&quot;listItem&quot; pouch-list=&quot;listTest&quot;&gt;
+            &lt;p name=&quot;item&quot;&gt;Item 1&lt;/p&gt;
+        &lt;/li&gt;
+        &lt;li d-data name=&quot;listItem&quot; pouch-list=&quot;listTest&quot;&gt;
+            &lt;p name=&quot;item&quot;&gt;Item 2&lt;/p&gt;
+        &lt;/li&gt;
+        &lt;li d-data name=&quot;listItem&quot; pouch-list=&quot;listTest&quot;&gt;
+            &lt;p name=&quot;item&quot;&gt;Item 3&lt;/p&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+
+    --&gt;
+</code></pre>
 
 <a name="pouchNew">  </a> 
 <h3> new <span class="tag attribute">Attribute</span></h3>
@@ -130,6 +185,16 @@ up a click handler to whatever element it is attached to.  When this element is 
 it will reset the nearest ancestor d-data element's named fields to empty values, except
 the 'type' field.</p>
 
+<h5>Examples</h5>
+<pre><code class="language-markup">
+    &lt;div d-data name=&quot;testForm&quot;&gt;
+        &lt;input name=&quot;firstName&quot;&gt;  &lt;!-- This value will be reset --&gt;
+        &lt;input name=&quot;lastName&quot;&gt;   &lt;!-- This value will be reset --&gt;
+        &lt;input type=&quot;hidden&quot; name=&quot;type&quot;&gt;  &lt;!-- This value will be set to 'test'--&gt;
+        &lt;button new=&quot;test&quot;&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+</code></pre>
+
 <a name="pouchSave">  </a> 
 <h3> save <span class="tag attribute">Attribute</span></h3>
 <code-block>
@@ -147,17 +212,55 @@ to.  When the element is clicked it will get the nearest ancestor d-data element
 save that to the database.  If the form has a "type" field, it will use this as the doctype to save to.
 If not, it will use the doctype defined in the parameter of the attribute.</p>
 
+<p>If the ID is not defined it will be randomly generated and this will create a new document.
+If the '_id' and '_rev' fields are defined (which will be automatically if you use the 'pouch-load' attribute
+to load an existing doc)
+then the existing document will be updated.</p>
+
+<h5>Examples</h5>
+<pre><code class="language-markup">
+    &lt;div d-data name=&quot;testForm&quot;&gt;
+        &lt;input name=&quot;firstName&quot; value=&quot;John&quot;&gt;  
+        &lt;input name=&quot;lastName&quot; value=&quot;Smith&quot;&gt;   
+        &lt;button save=&quot;test&quot;&gt;Save&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;!--  Clicking Save will run pouchDB put method: 
+            db.put({_id: 123, type: &quot;test&quot;, firstName: &quot;John&quot;, lastName: &quot;Smith&quot;})
+
+            note: the id will be randomly generated
+    --&gt;
+</code></pre>
+
 <a name="pouchDelete">  </a> 
 <h3> delete <span class="tag attribute">Attribute</span></h3>
 <code-block>
     Syntax: delete
 </code-block>
 
-<br><strong>No Arguments<strong>
+<h5>No Arguments</h5>
 
 <p>The delete attribute is designed to be used on clickable elements, such as buttons.  It will wire up
 a click handler on whatever element it is attached to.  When the element is clicked it will get the 
 nearest ancestor d-data element's '_id' field and delete that document in the database.</p>
+
+<p>This attribute works in any d-data scope, but it's intended to be used inside one that was generated
+using pouch-list.  You will find that you have to do some extra work to make things clear or go away if
+used in other scopes.</p>
+
+<h5>Examples</h5>
+<pre><code class="language-markup">
+    &lt;script&gt; 
+        db.put({_id: &quot;test&quot;, type: &quot;list&quot;, testVal: &quot;Hello World!&quot; }); 
+    &lt;/script&gt;
+
+    &lt;div d-data name=&quot;deleteTest&quot;&gt; 
+        &lt;div d-data name=&quot;listTest&quot; pouch-list=&quot;list&quot;&gt;
+            &lt;h1 name=&quot;testVal&quot;&gt;&lt;/h1&gt; 
+            &lt;button delete &gt;Delete&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+</code></pre>
 
 <a name="pouchForm">  </a> 
 <h3> form <span class="tag attribute">Attribute</span></h3>
