@@ -19,7 +19,10 @@ dData.elementValueHandler = {}; // An Object to store custom element value handl
 
 function registerDData(dDataProto){
         
-    if (dDataProto.hasOwnProperty("value") ){return 0; /* this element has already been registered */ }
+    if (dDataProto.hasOwnProperty("value") ){
+        setupRootDData(dDataProto);
+        return 0; /* this element has already been registered */ 
+    }
     
     // these are the core properties of d-data which provide its main functionality
     Object.defineProperty(dDataProto, "value", { get: valueGetter, set: dataRender, enumerable: true }  );
@@ -91,7 +94,9 @@ function registerDData(dDataProto){
             }
 
             if (scope[dDataProto.name] == undefined){
-                Object.defineProperty(scope, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true } );    
+                Object.defineProperty(scope, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true, configurable: true } );    
+            }else if (dDataProto.isConnected){
+                Object.defineProperty(scope, dDataProto.name, { get: valueGetter, set: dataRender, enumerable: true, configurable: true } );    
             }
             
             if (initialData) {scope[dDataProto.name] = initialData;}
