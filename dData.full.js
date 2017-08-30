@@ -919,7 +919,11 @@ function registerDData(dDataProto){
     });
 
     function updateView(){
+        if (viewPort == null){return 0;} // There is no view port
         var template = getTemplate();
+        if (template == null){
+            console.log("dData Router Template Not Defined: " + hash)
+        }
         template = template || errorTemplate;
         var clone = document.importNode(template.content, true);
         viewPort.innerHTML = "";
