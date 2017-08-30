@@ -86,7 +86,7 @@
           }
         }
 
-        var view = document.querySelector('[router-view]');
+        var view;
                 
 var initialHTML = `
         <div d-data="" name="addNew" has-d-data-children="true">
@@ -101,20 +101,20 @@ var initialHTML = `
     `;
 
         document.addEventListener("DOMContentLoaded", function(){
-
+			view = document.querySelector('[router-view]');
             initialTests();
-                
+             
         });
 
         function initialTests(){
             setTimeout(function(){
                 var idVal = dData.addNew._id;
 
-                wait(100);
+                
                 equal("checkGenUUID", idVal.length, 37);
 
                 dData.addNew._id = "";
-                wait(100);
+                
                 equal("initialViewTest", view.innerHTML, initialHTML);
                 dData.addNew._id = idVal;
                 
@@ -126,7 +126,7 @@ var initialHTML = `
                     equal("checkInitialData", data.docs.length, 0);
                     startTestSet2();
 				});		 
-            },100);
+            },300);
         }
 
         function startTestSet2(secondTest){
@@ -137,7 +137,7 @@ var initialHTML = `
 
             setTimeout(function(){
                 equal(testName, typeof(router.id), "string");
-            },100);
+            },300);
 
             var expectedDocs = 1;
             if (secondTest){expectedDocs = 2;}
@@ -193,7 +193,7 @@ var initialHTML = `
                 equal("pouchListTest", list.value.children[0].child, "Item 1");
                 
                 startTestSet2(true);
-            }, 100);
+            }, 300);
             
         }
 
@@ -204,7 +204,7 @@ var initialHTML = `
                 equal("checkListAgain", dData.test.children.length, 2);
 
                 startTestSet6();
-            },100);
+            },300);
                 
         }
 
@@ -218,7 +218,7 @@ var initialHTML = `
 
             setTimeout(function(){
                 equal("deleteBothItems", dData.test.children, undefined);
-            },100);
+            },300);
         }
         
 
