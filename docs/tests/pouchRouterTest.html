@@ -1,0 +1,228 @@
+<html>
+    <head>
+        <script src="pouchdb.js" type="text/javascript"></script>
+        <script src="pouchdb.find.js" type="text/javascript"></script>
+        <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script>
+        
+        <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/Extensions/dData.PouchDB.ext.js"></script>
+        <script>
+            function wait(ms) {
+                var start = Date.now(),
+                    now = start;
+                while (now - start < ms) {
+                  now = Date.now();
+                }
+            }
+        </script>
+    </head>
+    <body>
+    <h1>Pouch Extension and Router Tests</h1>
+    
+    <div router-view></div>
+
+    <template route="/">
+        <div d-data name="addNew">
+            <input type="hidden" name="_id" load="generateUUID()">
+            <input type="hidden" name="type" value="children">
+            <button save="children" set-route="/:_id">Add New</button>
+        </div>
+        <div d-data name="test" style="border: 1px solid">
+            <h1>List</h1>
+            <div d-data name="children" pouch-list set-route="/:_id">
+                <p>
+                    <span name="_id"></span> - 
+                    <span name="child">Child</span>
+                    <button delete set-route="/">Delete</button>
+                </p>
+                
+            </div>
+        </div>
+    </template>
+
+    <template route="/:id">
+        <div d-data name="childForm" style="border: 1px solid" pouch-load="router.id">
+            <h1>Form</h1>
+            <button save="children" >Save</button> <br>
+            <p name="_id"></p>
+            ChildName: <input name="child">
+        </div>
+    </template>
+
+    <ol>
+        <li id="checkGenUUID">Check ID Generator ( generateUUID() )</li>
+        <li id="initialViewTest">Initial View</li>
+        <li id="checkInitialData">Check Initial Data</li>
+        <li id="addNewTestRouter">Add New (Set Route)</li>
+        <li id="addNewTestPouchSave">Add New (Pouch Save)</li>
+        <li id="setChildName">Set Child Name 'Item 1' and Save (Pouch Save)</li>
+        <li id="onHashChangeTest">On Hash Change Test (Router - Simulates back button)</li>
+        <li id="pouchListTest">Check Pouch List</li>
+        <li id="addSecondChildTest">Add New a second time</li>
+        <li id="saveSecondChildTest">Save Second Child Test</li>
+        <li id="setChildName2">Set second childname to 'Item 2' and Save</li>
+        <li id="dDataShortcutBug">Check dData Shortcut works (Bug -- Route Changes cause shortcut to lose reference to actual connected elements)</li>
+        <li id="setHashTest">Set Main Hash ('/')... (Router Hash Change Event)</li>
+        <li id="checkListAgain">Check Pouch List for 2 items</li>
+        <li id="deleteBothItems">Delete Both Items using the buttons</li>
+    </ol>
+
+    <script>
+        function equal(id, value1, value2){
+            var elem = document.getElementById(id);
+            if (value1 == value2){
+                elem.style.backgroundColor = "green";
+            }else{
+                elem.style.backgroundColor = "red";
+            }
+        }
+
+        function eventFire(el, etype){
+          if (el.fireEvent) {
+            el.fireEvent('on' + etype);
+          } else {
+            var evObj = document.createEvent('Events');
+            evObj.initEvent(etype, true, false);
+            el.dispatchEvent(evObj);
+          }
+        }
+
+        var view = document.querySelector('[router-view]');
+                
+var initialHTML = `
+        <div d-data="" name="addNew" has-d-data-children="true">
+            <input type="hidden" name="_id" load="generateUUID()" value="">
+            <input type="hidden" name="type" value="children">
+            <button save="children" set-route="/:_id">Add New</button>
+        </div>
+        <div d-data="" name="test" style="border: 1px solid" has-d-data-children="true">
+            <h1>List</h1>
+            
+        </div>
+    `;
+
+        document.addEventListener("DOMContentLoaded", function(){
+
+            initialTests();
+                
+        });
+
+        function initialTests(){
+            setTimeout(function(){
+                var idVal = dData.addNew._id;
+
+                wait(100);
+                equal("checkGenUUID", idVal.length, 37);
+
+                dData.addNew._id = "";
+                wait(100);
+                equal("initialViewTest", view.innerHTML, initialHTML);
+                dData.addNew._id = idVal;
+                
+                db.find({
+				  selector: {
+					type: "children"
+				  }
+				}).then(function(data){
+                    equal("checkInitialData", data.docs.length, 0);
+                    startTestSet2();
+				});		 
+            },100);
+        }
+
+        function startTestSet2(secondTest){
+            var testName = "addNewTestRouter";
+            if (secondTest){testName = "addSecondChildTest"}
+            var addBtn = document.querySelector("[save=children]");
+            addBtn.click();
+
+            setTimeout(function(){
+                equal(testName, typeof(router.id), "string");
+            },100);
+
+            var expectedDocs = 1;
+            if (secondTest){expectedDocs = 2;}
+
+            var test2Name = "addNewTestPouchSave";
+            if (secondTest){test2Name = "saveSecondChildTest"}
+            
+            db.find({
+				  selector: {
+                type: "children"
+              }
+            }).then(function(data){
+                equal(test2Name, data.docs.length, expectedDocs);
+                startTestSet3(secondTest);
+            });	
+        }
+
+        function startTestSet3(secondTest){
+            var itemName = "Item 1";
+            var docIndex = 0;
+            var testName = "setChildName";
+            if (secondTest) {itemName = "Item 2"; docIndex = 1; testName = "setChildName2"}
+            dData.childForm.child = itemName;
+            var saveBtn = document.querySelector("[save=children]")
+            saveBtn.click();
+
+            db.find({
+				  selector: {
+                type: "children",
+                child: itemName
+              }
+            }).then(function(data){
+                
+                equal(testName, data.docs[0].child, itemName);
+                
+                if (secondTest){
+                    equal("dDataShortcutBug", data.docs[0].child, itemName);
+                    startTestSet5();
+                }else{
+                    startTestSet4();
+                }
+                
+            });	
+        }        
+
+        function startTestSet4(){
+            history.back();
+
+            setTimeout(function(){
+                equal("onHashChangeTest", view.querySelectorAll('[d-data]').length, 3);
+
+                var list = view.querySelector("[name=test]");
+                equal("pouchListTest", list.value.children[0].child, "Item 1");
+                
+                startTestSet2(true);
+            }, 100);
+            
+        }
+
+        function startTestSet5(){
+            location.hash = "/";
+            setTimeout(function(){
+                equal("setHashTest", dData.test.children.length, 2);
+                equal("checkListAgain", dData.test.children.length, 2);
+
+                startTestSet6();
+            },100);
+                
+        }
+
+        function startTestSet6(){
+            window.confirm = function(){return true;}
+            
+            var delBtns = document.querySelectorAll("[delete]");
+            for (var i=0; i<2; i++){
+                delBtns[i].click();
+            }
+
+            setTimeout(function(){
+                equal("deleteBothItems", dData.test.children, undefined);
+            },100);
+        }
+        
+
+    </script>
+    
+    </body>
+</html>
