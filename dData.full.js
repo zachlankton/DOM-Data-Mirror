@@ -684,10 +684,15 @@ function registerDData(dDataProto){
         var className = attrSplit[0];
         var name = attrSplit[1];
         var expression = attrSplit[2];
-        dDataElement.valueElementTree[name].addEventListener("change", dClass);
-        dDataElement.valueElementTree[name].addEventListener("dDataRendered", dClass);
+        var elements = dDataElement.querySelectorAll("[name='"+name+"']");
+        for (var i=0; i<elements.length; i++){
+            elements[i].addEventListener("change", dClass);
+            elements[i].addEventListener("dDataRendered", dClass);    
+        }
+        
 
         function dClass(event){
+            if (dDataElement.value[name] == undefined){return 0;}
             if (dDataElement.value[name].toString() == expression ){
                 element.classList.add(className);
             }else{
@@ -751,11 +756,15 @@ function registerDData(dDataProto){
     function setRadio(element,value){
         var name = element.getAttribute("name");
         if (value == undefined){
-            document.querySelector("input[name='"+name+"']:checked").checked = false;
+            var elem = document.querySelector("input[name='"+name+"']:checked");
+            elem.checked = false;
+            elem.dispatchEvent(new Event("dDataRendered"));
             return 0;
         }
         var dParent = dData.findNearestDDataParent(element);
-        dParent.querySelector("input[value='"+value+"']").checked = true;
+        var elem = dParent.querySelector("input[value='"+value+"']")
+        elem.checked = true;
+        elem.dispatchEvent(new Event("dDataRendered"));
     }
 
     evHandler.INPUT = function(data, element, elementName, emitDataRendered){
@@ -785,6 +794,7 @@ function registerDData(dDataProto){
 
         var radioSet = function(newVal){
             setRadio(element,newVal);
+            emitDataRendered(element);
         }
 
         var propObj = {
