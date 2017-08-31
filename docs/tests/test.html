@@ -1,5 +1,5 @@
 <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script>
-
+<!-- <script src="../../dData.full.js"></script> -->
 
 <h1>Tests</h1>
 <ol>
@@ -45,6 +45,8 @@
   <li id="setEmptyObjectTest">Set dData to empty object</li>
   <li id="objectAssignmentTest">dData Object Assignment Test</li>
   <li id="overloadingTest">OVERLOADING Test</li>
+  <li id="dClassRadioTest">d-class and Radios BUG Test - <a href="https://github.com/zachlankton/DOM-Data-Mirror/commit/d47b64295a9a74faefd51ddb1e4df5e4ec8cd3a6">commit # d47b64295a9a74faefd51ddb1e4df5e4ec8cd3a6</a> </li>
+  <li id="hideAttrTest">Hide Attribute Test</li>
 </ol>
 <hr>
 
@@ -90,17 +92,26 @@
         ]
     } } };
 
+    function hideTest(){
+      return document.querySelector("[name=checkTest]").checked;
+    }
 </script>
 
+<style>
+  .red {
+    background-color:red;
+
+  }
+</style>
 <div d-data name="Profile">
     First Name: <input name="firstName" />  <br />
     Last Name: <input name="lastName" />   <br />
     Married: <input type="checkbox" name="checkTest"> <br>
-    <label>Hair Color: </label>
+    <label d-class="red:radioTest:red" id="hairColorLabel">Hair Color: </label>
     Blonde<input type="radio" name="radioTest" value="blonde">
     Brown<input type="radio" name="radioTest" value="brown">
     Red<input type="radio" name="radioTest" value="red"><br>
-    <select name="selectTest">
+    <select name="selectTest" hide="hideTest">
       <option value="test1">Test1</option>
       <option value="test2">Test2</option>
       <option value="test3">Test3</option>
@@ -504,6 +515,18 @@ var scopeTestHTML = `
   oat = oat && cars2[0].car == "Trailblazer";
   oat = oat && cars2[1].car == "Cobalt";
   equal("overloadingTest", oat, true);
+
+  var hairColor = document.getElementById("hairColorLabel");
+  var dClassRadioTest = hairColor.classList.contains("red") == true;
+  dData.Profile.radioTest = "brown";
+  dClassRadioTest = dClassRadioTest && hairColor.classList.contains("red") == false;
+  equal("dClassRadioTest", dClassRadioTest, true);
+
+  var hiddenElement = dData.Profile.elementTree.selectTest;
+  var hideCheck = hiddenElement.hidden == true;
+  dData.Profile.checkTest = false;
+  hideCheck = hideCheck && hiddenElement.hidden == false;
+  equal("hideAttrTest", hideCheck, true);
 </script>
 
 
