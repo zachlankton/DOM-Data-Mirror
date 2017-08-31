@@ -4,7 +4,7 @@
 <h1>Tests</h1>
 <ol>
   <li id="initialData">Initial Data Test</li>
-  <li id="initialHTML">Initial HTML Test</li>
+<!--   <li id="initialHTML">Initial HTML Test</li> -->
   <li id="scopeTest"> Scope Test <a href="https://github.com/zachlankton/DOM-Data-Mirror/issues/1">(GitHub Issue #1)</a></li>
   <li id="setFirstName">Set First Name</li>
   <li id="initCheckBox">Initial Check Box Value</li>
@@ -377,7 +377,7 @@ var scopeTestHTML = `
 
 
   equal("initialData", initialDData, JSON.stringify(dData.Profile) );
-  equal("initialHTML", initialHTML, dData.Profile.element.innerHTML);
+  //equal("initialHTML", initialHTML, dData.Profile.element.innerHTML);
   equal("scopeTest", scopeTestHTML, document.getElementById("scopeTestHTML").innerHTML);
 
   dData.Profile.elementTree.firstName.value = "John"

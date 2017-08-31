@@ -1,10 +1,28 @@
 <html>
     <head>
         
-        <title>Simple Router</title>
-        <script src="dData.full.js"></script>
-        <script src="router.js"></script>
-        <link rel="stylesheet" href="styles.css">
+        <title>Simple CRUD App & Router</title>
+        <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script>
+<!--         <script src="../../dData.full.js"></script> -->
+        <style>
+            .logo {
+              width: 75px;
+              float: left;
+              margin-right: 15px;
+            }
+
+            .form-group {
+              max-width: 500px;
+            }
+
+            .actions {
+              padding: 10px 0;
+            }
+
+            .glyphicon-euro {
+              font-size: 12px;
+            }
+        </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css" >
         <script>
@@ -13,6 +31,15 @@
               {id: 2, name: 'Ember', description: 'A framework for creating ambitious web applications.', price: 100},
               {id: 3, name: 'React', description: 'A JavaScript Library for building user interfaces.', price: 100}
             ]};
+
+            function equal(id, value1, value2){
+                  var elem = document.getElementById(id);
+                  if (value1 == value2){
+                    elem.style.backgroundColor = "green";
+                  }else{
+                    elem.style.backgroundColor = "red";
+                  }
+              }
         </script>
     </head>
     <body>
@@ -20,17 +47,24 @@
     <div class="container">
       <header class="page-header">
         <div class="branding">
-          <h1>dData CRUD application</h1>
+          <h1>dData CRUD application with Router</h1>
           <p>Ported from: <a href="https://codepen.io/-a/pen/amOYGp">Vue.js CRUD application</a></p>
         </div>
       </header>
+      <h1>Tests</h1>
+      <ol>
+        <li id="loadAttrTest">Load Attribute</li>
+        <li id="assignAttrTest">Assign Attribute</li>
+        <li id="pushAttrTest">Push Attribute</li>
+        <li id="evalAttrTest">Eval Attribute</li>
+      </ol>
       <main router-view>
         
       </main>
     </div>
 
     <template route="/">
-        <div d-data name="app" set="app">
+        <div d-data name="app" load="app">
             <button class="btn btn-default" set-route="/add-product">Add Product</button>
             <div class="filters row">
               <div class="form-group col-sm-3">
@@ -41,7 +75,10 @@
             <table class="table">
               <thead>
               <tr>
-                <th>Name</th>
+                <th>Name 
+                    <button sort="products:name">&#9650</button>
+                    <button sort="products:name:desc">&#9660</button>
+                </th>
                 <th>Description</th>
                 <th>Price</th>
                 <th class="col-sm-2">Actions</th>
@@ -69,7 +106,7 @@
         <div d-data name="newProduct">
             <h2>Add new product</h2>
             <div>
-                <input type="hidden" name="id" set="Math.random()" >
+                <input type="hidden" name="id" load="Math.random()" >
                 <div class="form-group">
                     <label for="add-name">Name</label>
                     <input class="form-control" name="name" required/>
@@ -125,7 +162,7 @@
     </template>
 
     <template id="productDelete" route="/product/:product_id/delete">
-        <div d-data name="deleteProd" set="app.products.get({id: router.product_id})">
+        <div d-data name="deleteProd" load="app.products.get({id: router.product_id})">
             <h2>Delete product <span name="name"></span></h2>
             
               <p>The action cannot be undone.</p>
@@ -140,5 +177,73 @@
         <h1>Route not found!</h1>
     </template>
 
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+
+            // Load Attribute Tests
+            var prods = dData.app.products;
+            var lat = prods.length == 3;
+            var lat = lat && prods[0].name == "Angular";
+            var lat = lat && prods[1].name == "Ember";
+            var lat = lat && prods[2].name == "React";
+            equal("loadAttrTest", lat, true);
+
+            // Assign Attribute Tests
+            location.hash = "/product/1/edit";
+
+            setTimeout(function(){
+                dData.productEdit.name = "Angular 2.0";
+                document.querySelector("[assign]").click();
+                runStep2();
+            },300);
+            
+            function runStep2(){
+                setTimeout(function(){
+                    var aat = app.products[0].name == "Angular 2.0";
+                    equal("assignAttrTest", aat, true);
+                    location.hash = "/add-product";
+                    runStep3();
+                },300);
+            }
+
+
+            // Push Attribute Tests
+            function runStep3(){
+                setTimeout(function(){
+                    dData.newProduct.name = "dData"
+                    document.querySelector("[push]").click();
+                    runStep4();
+                },300);
+            }
+
+            function runStep4(){
+                setTimeout(function(){
+                    var pat = app.products.get({name:"dData"}).name == "dData";
+                    equal("pushAttrTest", pat, true);
+                    location.hash = "/product/1/delete";
+                    runStep5();
+                },300);
+            }
+
+            // Eval Attribute Test
+            function runStep5(){
+                setTimeout(function(){
+                    document.querySelector("[eval]").click();
+                    runStep6();
+                },300);
+            }
+
+            function runStep6(){
+                setTimeout(function(){
+                    var eat = app.products.get({name:"Angular 2.0"}).name == undefined
+                    equal("evalAttrTest", eat, true);
+                },300);
+            }
+                    
+        });
+        
+
+    </script>
     </body>
 </html>
