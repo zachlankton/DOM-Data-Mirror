@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <title>Sequential Library of Babel</title>
+        <style>
+            textarea {
+                width: 1000px;
+                height: 200px;
+            }
+        </style>
+        
+        <script>
+            // https://github.com/peterolson/BigInteger.js Big Integer Library (Slightly modified for this application)
+            var bigInt=function(t){"use strict";function r(t,e){return"undefined"==typeof t?r[0]:"undefined"!=typeof e?10===+e?T(t):Y(t,e):T(t)}function e(t,r){this.value=t,this.sign=r,this.isSmall=!1}function n(t){this.value=t,this.sign=0>t,this.isSmall=!0}function o(t){return t>-F&&F>t}function i(t){return 1e7>t?[t]:1e14>t?[t%1e7,Math.floor(t/1e7)]:[t%1e7,Math.floor(t/1e7)%1e7,Math.floor(t/1e14)]}function u(t){a(t);var r=t.length;if(4>r&&P(t,G)<0)switch(r){case 0:return 0;case 1:return t[0];case 2:return t[0]+t[1]*_;default:return t[0]+(t[1]+t[2]*_)*_}return t}function a(t){for(var r=t.length;0===t[--r];);t.length=r+1}function s(t){for(var r=new Array(t),e=-1;++e<t;)r[e]=0;return r}function p(t){return t>0?Math.floor(t):Math.ceil(t)}function f(t,r){var e,n,o=t.length,i=r.length,u=new Array(o),a=0,s=_;for(n=0;i>n;n++)e=t[n]+r[n]+a,a=e>=s?1:0,u[n]=e-a*s;for(;o>n;)e=t[n]+a,a=e===s?1:0,u[n++]=e-a*s;return a>0&&u.push(a),u}function l(t,r){return t.length>=r.length?f(t,r):f(r,t)}function h(t,r){var e,n,o=t.length,i=new Array(o),u=_;for(n=0;o>n;n++)e=t[n]-u+r,r=Math.floor(e/u),i[n]=e-r*u,r+=1;for(;r>0;)i[n++]=r%u,r=Math.floor(r/u);return i}function v(t,r){var e,n,o=t.length,i=r.length,u=new Array(o),s=0,p=_;for(e=0;i>e;e++)n=t[e]-s-r[e],0>n?(n+=p,s=1):s=0,u[e]=n;for(e=i;o>e;e++){if(n=t[e]-s,!(0>n)){u[e++]=n;break}n+=p,u[e]=n}for(;o>e;e++)u[e]=t[e];return a(u),u}function y(t,r,o){var i;return P(t,r)>=0?i=v(t,r):(i=v(r,t),o=!o),i=u(i),"number"==typeof i?(o&&(i=-i),new n(i)):new e(i,o)}function g(t,r,o){var i,a,s=t.length,p=new Array(s),f=-r,l=_;for(i=0;s>i;i++)a=t[i]+f,f=Math.floor(a/l),a%=l,p[i]=0>a?a+l:a;return p=u(p),"number"==typeof p?(o&&(p=-p),new n(p)):new e(p,o)}function c(t,r){var e,n,o,i,u,p=t.length,f=r.length,l=p+f,h=s(l),v=_;for(o=0;p>o;++o){i=t[o];for(var y=0;f>y;++y)u=r[y],e=i*u+h[o+y],n=Math.floor(e/v),h[o+y]=e-n*v,h[o+y+1]+=n}return a(h),h}function d(t,r){var e,n,o=t.length,i=new Array(o),u=_,a=0;for(n=0;o>n;n++)e=t[n]*r+a,a=Math.floor(e/u),i[n]=e-a*u;for(;a>0;)i[n++]=a%u,a=Math.floor(a/u);return i}function m(t,r){for(var e=[];r-->0;)e.push(0);return e.concat(t)}function w(t,r){var e=Math.max(t.length,r.length);if(30>=e)return c(t,r);e=Math.ceil(e/2);var n=t.slice(e),o=t.slice(0,e),i=r.slice(e),u=r.slice(0,e),s=w(o,u),p=w(n,i),f=w(l(o,n),l(u,i)),h=l(l(s,m(v(v(f,s),p),e)),m(p,2*e));return a(h),h}function b(t,r){return-.012*t-.012*r+15e-6*t*r>0}function M(t,r,n){return _>t?new e(d(r,t),n):new e(c(r,i(t)),n)}function q(t){var r,e,n,o,i,u=t.length,p=s(u+u),f=_;for(n=0;u>n;n++){o=t[n];for(var l=0;u>l;l++)i=t[l],r=o*i+p[n+l],e=Math.floor(r/f),p[n+l]=r-e*f,p[n+l+1]+=e}return a(p),p}function S(t,r){var e,n,o,i,a,p,f,l=t.length,h=r.length,v=_,y=s(r.length),g=r[h-1],c=Math.ceil(v/(2*g)),m=d(t,c),w=d(r,c);for(m.length<=l&&m.push(0),w.push(0),g=w[h-1],n=l-h;n>=0;n--){for(e=v-1,m[n+h]!==g&&(e=Math.floor((m[n+h]*v+m[n+h-1])/g)),o=0,i=0,p=w.length,a=0;p>a;a++)o+=e*w[a],f=Math.floor(o/v),i+=m[n+a]-(o-f*v),o=f,0>i?(m[n+a]=i+v,i=-1):(m[n+a]=i,i=0);for(;0!==i;){for(e-=1,o=0,a=0;p>a;a++)o+=m[n+a]-v+w[a],0>o?(m[n+a]=o+v,o=0):(m[n+a]=o,o=1);i+=o}y[n]=e}return m=I(m,c)[0],[u(y),u(m)]}function E(t,r){for(var e,n,o,i,s,p=t.length,f=r.length,l=[],h=[],y=_;p;)if(h.unshift(t[--p]),a(h),P(h,r)<0)l.push(0);else{n=h.length,o=h[n-1]*y+h[n-2],i=r[f-1]*y+r[f-2],n>f&&(o=(o+1)*y),e=Math.ceil(o/i);do{if(s=d(r,e),P(s,h)<=0)break;e--}while(e);l.push(e),h=v(h,s)}return l.reverse(),[u(l),u(h)]}function I(t,r){var e,n,o,i,u=t.length,a=s(u),f=_;for(o=0,e=u-1;e>=0;--e)i=o*f+t[e],n=p(i/r),o=i-n*r,a[e]=0|n;return[a,0|o]}function O(t,o){var a,s,f=T(o),l=t.value,h=f.value;if(0===h)throw new Error("Cannot divide by zero");if(t.isSmall)return f.isSmall?[new n(p(l/h)),new n(l%h)]:[r[0],t];if(f.isSmall){if(1===h)return[t,r[0]];if(-1==h)return[t.negate(),r[0]];var v=Math.abs(h);if(_>v){a=I(l,v),s=u(a[0]);var y=a[1];return t.sign&&(y=-y),"number"==typeof s?(t.sign!==f.sign&&(s=-s),[new n(s),new n(y)]):[new e(s,t.sign!==f.sign),new n(y)]}h=i(v)}var g=P(l,h);if(-1===g)return[r[0],t];if(0===g)return[r[t.sign===f.sign?1:-1],r[0]];a=l.length+h.length<=200?S(l,h):E(l,h),s=a[0];var c=t.sign!==f.sign,d=a[1],m=t.sign;return"number"==typeof s?(c&&(s=-s),s=new n(s)):s=new e(s,c),"number"==typeof d?(m&&(d=-d),d=new n(d)):d=new e(d,m),[s,d]}function P(t,r){if(t.length!==r.length)return t.length>r.length?1:-1;for(var e=t.length-1;e>=0;e--)if(t[e]!==r[e])return t[e]>r[e]?1:-1;return 0}function N(t){var r=t.abs();return r.isUnit()?!1:r.equals(2)||r.equals(3)||r.equals(5)?!0:r.isEven()||r.isDivisibleBy(3)||r.isDivisibleBy(5)?!1:r.lesser(25)?!0:void 0}function A(t){return("number"==typeof t||"string"==typeof t)&&+Math.abs(t)<=_||t instanceof e&&t.value.length<=1}function x(t,r,e){r=T(r);for(var n=t.isNegative(),o=r.isNegative(),i=n?t.not():t,u=o?r.not():r,a=0,s=0,p=null,f=null,l=[];!i.isZero()||!u.isZero();)p=O(i,V),a=p[1].toJSNumber(),n&&(a=V-1-a),f=O(u,V),s=f[1].toJSNumber(),o&&(s=V-1-s),i=p[0],u=f[0],l.push(e(a,s));for(var h=bigInt(0!==e(n?1:0,o?1:0)?-1:0),v=l.length-1;v>=0;v-=1)h=h.multiply(V).add(bigInt(l[v]));return h}function Z(t){var r=t.value,e="number"==typeof r?r|W:r[0]+r[1]*_|X;return e&-e}function j(t,r){return t=T(t),r=T(r),t.greater(r)?t:r}function B(t,r){return t=T(t),r=T(r),t.lesser(r)?t:r}function C(t,e){if(t=T(t).abs(),e=T(e).abs(),t.equals(e))return t;if(t.isZero())return e;if(e.isZero())return t;for(var n,o,i=r[1];t.isEven()&&e.isEven();)n=Math.min(Z(t),Z(e)),t=t.divide(n),e=e.divide(n),i=i.multiply(n);for(;t.isEven();)t=t.divide(Z(t));do{for(;e.isEven();)e=e.divide(Z(e));t.greater(e)&&(o=e,e=t,t=o),e=e.subtract(t)}while(!e.isZero());return i.isUnit()?t:t.multiply(i)}function z(t,r){return t=T(t).abs(),r=T(r).abs(),t.divide(C(t,r)).multiply(r)}function J(t,r){t=T(t),r=T(r);var o=B(t,r),i=j(t,r),a=i.subtract(o);if(a.isSmall)return o.add(Math.round(Math.random()*a));for(var s=a.value.length-1,f=[],l=!0,h=s;h>=0;h--){var v=l?a.value[h]:_,y=p(Math.random()*v);f.unshift(y),v>y&&(l=!1)}return f=u(f),o.add("number"==typeof f?new n(f):new e(f,!1))}function L(t,e,n){var o,i=r[0],u=r[1];for(o=t.length-1;o>=0;o--)i=i.add(t[o].times(u)),u=u.times(e);return n?i.negate():i}function D(t){var r=t.value;return"object"==typeof r?"<"+r.reverse().join("")+">":"<"+r+">"}function U(t,r){if(r=bigInt(r),r.isZero()){if(t.isZero())return"0";throw new Error("Cannot convert nonzero numbers to base 0.")}if(r.equals(-1))return t.isZero()?"0":t.isNegative()?new Array(1-t).join("10"):"1"+new Array(+t).join("01");var e="";if(t.isNegative()&&r.isPositive()&&(e="-",t=t.abs()),r.equals(1))return t.isZero()?"0":e+new Array(+t+1).join(1);for(var n,o=[],i=t;i.isNegative()||i.compareAbs(r)>=0;){n=i.divmod(r),i=n.quotient;var u=n.remainder;u.isNegative()&&(u=r.minus(u).abs(),i=i.next()),o.push(D(u))}return o.push(D(i)),e+o.reverse().join("")}function k(t){if(o(+t)){var r=+t;if(r===p(r))return new n(r);throw"Invalid integer: "+t}var i="-"===t[0];i&&(t=t.slice(1));var u=t.split(/e/i);if(u.length>2)throw new Error("Invalid integer: "+u.join("e"));if(2===u.length){var s=u[1];if("+"===s[0]&&(s=s.slice(1)),s=+s,s!==p(s)||!o(s))throw new Error("Invalid integer: "+s+" is not a valid exponent.");var f=u[0],l=f.indexOf(".");if(l>=0&&(s-=f.length-l-1,f=f.slice(0,l)+f.slice(l+1)),0>s)throw new Error("Cannot include negative exponent part for integers");f+=new Array(s+1).join("0"),t=f}var h=/^([0-9][0-9]*)$/.test(t);if(!h)throw new Error("Invalid integer: "+t);for(var v=[],y=t.length,g=$,c=y-g;y>0;)v.push(+t.slice(c,y)),c-=g,0>c&&(c=0),y-=g;return a(v),new e(v,i)}function R(t){if(o(t)){if(t!==p(t))throw new Error(t+" is not an integer.");return new n(t)}return k(t.toString())}function T(t){return"number"==typeof t?R(t):"string"==typeof t?k(t):t}var _=1e7,$=7,F=9007199254740992,G=i(F),H=Math.log(F);e.prototype=Object.create(r.prototype),n.prototype=Object.create(r.prototype),e.prototype.add=function(t){var r=T(t);if(this.sign!==r.sign)return this.subtract(r.negate());var n=this.value,o=r.value;return r.isSmall?new e(h(n,Math.abs(o)),this.sign):new e(l(n,o),this.sign)},e.prototype.plus=e.prototype.add,n.prototype.add=function(t){var r=T(t),u=this.value;if(0>u!==r.sign)return this.subtract(r.negate());var a=r.value;if(r.isSmall){if(o(u+a))return new n(u+a);a=i(Math.abs(a))}return new e(h(a,Math.abs(u)),0>u)},n.prototype.plus=n.prototype.add,e.prototype.subtract=function(t){var r=T(t);if(this.sign!==r.sign)return this.add(r.negate());var e=this.value,n=r.value;return r.isSmall?g(e,Math.abs(n),this.sign):y(e,n,this.sign)},e.prototype.minus=e.prototype.subtract,n.prototype.subtract=function(t){var r=T(t),e=this.value;if(0>e!==r.sign)return this.add(r.negate());var o=r.value;return r.isSmall?new n(e-o):g(o,Math.abs(e),e>=0)},n.prototype.minus=n.prototype.subtract,e.prototype.negate=function(){return new e(this.value,!this.sign)},n.prototype.negate=function(){var t=this.sign,r=new n(-this.value);return r.sign=!t,r},e.prototype.abs=function(){return new e(this.value,!1)},n.prototype.abs=function(){return new n(Math.abs(this.value))},e.prototype.multiply=function(t){var n,o=T(t),u=this.value,a=o.value,s=this.sign!==o.sign;if(o.isSmall){if(0===a)return r[0];if(1===a)return this;if(-1===a)return this.negate();if(n=Math.abs(a),_>n)return new e(d(u,n),s);a=i(n)}return b(u.length,a.length)?new e(w(u,a),s):new e(c(u,a),s)},e.prototype.times=e.prototype.multiply,n.prototype._multiplyBySmall=function(t){return o(t.value*this.value)?new n(t.value*this.value):M(Math.abs(t.value),i(Math.abs(this.value)),this.sign!==t.sign)},e.prototype._multiplyBySmall=function(t){return 0===t.value?r[0]:1===t.value?this:-1===t.value?this.negate():M(Math.abs(t.value),this.value,this.sign!==t.sign)},n.prototype.multiply=function(t){return T(t)._multiplyBySmall(this)},n.prototype.times=n.prototype.multiply,e.prototype.square=function(){return new e(q(this.value),!1)},n.prototype.square=function(){var t=this.value*this.value;return o(t)?new n(t):new e(q(i(Math.abs(this.value))),!1)},e.prototype.divmod=function(t){var r=O(this,t);return{quotient:r[0],remainder:r[1]}},n.prototype.divmod=e.prototype.divmod,e.prototype.divide=function(t){return O(this,t)[0]},n.prototype.over=n.prototype.divide=e.prototype.over=e.prototype.divide,e.prototype.mod=function(t){return O(this,t)[1]},n.prototype.remainder=n.prototype.mod=e.prototype.remainder=e.prototype.mod,e.prototype.pow=function(t){var e,i,u,a=T(t),s=this.value,f=a.value;if(0===f)return r[1];if(0===s)return r[0];if(1===s)return r[1];if(-1===s)return a.isEven()?r[1]:r[-1];if(a.sign)return r[0];if(!a.isSmall)throw new Error("The exponent "+a.toString()+" is too large.");if(this.isSmall&&o(e=Math.pow(s,f)))return new n(p(e));for(i=this,u=r[1];;){if(f&!0&&(u=u.times(i),--f),0===f)break;f/=2,i=i.square()}return u},n.prototype.pow=e.prototype.pow,e.prototype.modPow=function(t,e){if(t=T(t),e=T(e),e.isZero())throw new Error("Cannot take modPow with modulus 0");for(var n=r[1],o=this.mod(e);t.isPositive();){if(o.isZero())return r[0];t.isOdd()&&(n=n.multiply(o).mod(e)),t=t.divide(2),o=o.square().mod(e)}return n},n.prototype.modPow=e.prototype.modPow,e.prototype.compareAbs=function(t){var r=T(t),e=this.value,n=r.value;return r.isSmall?1:P(e,n)},n.prototype.compareAbs=function(t){var r=T(t),e=Math.abs(this.value),n=r.value;return r.isSmall?(n=Math.abs(n),e===n?0:e>n?1:-1):-1},e.prototype.compare=function(t){if(t===1/0)return-1;if(t===-(1/0))return 1;var r=T(t),e=this.value,n=r.value;return this.sign!==r.sign?r.sign?1:-1:r.isSmall?this.sign?-1:1:P(e,n)*(this.sign?-1:1)},e.prototype.compareTo=e.prototype.compare,n.prototype.compare=function(t){if(t===1/0)return-1;if(t===-(1/0))return 1;var r=T(t),e=this.value,n=r.value;return r.isSmall?e==n?0:e>n?1:-1:0>e!==r.sign?0>e?-1:1:0>e?1:-1},n.prototype.compareTo=n.prototype.compare,e.prototype.equals=function(t){return 0===this.compare(t)},n.prototype.eq=n.prototype.equals=e.prototype.eq=e.prototype.equals,e.prototype.notEquals=function(t){return 0!==this.compare(t)},n.prototype.neq=n.prototype.notEquals=e.prototype.neq=e.prototype.notEquals,e.prototype.greater=function(t){return this.compare(t)>0},n.prototype.gt=n.prototype.greater=e.prototype.gt=e.prototype.greater,e.prototype.lesser=function(t){return this.compare(t)<0},n.prototype.lt=n.prototype.lesser=e.prototype.lt=e.prototype.lesser,e.prototype.greaterOrEquals=function(t){return this.compare(t)>=0},n.prototype.geq=n.prototype.greaterOrEquals=e.prototype.geq=e.prototype.greaterOrEquals,e.prototype.lesserOrEquals=function(t){return this.compare(t)<=0},n.prototype.leq=n.prototype.lesserOrEquals=e.prototype.leq=e.prototype.lesserOrEquals,e.prototype.isEven=function(){return 0===(1&this.value[0])},n.prototype.isEven=function(){return 0===(1&this.value)},e.prototype.isOdd=function(){return 1===(1&this.value[0])},n.prototype.isOdd=function(){return 1===(1&this.value)},e.prototype.isPositive=function(){return!this.sign},n.prototype.isPositive=function(){return this.value>0},e.prototype.isNegative=function(){return this.sign},n.prototype.isNegative=function(){return this.value<0},e.prototype.isUnit=function(){return!1},n.prototype.isUnit=function(){return 1===Math.abs(this.value)},e.prototype.isZero=function(){return!1},n.prototype.isZero=function(){return 0===this.value},e.prototype.isDivisibleBy=function(t){var e=T(t),n=e.value;return 0===n?!1:1===n?!0:2===n?this.isEven():this.mod(e).equals(r[0])},n.prototype.isDivisibleBy=e.prototype.isDivisibleBy,e.prototype.isPrime=function(){var e=N(this);if(e!==t)return e;for(var n,o,i,u,a=this.abs(),s=a.prev(),p=[2,3,5,7,11,13,17,19],f=s;f.isEven();)f=f.divide(2);for(i=0;i<p.length;i++)if(u=bigInt(p[i]).modPow(f,a),!u.equals(r[1])&&!u.equals(s)){for(o=!0,n=f;o&&n.lesser(s);n=n.multiply(2))u=u.square().mod(a),u.equals(s)&&(o=!1);if(o)return!1}return!0},n.prototype.isPrime=e.prototype.isPrime,e.prototype.isProbablePrime=function(r){var e=N(this);if(e!==t)return e;for(var n=this.abs(),o=r===t?5:r,i=0;o>i;i++){var u=bigInt.randBetween(2,n.minus(2));if(!u.modPow(n.prev(),n).isUnit())return!1}return!0},n.prototype.isProbablePrime=e.prototype.isProbablePrime,e.prototype.modInv=function(t){for(var r,e,n,o=bigInt.zero,i=bigInt.one,u=T(t),a=this.abs();!a.equals(bigInt.zero);)r=u.divide(a),e=o,n=u,o=i,u=a,i=e.subtract(r.multiply(i)),a=n.subtract(r.multiply(a));if(!u.equals(1))throw new Error(this.toString()+" and "+t.toString()+" are not co-prime");return-1===o.compare(0)&&(o=o.add(t)),this.isNegative()?o.negate():o},n.prototype.modInv=e.prototype.modInv,e.prototype.next=function(){var t=this.value;return this.sign?g(t,1,this.sign):new e(h(t,1),this.sign)},n.prototype.next=function(){var t=this.value;return F>t+1?new n(t+1):new e(G,!1)},e.prototype.prev=function(){var t=this.value;return this.sign?new e(h(t,1),!0):g(t,1,this.sign)},n.prototype.prev=function(){var t=this.value;return t-1>-F?new n(t-1):new e(G,!0)};for(var K=[1];2*K[K.length-1]<=_;)K.push(2*K[K.length-1]);var Q=K.length,V=K[Q-1];e.prototype.shiftLeft=function(t){if(!A(t))throw new Error(String(t)+" is too large for shifting.");if(t=+t,0>t)return this.shiftRight(-t);for(var r=this;t>=Q;)r=r.multiply(V),t-=Q-1;return r.multiply(K[t])},n.prototype.shiftLeft=e.prototype.shiftLeft,e.prototype.shiftRight=function(t){var r;if(!A(t))throw new Error(String(t)+" is too large for shifting.");if(t=+t,0>t)return this.shiftLeft(-t);for(var e=this;t>=Q;){if(e.isZero())return e;r=O(e,V),e=r[1].isNegative()?r[0].prev():r[0],t-=Q-1}return r=O(e,K[t]),r[1].isNegative()?r[0].prev():r[0]},n.prototype.shiftRight=e.prototype.shiftRight,e.prototype.not=function(){return this.negate().prev()},n.prototype.not=e.prototype.not,e.prototype.and=function(t){return x(this,t,function(t,r){return t&r})},n.prototype.and=e.prototype.and,e.prototype.or=function(t){return x(this,t,function(t,r){return t|r})},n.prototype.or=e.prototype.or,e.prototype.xor=function(t){return x(this,t,function(t,r){return t^r})},n.prototype.xor=e.prototype.xor;var W=1<<30,X=(_&-_)*(_&-_)|W,Y=function(t,r){for(var e,o=t.length,i=Math.abs(r),e=0;o>e;e++){var u=t[e].toLowerCase();if("-"!==u&&/[a-z0-9]/.test(u)){if(/[0-9]/.test(u)&&+u>=i){if("1"===u&&1===i)continue;throw new Error(u+" is not a valid digit in base "+r+".")}if(u.charCodeAt(0)-87>=i)throw new Error(u+" is not a valid digit in base "+r+".")}}if(r>=2&&36>=r&&o<=H/Math.log(r)){var a=parseInt(t,r);if(isNaN(a))throw new Error(u+" is not a valid digit in base "+r+".");return new n(parseInt(t,r))}r=T(r);var s=[],p="-"===t[0];for(e=p?1:0;e<t.length;e++){var u=t[e].toLowerCase(),f=u.charCodeAt(0);if(f>=48&&57>=f)s.push(T(u));else if(f>=97&&122>=f)s.push(T(u.charCodeAt(0)-87));else{if("<"!==u)throw new Error(u+" is not a valid character");var l=e;do e++;while(">"!==t[e]);s.push(T(t.slice(l+1,e)))}}return L(s,r,p)};e.prototype.toString=function(r){if(r===t&&(r=10),10!==r)return U(this,r);for(var e,n=this.value,o=n.length,i=String(n[--o]),u="0000000";--o>=0;)e=String(n[o]),i+=u.slice(e.length)+e;var a=this.sign?"-":"";return a+i},n.prototype.toString=function(r){return r===t&&(r=10),10!=r?U(this,r):String(this.value)},e.prototype.toJSON=n.prototype.toJSON=function(){return this.toString()},e.prototype.valueOf=function(){return+this.toString()},e.prototype.toJSNumber=e.prototype.valueOf,n.prototype.valueOf=function(){return this.value},n.prototype.toJSNumber=n.prototype.valueOf;for(var tt=0;1e3>tt;tt++)r[tt]=new n(tt),tt>0&&(r[-tt]=new n(-tt));return r.one=r[1],r.zero=r[0],r.minusOne=r[-1],r.max=j,r.min=B,r.gcd=C,r.lcm=z,r.isInstance=function(t){return t instanceof e||t instanceof n},r.randBetween=J,r.fromArray=function(t,r,e){return L(t.map(T),T(r||10),e)},r}();"undefined"!=typeof module&&module.hasOwnProperty("exports")&&(module.exports=bigInt),"function"==typeof define&&define.amd&&define("big-integer",[],function(){return bigInt});
+            
+            var BASE94 = " 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~";
+            var BASE29 = "abcdefghijklmnopqrstuvwxyz ,.";
+
+
+            function base(dec, base){
+                
+                var len=base.length;
+                var ret='';
+
+                var divmod = bigInt(dec).divmod(len);
+                if (divmod.remainder == 0) {
+                    divmod.remainder = divmod.remainder.plus(len); 
+                    divmod.quotient = divmod.quotient.minus(1);
+                }
+                ret = base.charAt(divmod.remainder.toJSNumber()-1) + ret;
+                
+                while(divmod.quotient>=len){
+                    var divmod = bigInt(divmod.quotient).divmod(len);
+                    if (divmod.remainder == 0) {
+                        divmod.remainder = divmod.remainder.plus(len); 
+                        divmod.quotient = divmod.quotient.minus(1);
+                    }
+                    ret = base.charAt(divmod.remainder.toJSNumber()-1) + ret;
+                }
+
+                if (divmod.quotient > 0){
+                    ret = base.charAt(divmod.quotient.toJSNumber() - 1) + ret;    
+                }
+
+                return ret;
+            }
+
+
+            function unbase(num, base){
+                var len=base.length;
+                var ret=bigInt();
+                for(var x=0; x<num.length; x++){
+                    var digit = base.indexOf(num.charAt(x)) + 1;
+                    var pos = num.length - x - 1;
+                    var exp = bigInt(len).pow(pos);
+                    var val = exp.times(digit);
+                    ret = ret.add(val);
+                }
+                return ret;
+            }
+
+            function base94(dec){
+                return base(dec, BASE94);
+            }
+
+            function unbase94(num){
+                return unbase(num, BASE94);
+            }
+
+            function base29(dec){
+                return base(dec, BASE29);
+            }
+
+            function unbase29(num){
+                return unbase(num, BASE29);
+            }
+
+            function base29to94(str){
+                return base94(unbase29(str.toLowerCase() ));
+            }
+
+            function base94to29(str){
+                return base29(unbase94(str));
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Sequential Library of Bable</h1>
+        <h3>Address (Sequential Index 0 - Theoretical Inifinity)</h3>
+        <button id="nextp">Next Page</button>
+        <button id="prevp">Prev Page</button><br>
+        Next/Prev Increment: <input id="pageInc" value="1"><br>
+        <textarea id="addr" width="1000">0</textarea>
+        <hr>
+        <h3>Page</h3>
+        <button id="loadRnd">Load Random Page</button><br>
+        <textarea id="page" width="1000"></textarea>
+
+        <script>
+            
+            var qs = document.querySelector.bind( document );
+
+            qs("#nextp").addEventListener("click", function(){
+                var addr = qs("#addr");
+                var inc = qs("#pageInc").value;
+                addr.value = bigInt(addr.value).plus(inc).toString();
+                addr.dispatchEvent(new Event("keyup"))
+            });
+
+            qs("#prevp").addEventListener("click", function(){
+                var addr = qs("#addr");
+                var inc = qs("#pageInc").value;
+                addr.value = bigInt(addr.value).minus(inc).toString();
+                addr.dispatchEvent(new Event("keyup"))
+            });
+
+
+            qs("#loadRnd").addEventListener("click", function(){
+                var addr = qs("#addr");
+                var page = qs("#page");
+                var rnd = bigInt.randBetween(0, "1e4680").toString();
+                addr.value = rnd;
+                page.value = base29(rnd);
+            });
+
+            qs("#addr").addEventListener("keyup", function(){
+                var addr = qs("#addr");
+                var page = qs("#page");
+                page.value = base29(addr.value);
+            });
+
+            qs("#page").addEventListener("keyup", function(){
+                var addr = qs("#addr");
+                var page = qs("#page");
+                page.value = page.value.toLowerCase();
+                page.value = base29(unbase29(page.value))
+                addr.value = unbase29(page.value);
+            });
+
+            
+        </script>
+    </body>
+</html>
