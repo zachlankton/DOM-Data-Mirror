@@ -685,37 +685,42 @@ function registerDData(dDataProto){
 // CLASS //
 ///////////
 
-( function(){  // Usage: d-class="className:fieldToWatch:valueToMatch"  
-               // Example d-class="completed:is_complete:true"
+( function(){  // Usage: d-class="className:fieldToWatch:valueToMatch[:classNameifValueDoesn'tMatch]"  
+               // Example d-class="completed:is_complete:true:notComplete"
                //       If the "is_complete" field contains the value "true"
-               //       then add class "completed" to this element
+               //       Then add class "completed" to this element
+               //       Else notComplete is added to the class attribute
     
     dData.extensions.push({attribute: "d-class", setup: setupDClass});
 
     function setupDClass(element, dDataElement, attrVal){
         var attrSplit = attrVal.split(":");
-        var className = attrSplit[0];
+        var classTrue = attrSplit[0];
         var name = attrSplit[1];
         var expression = attrSplit[2];
+	var classFalse = "";
+	if (attrSplit.length > 2){ // if there is a third argument
+            classFalse = attrSplit[3];
+	}
+        
         var elements = dDataElement.querySelectorAll("[name='"+name+"']");
         for (var i=0; i<elements.length; i++){
             elements[i].addEventListener("change", dClass);
             elements[i].addEventListener("dDataRendered", dClass);    
         }
-        
 
         function dClass(event){
             if (dDataElement.value[name] == undefined){return 0;}
             if (dDataElement.value[name].toString() == expression ){
-                element.classList.add(className);
+                element.classList.remove(classFalse);
+                element.classList.add(classTrue);
             }else{
-                element.classList.remove(className);
+                element.classList.remove(classTrue);
+                element.classList.add(classFalse);
             }
         }
         dClass();
-
     }
-
 })();
 
 
@@ -839,16 +844,26 @@ function registerDData(dDataProto){
 
             var name = element.getAttribute("name");
             if (!dDataElement.isConnected){return 0;}
-            if (element.hasAttribute('d-data')){
-                dDataElement.value = eval(attrVal);
+            var val = eval(attrVal);
+            if (val.then){                       // if value is a promise
+                val.then(function(result){
+                    updateValue(result);
+                });
             }else{
-                dDataElement.value[name] = eval(attrVal);    
-            } 
+                updateValue(val);
+            }
+
+            function updateValue(value){
+                if (element.hasAttribute('d-data')){
+                    dDataElement.value = value;
+                }else{
+                    dDataElement.value[name] = value;    
+                } 
+            }
+            
     }
 
-
 })();
-
 ////////////////////////////////////////////////////////////////////////
 ////////////////// DDATA PUSH TO ARRAY ON CLICK EXTENSION ///////////////////
 ////////////////////////////////////////////////////////////////////////
