@@ -1,10 +1,7 @@
 <html>
     <head>
-        <script src="pouchdb.js" type="text/javascript"></script>
-        <script src="pouchdb.find.js" type="text/javascript"></script>
-        <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script>
-        
-        <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/Extensions/dData.PouchDB.ext.js"></script>
+<!--         <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script> -->
+<script src="../../dData.full.js"></script>
         <script>
             function wait(ms) {
                 var start = Date.now(),
@@ -29,13 +26,13 @@
         <div d-data name="test" style="border: 1px solid">
             <h1>List</h1>
             <div d-data name="children" pouch-list set-route="/:_id">
-                <p>
-                    <span name="_id"></span> - 
-                    <span name="child">Child</span>
-                    <button delete set-route="/">Delete</button>
-                </p>
-                
-            </div>
+					<p d-class="test-true:child:Item 1:test-false">
+						<span name="_id"></span> - 
+						<span name="child">Child</span>
+						<button delete set-route="/">Delete</button>
+					</p>
+				
+				</div>
         </div>
     </template>
 
@@ -63,6 +60,7 @@
         <li id="dDataShortcutBug">Check dData Shortcut works (Bug -- Route Changes cause shortcut to lose reference to actual connected elements)</li>
         <li id="setHashTest">Set Main Hash ('/')... (Router Hash Change Event)</li>
         <li id="checkListAgain">Check Pouch List for 2 items</li>
+        <li id="checkDClass">Check dClass was Properly Set</li>
         <li id="deleteBothItems">Delete Both Items using the buttons</li>
     </ol>
 
@@ -202,7 +200,26 @@ var initialHTML = `
             setTimeout(function(){
                 equal("setHashTest", dData.test.children.length, 2);
                 equal("checkListAgain", dData.test.children.length, 2);
-
+                
+                var items = document.querySelectorAll("[name=child]");
+				
+				var item1 = items[0];
+				var item2 = items[1];
+				
+				if (items[1].innerHTML == "Item 1"){
+					item1 = items[1];
+					item2 = items[0];
+				}
+                var item1Class = item1.parentElement.classList.contains("test-true")
+				var item1ClassNot = !(item1.parentElement.classList.contains("test-false") )
+				
+                var item2Class = item2.parentElement.classList.contains("test-false")
+				var item2ClassNot = !(item2.parentElement.classList.contains("test-true") )
+				
+				var dClassTest = item1Class && item2Class && item1ClassNot && item2ClassNot;
+				
+				equal("checkDClass", dClassTest, true);
+				
                 startTestSet6();
             },300);
                 
