@@ -56,6 +56,8 @@ dData.elementValueHandler = {}; // An Object to store custom element value handl
                 for(var i=0;i<nodes.length;i++){
                     if (nodes[i].nodeType === 1 && nodes[i].hasAttribute("d-data") ){
                         registerDData(nodes[i]);
+                    }else{
+                        findNestedDData(nodes[i]);
                     }
                 }
                 
@@ -63,6 +65,9 @@ dData.elementValueHandler = {}; // An Object to store custom element value handl
             if (mutation.type == "attributes"){
                 if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("d-data") ){
                     registerDData(mutation.target);
+                }
+                else{
+                    findNestedDData(mutation.target);
                 }
 
             }
@@ -76,6 +81,17 @@ dData.elementValueHandler = {}; // An Object to store custom element value handl
     });
 
 })();
+
+function findNestedDData(element){
+    var children = element.children;
+    if (children === undefined){return 0;}
+    var childLen = children.length;
+    for (var i=0; i<childLen; i++){
+        var el = children[i];
+        if (el.hasAttribute("d-data")){ registerDData(el); }
+        else{ findNestedDData(el); }
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
