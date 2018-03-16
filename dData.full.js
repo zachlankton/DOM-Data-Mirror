@@ -1101,6 +1101,122 @@ function registerDData(dDataProto){
 
 
 
+
+///////////////////////////////////////////////////////////////////////
+//////////////////////// HTML Include Extension ///////////////////////
+///////////////////////////////////////////////////////////////////////
+
+/* use ' html-src="path/to/file" ' to append html to the element with this attribute
+this attribute will be removed from the element after the html is appended */
+
+
+(function() {
+
+    elements_being_loaded = 0;
+
+    var html_src_Observer = new MutationObserver(function(mutations) {
+        if (typeof (mutationDoneTimer) !== "undefined") {
+            clearTimeout(mutationDoneTimer)
+        }
+        mutationDoneTimer = setTimeout(function() {
+            var mutationDoneEvent = new Event("MutationDone");
+            document.dispatchEvent(mutationDoneEvent);
+        }, 100);
+        mutations.forEach(function(mutation) {
+            if (mutation.type == "childList") {
+                var nodes = mutation.addedNodes;
+                for (var i = 0; i < nodes.length; i++) {
+                    if (nodes[i].nodeType === 1 && nodes[i].hasAttribute("html-src")) {
+                        loadHTML(nodes[i]);
+                    } else if (nodes[i].nodeType === 1) {
+                        findNestedElements(nodes[i]);
+                    }
+                }
+
+            }
+            if (mutation.type == "attributes") {
+                if (mutation.target.nodeType === 1 && mutation.target.hasAttribute("html-src")) {
+                    loadHTML(mutation.target);
+                }
+
+            }
+        });
+    }
+    );
+
+    html_src_Observer.observe(document, {
+        childList: true,
+        subtree: true,
+        attributes: true
+    });
+
+    async function loadHTML(element) {
+
+        // because this function is async this variable can be manipulated by multiple calls in parallel
+        elements_being_loaded += 1;
+
+        element.innerHTML = "<h1>Loading...</h1>";
+        path = element.getAttribute("html-src");
+        element.removeAttribute("html-src");
+
+        var html = await get(path);
+        element.innerHTML = html;
+        element.setAttribute("html-src-loaded", path);
+        findNestedElements(element);
+        elements_being_loaded -= 1;
+
+        // after all the html-src attributes are finished then emit DOMContentLoaded
+        if (document.querySelector("[html-src]") == null && elements_being_loaded == 0) {
+            var e = new Event("DOMContentLoaded");
+            document.dispatchEvent(e);
+            elements_being_loaded = Infinity;
+            //Don't fire this event again.
+        }
+    }
+
+    function findNestedElements(element) {
+        //         console.log(element.cloneNode(true))
+        var childList = element.querySelectorAll("[html-src]");
+        //         console.log(childList);
+        var childLen = childList.length;
+        for (var i = 0; i < childLen; i++) {
+            loadHTML(childList[i]);
+        }
+    }
+
+}
+)();
+
+function get(url) {
+    return new Promise(function(resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.onload = function() {
+            if (this.status >= 200 && this.status < 300) {
+                resolve(xhr.response);
+            } else {
+                reject({
+                    status: this.status,
+                    statusText: xhr.statusText
+                });
+            }
+        }
+        ;
+        xhr.onerror = function() {
+            reject({
+                status: this.status,
+                statusText: xhr.statusText
+            });
+        }
+        ;
+        xhr.send();
+    }
+    );
+}
+
+
+
+
 ////////////////////////////////////////////////////////////////////////
 ////////////////// POUCHDB EXTENSION ///////////////////
 ////////////////////////////////////////////////////////////////////////
