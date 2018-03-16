@@ -108,7 +108,6 @@ function findNestedDData(element){
 function registerDData(dDataProto){  
         
     if (dDataProto.hasOwnProperty("value") ){
-        setupRootDData(dDataProto);
         return 0; /* this element has already been registered */ 
     }
     
