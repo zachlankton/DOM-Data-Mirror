@@ -1,0 +1,26 @@
+<script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script>
+<!-- <script src="../../dData.full.js"></script> -->
+<h1>Tests</h1>
+<ol>
+    <li id="initialTest">Initial Test</li>
+    <li id="htmlSrcTest">html-src-attribute test</li>
+</ol>
+
+<div router-view>
+</div>
+
+<template route="/" html-src="included.html"></template>
+
+<script>
+    function equal(id, value1, value2) {
+        var elem = document.getElementById(id);
+        if (value1 == value2) {
+            elem.style.backgroundColor = "green";
+        } else {
+            elem.style.backgroundColor = "red";
+        }
+    }
+
+    var initialTest = true;
+    equal("initialTest", initialTest, true);
+</script>
