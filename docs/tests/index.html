@@ -4,12 +4,20 @@ sometimes they fail due to browser timing issues that are not related to the tes
 <button onclick="runMain()">Run Main Tests</button>
 <button onclick="runCRUD()">Run Basic CRUD Tests</button>
 <button onclick="runPouch()">Run Pouch & Router Extension Tests</button>
+<button onclick="runPListTests()">Run Pouch List Tests</button>
+
 <h5>Main Tests</h5>
 <iframe id="mainTests"  width="100%" height="200px"></iframe>
+
 <h5>CRUD Tests</h5>
 <iframe id="crudTest"  width="100%" height="200px"></iframe>
+
 <h5>Pouch & Router Tests</h5>
 <iframe id="pouchRouter"  width="100%" height="200px"></iframe>
+
+<h5>Pouch List Tests</h5>
+<iframe id="pouchListTests"  width="100%" height="200px"></iframe>
+
 
 <script>
 function runMain(){
@@ -34,6 +42,12 @@ function runPouch(){
     var pouchRouter = document.getElementById("pouchRouter");
     pouchRouter.src = "";
     pouchRouter.src = "pouchRouterTest.html"
+}
+
+function runPListTests(){
+    var pouchListTests = document.getElementById("pouchListTests");
+    pouchListTests.src = "";
+    pouchListTests.src = "pouch-list-tests.html"
 }
 
 

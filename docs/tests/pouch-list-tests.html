@@ -1,0 +1,1210 @@
+<!-- <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script> -->
+<style>
+    .asc {
+        background-repeat: no-repeat;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        float: right;
+        margin-bottom: 0px;
+        background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20d%3D%22M279%20224H41c-21.4%200-32.1-25.9-17-41L143%2064c9.4-9.4%2024.6-9.4%2033.9%200l119%20119c15.2%2015.1%204.5%2041-16.9%2041z%22%2F%3E%3C%2Fsvg%3E);
+    }
+
+    .desc {
+        background-repeat: no-repeat;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        float: right;
+        margin-bottom: 0px;
+        background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20320%20512%22%3E%3Cpath%20d%3D%22M41%20288h238c21.4%200%2032.1%2025.9%2017%2041L177%20448c-9.4%209.4-24.6%209.4-33.9%200L24%20329c-15.1-15.1-4.4-41%2017-41z%22%2F%3E%3C%2Fsvg%3E);
+    }
+
+    .inline {
+        display: inline-block;
+        margin: 20px;
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+<script> dDataDBName = "pListTest"</script>
+<script src="../../dData.full.js"></script>
+<h1>Tests</h1>
+<ol>
+    <li id="initialTest">Initial Test</li>
+    <li id="generateData">Generate Data and Check</li>
+    <li id="listData">List All Data (no paging)</li>
+    <li id="limitData">Limit Data to 5 records</li>
+    <li id="skipData">Skip 5 Records and Limit</li>
+    <li id="filterData">Test Filter</li>
+    <li id="filterDataEq">Test Filter Key</li>
+    <li id="filterDataEqAdv">Test Filter Key = </li>
+    <li id="filterDataGt">Test Filter Key &gt;</li>
+    <li id="filterDataLt">Test Filter Key &lt;</li>
+    <li id="filterDataGtEq">Test Filter Key &gt;=</li>
+    <li id="filterDataLtEq">Test Filter Key &lt;=</li>
+    <li id="filterDataNotEq">Test Filter Key !=</li>
+    <li id="filterDateRange">Test Filter Key Date Range</li>
+    <li id="sortSingleAsc">Test Sort Single Column Asc</li>
+    <li id="sortSingleDesc">Test Sort Single Column Desc</li>
+    <li id="sortTwoAscAsc">Test Sort Two Column Asc,Asc</li>
+    <li id="sortTwoAscDesc">Test Sort Two Column Asc,Desc</li>
+    <li id="sortTwoDescDesc">Test Sort Two Column Desc,Desc</li>
+    <li id="sortTypeDetect">Test Sort Three Col Auto Type (date, num, str) Detect</li>
+    <li id="groupBy1">Test groupby 1 column</li>
+    <li id="groupBy2">Test groupby 2 columns</li>
+    <li id="groupBy3">Test groupby 3 columns</li>
+    <li id="testSum">Test sum</li>
+    <li id="testAvg">Test Avg</li>
+    <li id="joinFirst">Test join_first</li>
+    <li id="joinLast">Test join_last</li>
+    <li id="routeBinding">Test Route-Binding</li>
+    <li id="testBackBtn">Test Back Button (Route-Bind Update Test)</li>
+    <li id="plFetchingData">plFetchingData Event</li>
+    <li id="pListRefreshed">pListRefreshed Event</li>
+    <li id="plPagingUpdated">plPagingUpdated Event</li>
+    <li id="plSortSpan">pl-sort span class</li>
+    <li id="plFilter">pl-filter input</li>
+    <li id="plFirst">pl-first button</li>
+    <li id="plPrev">pl-prev button</li>
+    <li id="plNext">pl-next button</li>
+    <li id="plLast">pl-last button</li>
+    <li id="formatMoney">format extension format="money"</li>
+    <li id="formatDate">format extensino format="date"</li>
+    
+</ol>
+<div router-view></div>
+
+
+
+
+
+<template route="/">
+    <div>
+        <h1>Hello!</h1>
+        <p>Let's generate some data!</p>
+        <script>
+            location.hash = "/10///";
+        </script>
+    </div>
+</template>
+
+
+
+
+
+<template route="/:limit/:skip/:filter/:sort">
+   
+
+
+
+
+    
+    <div d-data name="list" class="inline">
+        <h1>Default List</h1>
+        <p>
+            Showing Records: <span name="pl_first_record_shown"></span>
+            - <span name="pl_last_record_shown"></span>
+             of <span name="pl_total_rows"></span>
+            Total
+        
+        </p>
+        Filter: <input pl-filter name="filter"/>
+        <button pl-first>&lt;&lt;</button>
+        <button pl-prev>&lt;</button>
+        <button pl-next>&gt;</button>
+        <button pl-last>&gt;&gt;</button>
+        <table border=1>
+            <thead>
+                <tr>
+                    <td pl-sort="_id">ID</td>
+                    <td pl-sort="customer">Customer</td>
+                    <td pl-sort="date">Date</td>
+                    <td pl-sort="numTest">NumTest</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr d-data name="listItem" pouch-list="so">
+                    <td name="_id"></td>
+                    <td name="customer"></td>
+                    <td name="date" format="date"></td>
+                    <td name="numTest" format="money"></td>
+                    <td>
+                        <button delete>X</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+     <div d-data name="listRoute" class="inline">
+        <h1>List w/ Route Binding</h1>
+
+
+        <pl-paging d-data name="paging">
+            <input name="skip" route-bind="skip"/>
+            <input name="limit" route-bind="limit"/>
+            <input name="filter" route-bind="filter"/>
+            <input name="sort" route-bind="sort"/>
+            <input name="sum" value="numTest,numTest2"/>
+            <input name="avg" value="numTest,numTest2"/>
+            <input name="groupby" value="customer,date,numTest"/>
+            <input name="join_first" value="jointest:customer=customer"/>
+        </pl-paging>
+
+
+
+        <p>
+            Showing Records: <span name="pl_first_record_shown"></span>
+            - <span name="pl_last_record_shown"></span>
+            Records of <span name="pl_total_rows"></span>
+            Total
+        
+        </p>
+        Filter: <input pl-filter name="filter" load="router.filter"/>
+        <button pl-first>&lt;&lt;</button>
+        <button pl-prev>&lt;</button>
+        <button pl-next>&gt;</button>
+        <button pl-last>&gt;&gt;</button>
+        <table border=1>
+            <thead>
+                <tr>
+                    <td pl-sort="_id">ID</td>
+                    <td pl-sort="customer">Customer</td>
+                    <td pl-sort="date">Date</td>
+                    <td pl-sort="numTest">NumTest</td>
+                    <td pl-sort="numTest2">NumTest2</td>
+                    <td>Sum</td>
+                    <td>Sum2</td>
+                    <td>Avg</td>
+                    <td>Avg2</td>
+                    <td>Count</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr pl-spinner>
+                    <td colspan="4">
+                        <div class="loader"></div>
+                    </td>
+                </tr>
+                <tr d-data name="listItem" pouch-list="po">
+                    <td name="_id"></td>
+                    <td name="customer"></td>
+                    <td name="date"></td>
+                    <td name="numTest"></td>
+                    <td name="numTest2"></td>
+                    <td name="sum_numTest"></td>
+                    <td name="sum_numTest2"></td>
+                    <td name="avg_numTest"></td>
+                    <td name="avg_numTest2"></td>
+                    <td name="_record_count"></td>
+                    <td>
+                        <button delete>X</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+
+
+
+
+
+
+
+
+</template>
+<script>
+
+    function equal(id, value1, value2) {
+        var elem = document.getElementById(id);
+        if (value1 == value2) {
+            elem.style.backgroundColor = "green";
+        } else {
+            elem.style.backgroundColor = "red";
+        }
+    }
+
+    // <li id="initialTest">Initial Test</li>
+    var initialTest = true;
+    equal("initialTest", initialTest, true);
+
+    
+    document.addEventListener("DOMContentLoaded", function(){
+        setTimeout(runTests, 1000);
+    });
+    
+    async function runTests(){
+        await generateAndTest();
+        await listAllData();
+        setupTestEvents();
+        
+        await limitData();
+        await skipData();
+        await filterData();
+        await filterDataEq();
+        await filterDataEqAdv();
+        await filterDataGt();
+        await filterDataLt();
+        await filterDataGtEq();
+        await filterDataLtEq();
+        await filterDataNotEq();
+        await filterDateRange();
+        await sortSingleAsc();
+        await sortSingleDesc();
+        await sortTwoAscAsc();
+        await sortTwoAscDesc();
+        await sortTwoDescDesc();
+        await sortTypeDetect();
+        await groupBy1();
+        await groupBy2();
+        await groupBy3();
+        await testSumAndAvg();
+        await joinFirst();
+        await joinLast();
+        await routeBinding();
+        await testBackBtn();
+        await plSortSpan();
+        await plFilter();
+        await plLast();
+        await plPrev();
+        await plFirst();
+        await plNext();
+        await formatDateAndMoney();
+       
+
+        
+        await removeDocs();
+
+        
+    }
+
+    
+    
+    function listAllData(){
+        return setPromise(function(){
+            equal("listData", dData.list.listItem.length, 22);    
+        }, 5000);
+    }
+
+    function setupTestEvents(){
+        // setup default results if events don't fire
+        equal("plFetchingData", true, false);
+        equal("pListRefreshed", true, false);
+        equal("plPagingUpdated", true, false);
+
+        // setup events
+        dData.listRoute.element.addEventListener("plFetchingData", function(ev){ equal("plFetchingData", true, true) });
+        dData.listRoute.element.addEventListener("pListRefreshed", function(ev){ equal("pListRefreshed", true, true) });
+        dData.listRoute.element.addEventListener("plPagingUpdated", function(ev){ equal("plPagingUpdated", true, true) });
+    }
+
+    function limitData(){
+        dData.list.paging[0].limit = 5;
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            equal("limitData", dData.list.listItem.length, 5);
+        }, 200);
+        
+    }
+
+    function skipData(){
+        dData.list.paging[0].skip = 5;
+        dData.list.element.updatePaging();
+        
+        return setPromise(function(){
+            var fRec = dData.list.listItem[0]._id == "sodoc06";
+            var sData = dData.list.paging[0].skip == "5";
+            var test = fRec && sData;
+            equal("skipData", test, true);
+        }, 200);
+    }
+
+    function filterData(){
+        dData.list.paging[0].filter = "amer";
+        dData.list.paging[0].skip = 0;
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0].customer == "American Axle";
+            var len = dData.list.listItem.length == 4;
+            var test = item && len;
+            equal("filterData", test, true);
+        }, 200);
+    }
+
+    function filterDataEq(){
+        dData.list.paging[0].filter = '"item":"test"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0].customer == "Emerson";
+            var len = dData.list.pl_total_rows == "6";
+            var test = item && len;
+            equal("filterDataEq", test, true);
+        }, 200);
+    }
+
+    function filterDataEqAdv(){
+        dData.list.paging[0].filter = '"date"="Oct 9 2000 20:00"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0].customer == "Matcor";
+            var len = dData.list.pl_total_rows == "1";
+            var test = item && len;
+            equal("filterDataEqAdv", test, true);
+        }, 200);
+    }
+
+    function filterDataGt(){
+        dData.list.paging[0].filter = '"numTest">"40"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0].customer == "Miltope";
+            var len = dData.list.pl_total_rows == "2";
+            var test = item && len;
+            equal("filterDataGt", test, true);
+        }, 200);
+    }
+
+    function filterDataLt(){
+        dData.list.paging[0].filter = '"numTest"<"40"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0].customer == "Emerson";
+            var len = dData.list.pl_total_rows == "16";
+            var test = item && len;
+            equal("filterDataLt", test, true);
+        }, 200);
+    }
+
+    function filterDataGtEq(){
+        dData.list.paging[0].filter = '"date">="2016-1-1"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "sodoc01";
+            var len = dData.list.pl_total_rows == "10";
+            var test = item && len;
+            equal("filterDataGtEq", test, true);
+        }, 200);
+    }
+
+    function filterDataLtEq(){
+        dData.list.paging[0].filter = '"date"<="2016-1-1"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "sodoc02";
+            var len = dData.list.pl_total_rows == "12";
+            var test = item && len;
+            equal("filterDataLtEq", test, true);
+        }, 200);
+    }
+
+    function filterDataNotEq(){
+        dData.list.paging[0].filter = '"customer"!="motec"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var len = dData.list.pl_total_rows == "18";
+            equal("filterDataNotEq", len, true);
+        }, 200);
+    }
+
+    function filterDateRange(){
+        dData.list.paging[0].filter = '"date">="2015-1-1","date"<="2016-1-1"';
+        
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var len = dData.list.pl_total_rows == "11";
+            equal("filterDateRange", len, true);
+        }, 200);
+    }
+
+    function sortSingleAsc(){
+        dData.list.paging[0].filter = '';
+        dData.list.paging[0].sort = 'customer';
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "sodoc25";
+            var item2 = dData.list.listItem[1]._id == "sodoc04";
+            var item3 = dData.list.listItem[2]._id == "sodoc22";
+            var item4 = dData.list.listItem[3]._id == "sodoc06";
+            var test = item && item2 && item3 && item4;
+            equal("sortSingleAsc", test, true);
+        }, 200);
+    }
+
+    function sortSingleDesc(){
+        dData.list.paging[0].sort = 'customer:desc';
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "test2";
+            var item2 = dData.list.listItem[1]._id == "sodoc20";
+            var item3 = dData.list.listItem[2]._id == "sodoc26";
+            var item4 = dData.list.listItem[3]._id == "sodoc21";
+            var test = item && item2 && item3 && item4;
+            equal("sortSingleDesc", test, true);
+        }, 200);
+    }
+
+    function sortTwoAscAsc(){
+        dData.list.paging[0].sort = 'customer,date';
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "sodoc04";
+            var item2 = dData.list.listItem[1]._id == "sodoc25";
+            var item3 = dData.list.listItem[2]._id == "sodoc22";
+            var item4 = dData.list.listItem[3]._id == "sodoc01";
+            var test = item && item2 && item3 && item4;
+            equal("sortTwoAscAsc", test, true);
+        }, 200);
+    }
+
+    function sortTwoAscDesc(){
+        dData.list.paging[0].sort = 'customer,date:desc';
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "sodoc04";
+            var item2 = dData.list.listItem[1]._id == "sodoc25";
+            var item3 = dData.list.listItem[2]._id == "sodoc22";
+            var item4 = dData.list.listItem[3]._id == "sodoc06";
+            var test = item && item2 && item3 && item4;
+            equal("sortTwoAscDesc", test, true);
+        }, 200);
+    }
+
+    function sortTwoDescDesc(){
+        dData.list.paging[0].sort = 'customer:desc,date:desc';
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[0]._id == "test2";
+            var item2 = dData.list.listItem[1]._id == "sodoc20";
+            var item3 = dData.list.listItem[2]._id == "sodoc21";
+            var item4 = dData.list.listItem[3]._id == "sodoc26";
+            var test = item && item2 && item3 && item4;
+            equal("sortTwoDescDesc", test, true);
+        }, 200);
+    }
+
+    function sortTypeDetect(){
+        dData.list.paging[0].limit = "*";
+        dData.list.paging[0].sort = 'date:desc,numTest:desc,_id:desc';
+        dData.list.element.updatePaging();
+        return setPromise(function(){
+            var item = dData.list.listItem[10]._id == "sodoc24";
+            var item2 = dData.list.listItem[11]._id == "sodoc10";
+            var item3 = dData.list.listItem[12]._id == "sodoc31";
+            var item4 = dData.list.listItem[13]._id == "sodoc30";
+            var test = item && item2 && item3 && item4;
+            equal("sortTypeDetect", test, true);
+            
+        }, 200);
+    }
+
+    function removeRevs(str){
+        var start = str.indexOf("_rev")
+        if (start > -1){
+            var end = str.indexOf('"', start + 8)
+            var rev = str.slice(start, end+2);
+            var withoutRev = str.replace(rev, "");
+            return removeRevs(withoutRev); // remove all revs sort of recursively
+        }else{
+            return str;
+        }
+    }
+
+    async function groupBy1(){
+        var lrE = dData.listRoute.element;
+        var p = dData.listRoute.paging[0];
+        await setPromise( () => {p.skip = "0";}, 200);
+        await setPromise( () => {p.limit = "*";}, 200);
+        await setPromise( () => {p.filter = "";}, 200);
+        await setPromise( () => {p.sort = "";}, 200);
+        await setPromise( () => {p.sum = "";}, 200);
+        await setPromise( () => {p.avg = "";}, 200);
+        await setPromise( () => {p.groupby = "customer";}, 200);
+        lrE.updatePaging(); //updatePaging();
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute.listItem)) === removeRevs(`[{"_id":"","customer":"American Axle","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"4","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"Emerson","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"7","type":"po","_id":"podoc02","_rev":"19-904f78a321344eb0abceb83f45fafbbc","lines":[{"item":"D25368"},{"item":"test"}]}]},{"_id":"","customer":"CyberOptics","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"3","records":[{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc03","_rev":"19-74c438a87d084e889188deddc15e0655","lines":[{"item":"Sensor Case"}]},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc23","_rev":"19-86043e8e3a68452a9bdd62ccda25781a"},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc27","_rev":"19-e2cedf796d854d0e9f9dcbc25647dd0b"}]},{"_id":"","customer":"Aeroflex","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"3","records":[{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc04","_rev":"19-19590304712f41df9e50fc78e8792485","lines":[{"item":"Front Panel"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc22","_rev":"19-38a2a61bd8c6464fbd05e1d26c2d522c","lines":[{"item":"handle"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc25","_rev":"19-50fa73d7aecf4cacba339767ae0f3b8c","lines":[{"item":"rear bezel"},{"item":""}]}]},{"_id":"","customer":"MoTeC","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"4","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"19-171596e3d4184c439bf32b32aa67acea","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"19-1d18c011b0ff4ba2b031c701ddb9de47","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Matcor","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"2","records":[{"customer":"Matcor","date":"2016-4-6","numTest":"5","numTest2":"6","type":"po","_id":"podoc09","_rev":"19-a9b0469d8c644c6b85b6189bb12d1c66","lines":[{"item":"Backet"},{"item":"Tool"}]},{"customer":"Matcor","date":"2000-10-10","numTest":"3","numTest2":"4","type":"po","_id":"podoc12","_rev":"19-9020e0f6cc764278a36cb7d2d9acaa17","lines":[{"item":"test"},{"item":"test2"}]}]},{"_id":"","customer":"Miltope","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"4","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"19-89415d95359a49a180d0186b47d8204c","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"19-b0734c51bd1c449fbaa9acdde2982e99","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"test","date":"","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"test","date":"2018-12-12","numTest":"test","numTest2":"2","type":"po","_id":"test","_rev":"19-755f1910af7644a7a9db1fad80359c6c"}]}]`);
+            equal("groupBy1", test, true);
+        }, 200);
+    }
+
+    function groupBy2(){
+        var lrE = dData.listRoute.element;
+        var p = dData.listRoute.paging[0];
+        p.groupby = "customer,date";
+        lrE.updatePaging();
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute.listItem)) === removeRevs(`[{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"2","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"Emerson","date":"2015-5-5","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"7","type":"po","_id":"podoc02","_rev":"19-904f78a321344eb0abceb83f45fafbbc","lines":[{"item":"D25368"},{"item":"test"}]}]},{"_id":"","customer":"CyberOptics","date":"2015-5-6","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"3","records":[{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc03","_rev":"19-74c438a87d084e889188deddc15e0655","lines":[{"item":"Sensor Case"}]},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc23","_rev":"19-86043e8e3a68452a9bdd62ccda25781a"},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc27","_rev":"19-e2cedf796d854d0e9f9dcbc25647dd0b"}]},{"_id":"","customer":"Aeroflex","date":"2015-6-5","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"3","records":[{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc04","_rev":"19-19590304712f41df9e50fc78e8792485","lines":[{"item":"Front Panel"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc22","_rev":"19-38a2a61bd8c6464fbd05e1d26c2d522c","lines":[{"item":"handle"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc25","_rev":"19-50fa73d7aecf4cacba339767ae0f3b8c","lines":[{"item":"rear bezel"},{"item":""}]}]},{"_id":"","customer":"American Axle","date":"2016-12-5","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2018-1-1","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-4","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"19-171596e3d4184c439bf32b32aa67acea","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Matcor","date":"2016-4-6","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Matcor","date":"2016-4-6","numTest":"5","numTest2":"6","type":"po","_id":"podoc09","_rev":"19-a9b0469d8c644c6b85b6189bb12d1c66","lines":[{"item":"Backet"},{"item":"Tool"}]}]},{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"4","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"19-89415d95359a49a180d0186b47d8204c","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"19-b0734c51bd1c449fbaa9acdde2982e99","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"Matcor","date":"2000-10-10","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Matcor","date":"2000-10-10","numTest":"3","numTest2":"4","type":"po","_id":"podoc12","_rev":"19-9020e0f6cc764278a36cb7d2d9acaa17","lines":[{"item":"test"},{"item":"test2"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-7","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"19-1d18c011b0ff4ba2b031c701ddb9de47","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-6","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-5","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"test","date":"2018-12-12","numTest":"","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"test","date":"2018-12-12","numTest":"test","numTest2":"2","type":"po","_id":"test","_rev":"19-755f1910af7644a7a9db1fad80359c6c"}]}]`);
+            equal("groupBy2", test, true);
+        }, 200);
+    }
+
+    function groupBy3(){
+        var lrE = dData.listRoute.element;
+        var p = dData.listRoute.paging[0];
+        p.groupby = "customer,date,numTest";
+        lrE.updatePaging();
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute.listItem)) === removeRevs(`[{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"7","type":"po","_id":"podoc02","_rev":"19-904f78a321344eb0abceb83f45fafbbc","lines":[{"item":"D25368"},{"item":"test"}]}]},{"_id":"","customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"3","records":[{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc03","_rev":"19-74c438a87d084e889188deddc15e0655","lines":[{"item":"Sensor Case"}]},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc23","_rev":"19-86043e8e3a68452a9bdd62ccda25781a"},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc27","_rev":"19-e2cedf796d854d0e9f9dcbc25647dd0b"}]},{"_id":"","customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"3","records":[{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc04","_rev":"19-19590304712f41df9e50fc78e8792485","lines":[{"item":"Front Panel"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc22","_rev":"19-38a2a61bd8c6464fbd05e1d26c2d522c","lines":[{"item":"handle"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc25","_rev":"19-50fa73d7aecf4cacba339767ae0f3b8c","lines":[{"item":"rear bezel"},{"item":""}]}]},{"_id":"","customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"19-171596e3d4184c439bf32b32aa67acea","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Matcor","date":"2016-4-6","numTest":"5","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Matcor","date":"2016-4-6","numTest":"5","numTest2":"6","type":"po","_id":"podoc09","_rev":"19-a9b0469d8c644c6b85b6189bb12d1c66","lines":[{"item":"Backet"},{"item":"Tool"}]}]},{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"2","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"19-89415d95359a49a180d0186b47d8204c","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"19-b0734c51bd1c449fbaa9acdde2982e99","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"Matcor","date":"2000-10-10","numTest":"3","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"Matcor","date":"2000-10-10","numTest":"3","numTest2":"4","type":"po","_id":"podoc12","_rev":"19-9020e0f6cc764278a36cb7d2d9acaa17","lines":[{"item":"test"},{"item":"test2"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"19-1d18c011b0ff4ba2b031c701ddb9de47","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"2","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"test","date":"2018-12-12","numTest":"test","numTest2":"","sum_numTest":"","sum_numTest2":"","avg_numTest":"","avg_numTest2":"","_record_count":"1","records":[{"customer":"test","date":"2018-12-12","numTest":"test","numTest2":"2","type":"po","_id":"test","_rev":"19-755f1910af7644a7a9db1fad80359c6c"}]}]`);
+            equal("groupBy3", test, true);
+        }, 200);
+    }
+
+    function testSumAndAvg(){
+        var lrE = dData.listRoute.element;
+        var p = dData.listRoute.paging[0];
+        p.sum = "numTest,numTest2";
+        p.avg = "numTest,numTest2";
+        p.groupby = "customer";
+        lrE.updatePaging();
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute.listItem)) === removeRevs(`[{"_id":"","customer":"American Axle","date":"","numTest":"","numTest2":"","sum_numTest":"71","sum_numTest2":"75","avg_numTest":"17.75","avg_numTest2":"18.75","_record_count":"4","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"Emerson","date":"","numTest":"","numTest2":"","sum_numTest":"6","sum_numTest2":"7","avg_numTest":"6","avg_numTest2":"7","_record_count":"1","records":[{"customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"7","type":"po","_id":"podoc02","_rev":"19-904f78a321344eb0abceb83f45fafbbc","lines":[{"item":"D25368"},{"item":"test"}]}]},{"_id":"","customer":"CyberOptics","date":"","numTest":"","numTest2":"","sum_numTest":"6","sum_numTest2":"9","avg_numTest":"2","avg_numTest2":"3","_record_count":"3","records":[{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc03","_rev":"19-74c438a87d084e889188deddc15e0655","lines":[{"item":"Sensor Case"}]},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc23","_rev":"19-86043e8e3a68452a9bdd62ccda25781a"},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc27","_rev":"19-e2cedf796d854d0e9f9dcbc25647dd0b"}]},{"_id":"","customer":"Aeroflex","date":"","numTest":"","numTest2":"","sum_numTest":"3","sum_numTest2":"6","avg_numTest":"1","avg_numTest2":"2","_record_count":"3","records":[{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc04","_rev":"19-19590304712f41df9e50fc78e8792485","lines":[{"item":"Front Panel"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc22","_rev":"19-38a2a61bd8c6464fbd05e1d26c2d522c","lines":[{"item":"handle"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc25","_rev":"19-50fa73d7aecf4cacba339767ae0f3b8c","lines":[{"item":"rear bezel"},{"item":""}]}]},{"_id":"","customer":"MoTeC","date":"","numTest":"","numTest2":"","sum_numTest":"115","sum_numTest2":"119","avg_numTest":"28.75","avg_numTest2":"29.75","_record_count":"4","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"19-171596e3d4184c439bf32b32aa67acea","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"19-1d18c011b0ff4ba2b031c701ddb9de47","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Matcor","date":"","numTest":"","numTest2":"","sum_numTest":"8","sum_numTest2":"10","avg_numTest":"4","avg_numTest2":"5","_record_count":"2","records":[{"customer":"Matcor","date":"2016-4-6","numTest":"5","numTest2":"6","type":"po","_id":"podoc09","_rev":"19-a9b0469d8c644c6b85b6189bb12d1c66","lines":[{"item":"Backet"},{"item":"Tool"}]},{"customer":"Matcor","date":"2000-10-10","numTest":"3","numTest2":"4","type":"po","_id":"podoc12","_rev":"19-9020e0f6cc764278a36cb7d2d9acaa17","lines":[{"item":"test"},{"item":"test2"}]}]},{"_id":"","customer":"Miltope","date":"","numTest":"","numTest2":"","sum_numTest":"480","sum_numTest2":"484","avg_numTest":"120","avg_numTest2":"121","_record_count":"4","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"19-89415d95359a49a180d0186b47d8204c","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"19-b0734c51bd1c449fbaa9acdde2982e99","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"test","date":"","numTest":"","numTest2":"","sum_numTest":"NaN","sum_numTest2":"2","avg_numTest":"NaN","avg_numTest2":"2","_record_count":"1","records":[{"customer":"test","date":"2018-12-12","numTest":"test","numTest2":"2","type":"po","_id":"test","_rev":"19-755f1910af7644a7a9db1fad80359c6c"}]}]`);
+            equal("testSum", test, true);
+            equal("testAvg", test, true);
+
+        }, 200);
+    }
+
+    function joinFirst(){
+        var lrE = dData.listRoute.element;
+        var p = dData.listRoute.paging[0];
+        p.filter = "some value";
+        lrE.updatePaging();
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute.listItem)) === removeRevs(`[{"_id":"","customer":"American Axle","date":"","numTest":"","numTest2":"","sum_numTest":"71","sum_numTest2":"75","avg_numTest":"17.75","avg_numTest2":"18.75","_record_count":"4","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]},{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"MoTeC","date":"","numTest":"","numTest2":"","sum_numTest":"115","sum_numTest2":"119","avg_numTest":"28.75","avg_numTest2":"29.75","_record_count":"4","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"19-171596e3d4184c439bf32b32aa67acea","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"19-1d18c011b0ff4ba2b031c701ddb9de47","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]},{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Miltope","date":"","numTest":"","numTest2":"","sum_numTest":"480","sum_numTest2":"484","avg_numTest":"120","avg_numTest2":"121","_record_count":"4","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"19-89415d95359a49a180d0186b47d8204c","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"19-b0734c51bd1c449fbaa9acdde2982e99","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]}]`);
+            equal("joinFirst", test, true);
+        },200);
+    }
+
+    function joinLast(){
+        var lrE = dData.listRoute.element;
+        var p = dData.listRoute.paging[0];
+        p.join_first = "";
+        p.join_last = "";
+        lrE.updatePaging();
+
+        return setPromise(function(){
+            var test = dData.listRoute.listItem === undefined;
+            equal("joinLast", test, true);
+        },200);
+    }
+
+    function routeBinding(){
+        location.hash = "/10/10//customer,date,numTest";
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"11","pl_last_record_shown":"16","pl_total_rows":"16","filter":"","listItem":[{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"","sum_numTest":"400","sum_numTest2":"402","avg_numTest":"200","avg_numTest2":"201","_record_count":"2","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"23-ce1a2115aa794a2daa9b66fb12cac740","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"23-e41fb248a5e1420d89ff6a173eea8cac"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"23-68d6c2351c12451ab90d785c0b555d9e","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"23-e41fb248a5e1420d89ff6a173eea8cac"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"","sum_numTest":"4","sum_numTest2":"5","avg_numTest":"4","avg_numTest2":"5","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"23-ce400bcd287946b99a1b5a0cc7792819","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"23-8aa6f9acaf3d4270a81e2ba87fb4bc1f"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"23-9c9d2355b2c54ff4a24b41af06b5c809","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"23-8aa6f9acaf3d4270a81e2ba87fb4bc1f"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"23-4d2a34ff8f8640a8a8404c23bc9f50f2","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"23-8aa6f9acaf3d4270a81e2ba87fb4bc1f"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"23-1a05d6e2ad09494bbe42c99e4fe72ed9","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"23-8aa6f9acaf3d4270a81e2ba87fb4bc1f"}]}]},{"_id":"","customer":"test","date":"2018-12-12","numTest":"test","numTest2":"","sum_numTest":"NaN","sum_numTest2":"2","avg_numTest":"NaN","avg_numTest2":"2","_record_count":"1","records":[{"customer":"test","date":"2018-12-12","numTest":"test","numTest2":"2","type":"po","_id":"test","_rev":"23-163e9ee5cd8d418a91df4506ae2b2bfa"}]}],"paging":[{"skip":10,"limit":10,"filter":"","sort":"customer,date,numTest","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("routeBinding", test, true);
+        }, 2000);
+
+    }
+
+    function testBackBtn(){
+        history.back();
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"1","pl_last_record_shown":"10","pl_total_rows":"10","filter":"some value","listItem":[{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"","sum_numTest":"40","sum_numTest2":"41","avg_numTest":"40","avg_numTest2":"41","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"","sum_numTest":"10","sum_numTest2":"11","avg_numTest":"10","avg_numTest2":"11","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"","sum_numTest":"1","sum_numTest2":"2","avg_numTest":"1","avg_numTest2":"2","_record_count":"1","records":[{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"","sum_numTest":"20","sum_numTest2":"21","avg_numTest":"20","avg_numTest2":"21","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"","sum_numTest":"4","sum_numTest2":"5","avg_numTest":"4","avg_numTest2":"5","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-4","numTest":"4","numTest2":"5","type":"po","_id":"podoc08","_rev":"19-171596e3d4184c439bf32b32aa67acea","lines":[{"item":"85200"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"","sum_numTest":"400","sum_numTest2":"402","avg_numTest":"200","avg_numTest2":"201","_record_count":"2","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc10","_rev":"19-89415d95359a49a180d0186b47d8204c","lines":[{"item":"Back Panel"},{"item":"Door"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"200","numTest2":"201","type":"po","_id":"podoc24","_rev":"19-b0734c51bd1c449fbaa9acdde2982e99","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-7","numTest":"37","numTest2":"38","type":"po","_id":"podoc20","_rev":"19-1d18c011b0ff4ba2b031c701ddb9de47","lines":[{"item":"85201"},{"item":"test"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"","sum_numTest":"80","sum_numTest2":"82","avg_numTest":"40","avg_numTest2":"41","_record_count":"2","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]}],"paging":[{"skip":"","limit":"*","filter":"some value","sort":"","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("testBackBtn", test, true);
+        }, 200);
+    }
+
+    function plSortSpan(){
+        var dateSortEl = dData.listRoute.element.querySelectorAll("[pl-sort]")[2]
+        dateSortEl.click();
+        return setPromise(function(){
+            var test = dateSortEl.querySelector("span").classList.contains("asc") == true;
+            equal("plSortSpan", test, true);
+        },200);
+    }
+
+    async function plFilter(){
+        location.hash = "/5///";
+        await setPromise( () => {}, 200);
+        var _plFilter = dData.listRoute.element.querySelector("[pl-filter]");
+        _plFilter.value = "amer";
+        var e = new Event("keyup");
+        _plFilter.dispatchEvent(e);
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"1","pl_last_record_shown":"4","pl_total_rows":"4","filter":"amer","listItem":[{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"","sum_numTest":"40","sum_numTest2":"41","avg_numTest":"40","avg_numTest2":"41","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"","sum_numTest":"10","sum_numTest2":"11","avg_numTest":"10","avg_numTest2":"11","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-5","numTest":"10","numTest2":"11","type":"po","_id":"podoc05","_rev":"19-d242496529b94856bf7b83eb93fc90c4","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"","sum_numTest":"1","sum_numTest2":"2","avg_numTest":"1","avg_numTest2":"2","_record_count":"1","records":[{"customer":"American Axle","date":"2018-1-1","numTest":"1","numTest2":"2","type":"po","_id":"podoc06","_rev":"19-3b50d5292be44d1cb1d29dcaa1368081","lines":[{"item":"lower housing"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"","sum_numTest":"20","sum_numTest2":"21","avg_numTest":"20","avg_numTest2":"21","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"20","numTest2":"21","type":"po","_id":"podoc07","_rev":"19-fabeade0f26e4cbe8519e789a4026e3e","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]}],"paging":[{"skip":"","limit":5,"filter":"amer","sort":"","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("plFilter", test, true);
+        },1000);
+    }
+
+    async function plLast(){
+        location.hash = "/2///";
+        await setPromise( () => {}, 200);
+        var _plLast = dData.listRoute.element.querySelector("[pl-last]");
+        _plLast.click();
+        await setPromise( () => {}, 200);
+        
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"15","pl_last_record_shown":"16","pl_total_rows":"16","filter":"","listItem":[{"_id":"","customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"","sum_numTest":"80","sum_numTest2":"82","avg_numTest":"40","avg_numTest2":"41","_record_count":"2","records":[{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc30","_rev":"19-659c39f472a946c88e6bc76a9ef82fe3","lines":[{"item":"test"}],"jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]},{"customer":"Miltope","date":"2015-9-22","numTest":"40","numTest2":"41","type":"po","_id":"podoc31","_rev":"19-f452f2f19965453d951e5c1d45c6e69d","jointest":[{"type":"jointest","customer":"Miltope","some_field":"some value","_id":"jointest2","_rev":"19-6489d3a167ef465d812528fd671011d5"}]}]},{"_id":"","customer":"test","date":"2018-12-12","numTest":"test","numTest2":"","sum_numTest":"NaN","sum_numTest2":"2","avg_numTest":"NaN","avg_numTest2":"2","_record_count":"1","records":[{"customer":"test","date":"2018-12-12","numTest":"test","numTest2":"2","type":"po","_id":"test","_rev":"19-755f1910af7644a7a9db1fad80359c6c"}]}],"paging":[{"skip":14,"limit":2,"filter":"","sort":"","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("plLast", test, true);
+        },200);
+    }
+
+    async function plPrev(){
+        var _plPrev = dData.listRoute.element.querySelector("[pl-prev]");
+        _plPrev.click();
+        await setPromise( () => {}, 200);
+
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"13","pl_last_record_shown":"14","pl_total_rows":"16","filter":"","listItem":[{"_id":"","customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-6","numTest":"37","numTest2":"38","type":"po","_id":"podoc21","_rev":"19-4b7285dfc55c49bfbcfdbfa15688f09b","lines":[{"item":"85202"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]},{"_id":"","customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"","sum_numTest":"37","sum_numTest2":"38","avg_numTest":"37","avg_numTest2":"38","_record_count":"1","records":[{"customer":"MoTeC","date":"2017-4-5","numTest":"37","numTest2":"38","type":"po","_id":"podoc26","_rev":"19-3411345d7f424a7188cbc465d74b8c63","lines":[{"item":"85204"}],"jointest":[{"type":"jointest","customer":"MoTeC","some_field":"some value","_id":"jointest3","_rev":"19-46b804148fcf46bf9c278effb61fb4b7"}]}]}],"paging":[{"skip":12,"limit":2,"filter":"","sort":"","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("plPrev", test, true);
+        },200);
+    }
+
+    async function plFirst(){
+        var _plFirst = dData.listRoute.element.querySelector("[pl-first]");
+        _plFirst.click();
+        await setPromise( () => {}, 200);
+
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"1","pl_last_record_shown":"2","pl_total_rows":"16","filter":"","listItem":[{"_id":"","customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"","sum_numTest":"40","sum_numTest2":"41","avg_numTest":"40","avg_numTest2":"41","_record_count":"1","records":[{"customer":"American Axle","date":"2016-12-04","numTest":"40","numTest2":"41","type":"po","_id":"podoc01","_rev":"19-00d2fb30e2f641aea115f39aa6e27f37","lines":[{"item":"40097012"},{"item":"upper"}],"jointest":[{"type":"jointest","customer":"American Axle","some_field":"some value","_id":"jointest1","_rev":"19-7a27dad3be8946e9962d3a11c5b7bf52"}]}]},{"_id":"","customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"","sum_numTest":"6","sum_numTest2":"7","avg_numTest":"6","avg_numTest2":"7","_record_count":"1","records":[{"customer":"Emerson","date":"2015-5-5","numTest":"6","numTest2":"7","type":"po","_id":"podoc02","_rev":"19-904f78a321344eb0abceb83f45fafbbc","lines":[{"item":"D25368"},{"item":"test"}]}]}],"paging":[{"skip":"","limit":2,"filter":"","sort":"","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("plFirst", test, true);
+        },200);
+    }
+
+    async function plNext(){
+        var _plNext = dData.listRoute.element.querySelector("[pl-next]");
+        _plNext.click();
+        await setPromise( () => {}, 200);
+
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.listRoute)) === removeRevs(`{"pl_first_record_shown":"3","pl_last_record_shown":"4","pl_total_rows":"16","filter":"","listItem":[{"_id":"","customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"","sum_numTest":"6","sum_numTest2":"9","avg_numTest":"2","avg_numTest2":"3","_record_count":"3","records":[{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc03","_rev":"19-74c438a87d084e889188deddc15e0655","lines":[{"item":"Sensor Case"}]},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc23","_rev":"19-86043e8e3a68452a9bdd62ccda25781a"},{"customer":"CyberOptics","date":"2015-5-6","numTest":"2","numTest2":"3","type":"po","_id":"podoc27","_rev":"19-e2cedf796d854d0e9f9dcbc25647dd0b"}]},{"_id":"","customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"","sum_numTest":"3","sum_numTest2":"6","avg_numTest":"1","avg_numTest2":"2","_record_count":"3","records":[{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc04","_rev":"19-19590304712f41df9e50fc78e8792485","lines":[{"item":"Front Panel"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc22","_rev":"19-38a2a61bd8c6464fbd05e1d26c2d522c","lines":[{"item":"handle"}]},{"customer":"Aeroflex","date":"2015-6-5","numTest":"1","numTest2":"2","type":"po","_id":"podoc25","_rev":"19-50fa73d7aecf4cacba339767ae0f3b8c","lines":[{"item":"rear bezel"},{"item":""}]}]}],"paging":[{"skip":2,"limit":2,"filter":"","sort":"","sum":"numTest,numTest2","avg":"numTest,numTest2","groupby":"customer,date,numTest","join_first":"jointest:customer=customer","join_last":""}]}`);
+            equal("plNext", test, true);
+        },200);
+    }
+
+    function formatDateAndMoney(){
+        return setPromise(function(){
+            var test = removeRevs(JSON.stringify(dData.list)) === removeRevs(`{"pl_first_record_shown":"1","pl_last_record_shown":"22","pl_total_rows":"22","filter":"","listItem":[{"_id":"sodoc01","customer":"American Axle","date":"12/3/2016","numTest":"$ 40.00","numTest2":"41","type":"so","_rev":"19-65f42b2846c94c3f81e206f402c1d9db","lines":[{"item":"40097012"},{"item":"upper"}]},{"_id":"sodoc02","customer":"Emerson","date":"5/5/2015","numTest":"$ 6.00","numTest2":"7","type":"so","_rev":"19-106f67209ba34148b052770f39476b8c","lines":[{"item":"D25368"},{"item":"test"}]},{"_id":"sodoc03","customer":"CyberOptics","date":"5/6/2015","numTest":"$ 2.00","numTest2":"3","type":"so","_rev":"19-f3f221e773fb450592b9003edef9b355","lines":[{"item":"Sensor Case"}]},{"_id":"sodoc04","customer":"Aeroflex","date":"6/5/2015","numTest":"$ 1.00","numTest2":"2","type":"so","_rev":"19-aa284c5f79ca45ddac1715c9d40f4757","lines":[{"item":"Front Panel"}]},{"_id":"sodoc05","customer":"American Axle","date":"12/5/2016","numTest":"$ 10.00","numTest2":"11","type":"so","_rev":"19-46ddf4490c144d9984d88b6d087b1308","lines":[{"item":"test"}]},{"_id":"sodoc06","customer":"American Axle","date":"1/1/2018","numTest":"$ 1.00","numTest2":"2","type":"so","_rev":"19-2223d06caa214ab4908c92cca91c5a92","lines":[{"item":"lower housing"}]},{"_id":"sodoc07","customer":"American Axle","date":"12/3/2016","numTest":"$ 20.00","numTest2":"21","type":"so","_rev":"19-90000f92dd264e6da2dcb187d3f94591","lines":[{"item":"test"}]},{"_id":"sodoc08","customer":"MoTeC","date":"4/4/2017","numTest":"$ 4.00","numTest2":"5","type":"so","_rev":"19-a035a837e9cc48329ab2d501376d8dcb","lines":[{"item":"85200"}]},{"_id":"sodoc09","customer":"Matcor","date":"4/6/2016","numTest":"$ 5.00","numTest2":"6","type":"so","_rev":"19-1770c79101674edcada8f2a4895debc6","lines":[{"item":"Backet"},{"item":"Tool"}]},{"_id":"sodoc10","customer":"Miltope","date":"9/22/2015","numTest":"$ 200.00","numTest2":"201","type":"so","_rev":"19-18f1f665ee714e019479f123e1b001bb","lines":[{"item":"Back Panel"},{"item":"Door"}]},{"_id":"sodoc12","customer":"Matcor","date":"10/9/2000","numTest":"$ 3.00","numTest2":"4","type":"so","_rev":"19-6c5576a9a0934c13bf10a92c66914cac","lines":[{"item":"test"},{"item":"test2"}]},{"_id":"sodoc20","customer":"MoTeC","date":"4/7/2017","numTest":"$ 37.00","numTest2":"38","type":"so","_rev":"19-928ff78c90c843628e200dadb11a23da","lines":[{"item":"85201"},{"item":"test"}]},{"_id":"sodoc21","customer":"MoTeC","date":"4/6/2017","numTest":"$ 37.00","numTest2":"38","type":"so","_rev":"19-e0306d43561241c3b039347a5c7f4573","lines":[{"item":"85202"}]},{"_id":"sodoc22","customer":"Aeroflex","date":"6/5/2015","numTest":"$ 1.00","numTest2":"2","type":"so","_rev":"19-0f5a2813f37e46eeb8a91409f9f078ac","lines":[{"item":"handle"}]},{"_id":"sodoc23","customer":"CyberOptics","date":"5/6/2015","numTest":"$ 2.00","numTest2":"3","type":"so","_rev":"19-335278ca102146caa1abff7a0dde0364"},{"_id":"sodoc24","customer":"Miltope","date":"9/22/2015","numTest":"$ 200.00","numTest2":"201","type":"so","_rev":"19-a472d47f311c465cbe50a051baf5d740"},{"_id":"sodoc25","customer":"Aeroflex","date":"6/5/2015","numTest":"$ 1.00","numTest2":"2","type":"so","_rev":"19-7d1f320cd68b489994a1a3aa92f4e83a","lines":[{"item":"rear bezel"},{"item":""}]},{"_id":"sodoc26","customer":"MoTeC","date":"4/5/2017","numTest":"$ 37.00","numTest2":"38","type":"so","_rev":"19-4f4a83d72ccd472ba43bdfffc11ccd11","lines":[{"item":"85204"}]},{"_id":"sodoc27","customer":"CyberOptics","date":"5/6/2015","numTest":"$ 2.00","numTest2":"3","type":"so","_rev":"19-1975b4fcfa614b669a52a4144951dac7"},{"_id":"sodoc30","customer":"Miltope","date":"9/22/2015","numTest":"$ 40.00","numTest2":"41","type":"so","_rev":"19-4d61a8d4aeaf4007ae052474ff0ee284","lines":[{"item":"test"}]},{"_id":"sodoc31","customer":"Miltope","date":"9/22/2015","numTest":"$ 40.00","numTest2":"41","type":"so","_rev":"19-bf6f17abfead4673976cc9593175e9f7"},{"_id":"test2","customer":"test","date":"12/11/2018","numTest":"$ 0.00","numTest2":"2","type":"so","_rev":"19-899cbc09ee9d495696cc99156050bfb9"}],"paging":[{"skip":"0","limit":"*","filter":"","sort":"","groupby":"","sum":"","avg":"","join_first":"","join_last":""}]}`);
+            equal("formatDate", test, true);
+            equal("formatMoney", test, true);
+        }, 200);
+    }
+
+    function removeDocs(){
+        return setPromise(function(){
+            removeAllDocs();
+        }, 200);
+    }
+
+
+    function setPromise(func, time){
+
+        return new Promise(function(resolve, reject) {
+            var newFunc = function(){
+                func.apply(func, arguments);
+                resolve();
+            };
+            setTimeout(newFunc, time);
+          
+        });
+    }
+
+    ///////////// GENERATE DATA AND CHECK /////////////////
+    //<li id="generateData">Generate Data and Check</li>
+    async function generateAndTest(){
+        await generateData();
+        var test = await db.allDocs();
+        equal("generateData", test.total_rows, 48) 
+    }
+
+    async function generateData() {
+        data = [{
+            "_id": "podoc01",
+            "customer": "American Axle",
+            "date": "2016-12-04",
+            "numTest": "40",
+            "numTest2": "41",
+            "type": "po",
+            "lines": [{
+                "item": "40097012"
+            }, {
+                "item": "upper"
+            }]
+        }, {
+            "_id": "podoc02",
+            "customer": "Emerson",
+            "date": "2015-5-5",
+            "numTest": "6",
+            "numTest2": "7",
+            "type": "po",
+            "lines": [{
+                "item": "D25368"
+            }, {
+                "item": "test"
+            }]
+        }, {
+            "_id": "podoc03",
+            "customer": "CyberOptics",
+            "date": "2015-5-6",
+            "numTest": "2",
+            "numTest2": "3",
+            "type": "po",
+            "lines": [{
+                "item": "Sensor Case"
+            }]
+        }, {
+            "_id": "podoc04",
+            "customer": "Aeroflex",
+            "date": "2015-6-5",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "po",
+            "lines": [{
+                "item": "Front Panel"
+            }]
+        }, {
+            "_id": "podoc05",
+            "customer": "American Axle",
+            "date": "2016-12-5",
+            "numTest": "10",
+            "numTest2": "11",
+            "type": "po",
+            "lines": [{
+                "item": "test"
+            }]
+        }, {
+            "_id": "podoc06",
+            "customer": "American Axle",
+            "date": "2018-1-1",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "po",
+            "lines": [{
+                "item": "lower housing"
+            }]
+        }, {
+            "_id": "podoc07",
+            "customer": "American Axle",
+            "date": "2016-12-04",
+            "numTest": "20",
+            "numTest2": "21",
+            "type": "po",
+            "lines": [{
+                "item": "test"
+            }]
+        }, {
+            "_id": "podoc08",
+            "customer": "MoTeC",
+            "date": "2017-4-4",
+            "numTest": "4",
+            "numTest2": "5",
+            "type": "po",
+            "lines": [{
+                "item": "85200"
+            }]
+        }, {
+            "_id": "podoc09",
+            "customer": "Matcor",
+            "date": "2016-4-6",
+            "numTest": "5",
+            "numTest2": "6",
+            "type": "po",
+            "lines": [{
+                "item": "Backet"
+            }, {
+                "item": "Tool"
+            }]
+        }, {
+            "_id": "podoc10",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "200",
+            "numTest2": "201",
+            "type": "po",
+            "lines": [{
+                "item": "Back Panel"
+            }, {
+                "item": "Door"
+            }]
+        }, {
+            "_id": "podoc12",
+            "customer": "Matcor",
+            "date": "2000-10-10",
+            "numTest": "3",
+            "numTest2": "4",
+            "type": "po",
+            "lines": [{
+                "item": "test"
+            }, {
+                "item": "test2"
+            }]
+        }, {
+            "_id": "podoc20",
+            "customer": "MoTeC",
+            "date": "2017-4-7",
+            "numTest": "37",
+            "numTest2": "38",
+            "type": "po",
+            "lines": [{
+                "item": "85201"
+            }, {
+                "item": "test"
+            }]
+        }, {
+            "_id": "podoc21",
+            "customer": "MoTeC",
+            "date": "2017-4-6",
+            "numTest": "37",
+            "numTest2": "38",
+            "type": "po",
+            "lines": [{
+                "item": "85202"
+            }]
+        }, {
+            "_id": "podoc22",
+            "customer": "Aeroflex",
+            "date": "2015-6-5",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "po",
+            "lines": [{
+                "item": "handle"
+            }]
+        }, {
+            "_id": "podoc23",
+            "customer": "CyberOptics",
+            "date": "2015-5-6",
+            "numTest": "2",
+            "numTest2": "3",
+            "type": "po",
+        }, {
+            "_id": "podoc24",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "200",
+            "numTest2": "201",
+            "type": "po",
+        }, {
+            "_id": "podoc25",
+            "customer": "Aeroflex",
+            "date": "2015-6-5",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "po",
+            "lines": [{
+                "item": "rear bezel"
+            }, {
+                "item": ""
+            }]
+        }, {
+            "_id": "podoc26",
+            "customer": "MoTeC",
+            "date": "2017-4-5",
+            "numTest": "37",
+            "numTest2": "38",
+            "type": "po",
+            "lines": [{
+                "item": "85204"
+            }]
+        }, {
+            "_id": "podoc27",
+            "customer": "CyberOptics",
+            "date": "2015-5-6",
+            "numTest": "2",
+            "numTest2": "3",
+            "type": "po",
+        }, {
+            "_id": "podoc30",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "40",
+            "numTest2": "41",
+            "type": "po",
+            "lines": [{
+                "item": "test"
+            }]
+        }, {
+            "_id": "podoc31",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "40",
+            "numTest2": "41",
+            "type": "po",
+        }, {
+            "_id": "test",
+            "customer": "test",
+            "date": "2018-12-12",
+            "numTest": "test",
+            "numTest2": "2",
+            "type": "po",
+        }];
+        await db.bulkDocs(data);
+
+        data2 = [{
+            "_id": "sodoc01",
+            "customer": "American Axle",
+            "date": "2016-12-04",
+            "numTest": "40",
+            "numTest2": "41",
+            "type": "so",
+            "lines": [{
+                "item": "40097012"
+            }, {
+                "item": "upper"
+            }]
+        }, {
+            "_id": "sodoc02",
+            "customer": "Emerson",
+            "date": "2015-5-5",
+            "numTest": "6",
+            "numTest2": "7",
+            "type": "so",
+            "lines": [{
+                "item": "D25368"
+            }, {
+                "item": "test"
+            }]
+        }, {
+            "_id": "sodoc03",
+            "customer": "CyberOptics",
+            "date": "2015-5-6",
+            "numTest": "2",
+            "numTest2": "3",
+            "type": "so",
+            "lines": [{
+                "item": "Sensor Case"
+            }]
+        }, {
+            "_id": "sodoc04",
+            "customer": "Aeroflex",
+            "date": "2015-6-5",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "so",
+            "lines": [{
+                "item": "Front Panel"
+            }]
+        }, {
+            "_id": "sodoc05",
+            "customer": "American Axle",
+            "date": "2016-12-5",
+            "numTest": "10",
+            "numTest2": "11",
+            "type": "so",
+            "lines": [{
+                "item": "test"
+            }]
+        }, {
+            "_id": "sodoc06",
+            "customer": "American Axle",
+            "date": "2018-1-1",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "so",
+            "lines": [{
+                "item": "lower housing"
+            }]
+        }, {
+            "_id": "sodoc07",
+            "customer": "American Axle",
+            "date": "2016-12-04",
+            "numTest": "20",
+            "numTest2": "21",
+            "type": "so",
+            "lines": [{
+                "item": "test"
+            }]
+        }, {
+            "_id": "sodoc08",
+            "customer": "MoTeC",
+            "date": "2017-4-4",
+            "numTest": "4",
+            "numTest2": "5",
+            "type": "so",
+            "lines": [{
+                "item": "85200"
+            }]
+        }, {
+            "_id": "sodoc09",
+            "customer": "Matcor",
+            "date": "2016-4-6",
+            "numTest": "5",
+            "numTest2": "6",
+            "type": "so",
+            "lines": [{
+                "item": "Backet"
+            }, {
+                "item": "Tool"
+            }]
+        }, {
+            "_id": "sodoc10",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "200",
+            "numTest2": "201",
+            "type": "so",
+            "lines": [{
+                "item": "Back Panel"
+            }, {
+                "item": "Door"
+            }]
+        }, {
+            "_id": "sodoc12",
+            "customer": "Matcor",
+            "date": "2000-10-10",
+            "numTest": "3",
+            "numTest2": "4",
+            "type": "so",
+            "lines": [{
+                "item": "test"
+            }, {
+                "item": "test2"
+            }]
+        }, {
+            "_id": "sodoc20",
+            "customer": "MoTeC",
+            "date": "2017-4-7",
+            "numTest": "37",
+            "numTest2": "38",
+            "type": "so",
+            "lines": [{
+                "item": "85201"
+            }, {
+                "item": "test"
+            }]
+        }, {
+            "_id": "sodoc21",
+            "customer": "MoTeC",
+            "date": "2017-4-6",
+            "numTest": "37",
+            "numTest2": "38",
+            "type": "so",
+            "lines": [{
+                "item": "85202"
+            }]
+        }, {
+            "_id": "sodoc22",
+            "customer": "Aeroflex",
+            "date": "2015-6-5",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "so",
+            "lines": [{
+                "item": "handle"
+            }]
+        }, {
+            "_id": "sodoc23",
+            "customer": "CyberOptics",
+            "date": "2015-5-6",
+            "numTest": "2",
+            "numTest2": "3",
+            "type": "so",
+        }, {
+            "_id": "sodoc24",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "200",
+            "numTest2": "201",
+            "type": "so",
+        }, {
+            "_id": "sodoc25",
+            "customer": "Aeroflex",
+            "date": "2015-6-5",
+            "numTest": "1",
+            "numTest2": "2",
+            "type": "so",
+            "lines": [{
+                "item": "rear bezel"
+            }, {
+                "item": ""
+            }]
+        }, {
+            "_id": "sodoc26",
+            "customer": "MoTeC",
+            "date": "2017-4-5",
+            "numTest": "37",
+            "numTest2": "38",
+            "type": "so",
+            "lines": [{
+                "item": "85204"
+            }]
+        }, {
+            "_id": "sodoc27",
+            "customer": "CyberOptics",
+            "date": "2015-5-6",
+            "numTest": "2",
+            "numTest2": "3",
+            "type": "so",
+        }, {
+            "_id": "sodoc30",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "40",
+            "numTest2": "41",
+            "type": "so",
+            "lines": [{
+                "item": "test"
+            }]
+        }, {
+            "_id": "sodoc31",
+            "customer": "Miltope",
+            "date": "2015-9-22",
+            "numTest": "40",
+            "numTest2": "41",
+            "type": "so",
+        }, {
+            "_id": "test2",
+            "customer": "test",
+            "date": "2018-12-12",
+            "numTest": "test",
+            "numTest2": "2",
+            "type": "so",
+        }];
+        await db.bulkDocs(data2);
+
+        var data3 = [
+            {
+                "_id":"jointest1",
+                "type":"jointest",
+                "customer":"American Axle",
+                "some_field":"some value"
+            },
+            {
+                "_id":"jointest2",
+                "type":"jointest",
+                "customer":"Miltope",
+                "some_field":"some value"
+            },
+            {
+                "_id":"jointest3",
+                "type":"jointest",
+                "customer":"MoTeC",
+                "some_field":"some value"
+            },
+        ];
+        await db.bulkDocs(data3);
+    }
+
+
+    
+    
+</script>

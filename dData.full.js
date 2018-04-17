@@ -275,7 +275,7 @@ function registerDData(dDataProto){
     }
 
     function emitDataRendered(element){
-        var dDataInitEvent = new CustomEvent("dDataRendered", {bubbles:true});
+        var dDataInitEvent = new CustomEvent("dDataRendered", {bubbles:true, cancelable: true});
         element.dispatchEvent(dDataInitEvent);
     }
 
@@ -340,6 +340,7 @@ function registerDData(dDataProto){
         var childTemplate = templateParent.childTemplates[elemName];
         var templateValue = childTemplate.value;
         for (var key in value){
+            if (value[key]==null){continue;}
             if (typeof(value[key]) == "object" && templateValue.hasOwnProperty(key) )  {
                 renderList(element, value[key], key);
             } else if (Array.isArray(value[key]) ){
@@ -985,11 +986,15 @@ function registerDData(dDataProto){
 
 ( function(){
     window.router = {};
+    var _router = {};
+    router.updateHash = updateHash;
+    var dont_update_view = false;
     var hash = location.hash.substr(1);
     var viewPort = undefined;
     var templates = undefined;
     var errorTemplate = undefined;
     var templateRouteIndex = [];
+    var currentRoute = null;
 
     if (hash == ""){
         location.hash = "/";
@@ -1007,7 +1012,7 @@ function registerDData(dDataProto){
     });
 
     window.addEventListener("hashchange", function(){
-
+        if (dont_update_view){dont_update_view = false; return 0;}
         hash = location.hash.substr(1);
         if (hash == ""){
             location.hash = "/";
@@ -1015,6 +1020,13 @@ function registerDData(dDataProto){
         updateView();
 
     });
+
+    function updateHash(newHash){
+        
+        if (decodeURI(location.hash.substr(1)) == newHash){return 0;}
+        dont_update_view = true;
+        location.hash = newHash;
+    }
 
     function updateView(){
         if (viewPort == null){return 0;} // There is no view port
@@ -1051,7 +1063,10 @@ function registerDData(dDataProto){
             // if the template route does not have the same number of arguments, continue
             if (hashRouteLen != tempRouteLen){ continue; }
 
-            if ( routes_match(tempRoutes, hashRoutes) ){ return templates[i]; }
+            if ( routes_match(tempRoutes, hashRoutes) ){ 
+                currentRoute = templateRouteIndex[i];
+                return templates[i]; 
+            }
 
         }
     }
@@ -1064,13 +1079,73 @@ function registerDData(dDataProto){
             var hr = hashRoute[i];
             if( tr.indexOf(":") == 0 ){ // if this parameter is a variable
                 var param = tr.substr(1);
-                window.router[param] = hr;
+                setupRouteVarObserver(param);
+                _router[param] = decodeURI(hr);
                 continue;
             } 
             if (tr != hr){return false;}
         }
 
         return true;
+    }
+
+    function setupRouteVarObserver(param, hr){
+        if (window.router[param] != undefined){return 0;}
+        Object.defineProperty(window.router, param, {get: getParam, set: setParam});
+
+
+        function getParam(){
+            return _router[param];
+        }
+
+        function setParam(newVal){
+            _router[param] = newVal;
+        }
+    }
+
+    dData.extensions.push({ attribute: "route-bind", setup: routeBind });
+
+    var routeBindEv = {};
+
+    function routeBind(element, dDataElement, attrVal){
+        Object.defineProperty(element, "value", {get: getElVal, set: setElVal});
+
+        function getElVal(){
+            return window.router[attrVal];
+        }
+
+        function setElVal(newVal){
+            window.router[attrVal] = newVal;
+        }
+           
+        
+        if (dDataElement.routerRenderEv == undefined){
+            dDataElement.routerRenderEv = true;
+            dDataElement.addEventListener("dDataRendered", routeUpdateRender);    
+        }
+        
+
+        function routeUpdateRender(ev){
+            updateRoute();
+        }
+        
+        
+    }
+
+    function updateRoute(){
+
+        var routeVars = currentRoute.routes;
+        var len = routeVars.length;
+        var newRouteArr = [];
+
+        for (var i=0; i<len; i++){
+            if (routeVars[i] == ""){continue;}
+            var routeVar = routeVars[i].substr(1);
+            if (_router[routeVar] == undefined){continue;}
+            newRouteArr[i] = _router[routeVar];
+        }
+        
+        updateHash(newRouteArr.join("/"));
     }
 
     
@@ -1097,7 +1172,6 @@ function registerDData(dDataProto){
         
     }
 })();
-
 
 
 
@@ -1214,6 +1288,56 @@ function get(url) {
 }
 
 
+
+////////////////////////////////////////////////////////////////////////
+////////////////// FORMAT EXTENSION ///////////////////
+////////////////////////////////////////////////////////////////////////
+
+
+Number.prototype.formatMoney = function(c, d, t) {
+    var n = this
+      , c = isNaN(c = Math.abs(c)) ? 2 : c
+      , d = d == undefined ? "." : d
+      , t = t == undefined ? "," : t
+      , s = n < 0 ? "- $ " : "$ "
+      , i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c)))
+      , j = (j = i.length) > 3 ? j % 3 : 0;
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+};
+
+(function formatExtension() {
+
+    dData.extensions.push({
+        attribute: "format",
+        setup: setupFormat
+    });
+
+    function setupFormat(element, dDataElement, attributeValue) {
+        dDataElement.addEventListener("dDataRendered", function() {
+            switch (attributeValue) {
+            case "money":
+                _formatMoney(element, dDataElement);
+                break;
+            case "date":
+                _formatDate(element, dDataElement);
+                break;
+            }
+        })
+    }
+
+    function _formatMoney(element, dDataElement) {
+        var value = dDataElement.value[element.name];
+        if (!value.includes("$")){
+            element.innerHTML = Number(value).formatMoney(2);    
+        }
+    }
+
+    function _formatDate(element, dDataElement) {
+        var value = dDataElement.value[element.name];
+        element.innerHTML = new Date(value).toLocaleDateString();
+    }
+
+})();
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -1366,7 +1490,8 @@ function generateUUID() {
 				dRoot.value = {_id: doc.id, _rev: doc.rev};
 			}).catch(function(err){
 				if (err.name == "conflict"){
-					if (confirm("Couldn't Save... a newer version of this document is available.  \n Would you like to refresh?")) { 
+					if (confirm(`Couldn't Save... a newer version of this document is available.  \n Would you like to refresh?  
+					\n Refreshing will replace your work with the latest doc.`)) { 
 						db.get(err.docId).then(function(doc){
 							dRoot.value = doc;
 						});
@@ -1376,8 +1501,29 @@ function generateUUID() {
 		});
 	};
 
+	var pouch_list_style_sheet = (function() {
+        // Create the <style> tag
+        var style = document.createElement("style");
+        style.appendChild(document.createTextNode(""));
+        document.head.appendChild(style);
+        return style.sheet;
+    })();
+
+    pouch_list_style_sheet.insertRule("pl-paging { display:none; }");
+
 	function setupList(element, dDataElement, attrVal){
+
 		var dParent = dData.findRootDData(dDataElement);
+		if (dParent != null){
+		    dParent.updatePaging = updatePaging;    
+	    }
+		
+		var paging = getPaging(dParent);  
+		setupSortingButtons(); 
+		setupFilterInput();
+		setupPageButtons();
+		setupSpinner();
+
 		var childName = dDataElement.getAttribute("name");
 		attrVal = attrVal || childName;
 
@@ -1389,21 +1535,550 @@ function generateUUID() {
 			};
 		}
 
+		function setupSpinner(){
+		    if (dParent == null){return 0;}
+		    var spinner = dParent.querySelector("[pl-spinner]");
+		    if (spinner == null){return 0;}
+
+		    dParent.addEventListener("plFetchingData", function(ev){
+		        
+		        spinner.hidden = false;
+		        var pLists = dParent.querySelectorAll("[pouch-list]");
+		        for (var i=0; i<pLists.length; i++){
+		            pLists[i].hidden = true;
+		        }
+		    });
+
+		    dParent.addEventListener("pListRefreshed", function(ev){
+		        spinner.hidden = true;
+		    });
+		}
+
+
+		function updatePaging(){
+		    paging = getPaging(dParent); 
+		    emitPagingUpdated();
+		    refresh();
+		}
+
+		function emitPagingUpdated(){
+		    var pagingUpdated = new CustomEvent("plPagingUpdated", {bubbles:true, detail: paging});
+            dParent.dispatchEvent(pagingUpdated);
+		}
+
+        function setupPageButtons(){
+            if (dParent == null){return 0;}
+            var plFirst = dParent.querySelector("[pl-first]");
+            var plPrev = dParent.querySelector("[pl-prev]");
+            var plNext = dParent.querySelector("[pl-next]");
+            var plLast = dParent.querySelector("[pl-last]");
+            if (plFirst != null){setupFirst();}
+            if (plPrev != null){setupPrev();}
+            if (plNext != null){setupNext();}
+            if (plLast != null){setupLast();}
+
+            function setupFirst(){
+                plFirst.addEventListener("click", function(){
+                    if (paging.limit == "*"){return 0;}
+                    paging.skip = 0;
+                    emitPagingUpdated();
+                    refresh();
+                });
+            }
+
+            function setupPrev(){
+                plPrev.addEventListener("click", function(){
+                    if (paging.limit == "*"){return 0;}
+                    paging.skip -= paging.limit;
+                    if (paging.skip < 0){paging.skip = 0; return 0;}
+                    emitPagingUpdated();
+                    refresh();
+                });
+            }
+            
+            function setupNext(){
+                plNext.addEventListener("click", function(){
+                    if (paging.limit == "*"){return 0;}
+                    var total = dParent.value.pl_total_rows;
+                    paging.skip += paging.limit;
+                    if (paging.skip >= total){paging.skip -= paging.limit; return 0;}
+                    emitPagingUpdated();
+                    refresh();
+                });
+            }
+            
+            function setupLast(){
+                plLast.addEventListener("click", function(){
+                    if (paging.limit == "*"){return 0;}
+                    var total = dParent.value.pl_total_rows;
+                    paging.skip = Math.floor(total / paging.limit) * paging.limit;
+                    if (paging.skip >= total){paging.skip -= paging.limit;}
+                    emitPagingUpdated();
+                    refresh();
+                });
+                
+            }
+        }
+
+        function setupFilterInput(){
+            var filterDeBounce;
+            if (dParent == null){return 0;}
+            var fInput = dParent.querySelector("[pl-filter]");
+            if (fInput == null){return 0;}
+            fInput.addEventListener("keyup", function(ev){
+                if (filterDeBounce == undefined){
+                    filterDeBounce = setTimeout(updateFilter, 500);
+                }else{
+                    clearTimeout(filterDeBounce);
+                    filterDeBounce = setTimeout(updateFilter, 500);
+                }
+            });
+            function updateFilter(){
+                paging.filter = fInput.value;
+                paging.skip = 0;
+                emitPagingUpdated();
+                refresh();
+            }
+        }
+
+        function setupSortingButtons(){
+            if (dParent == null){return 0;}
+            var sButtons = dParent.querySelectorAll("[pl-sort]");
+            if (sButtons.length == 0){return 0;}
+            var sbLen = sButtons.length;
+            
+            for (var i=0; i<sbLen; i++){
+                setupButton(sButtons[i]);
+            }
+
+            function setupButton(sButton){
+                var elSpan = document.createElement("span");
+                sButton.appendChild(elSpan);
+                var column = sButton.getAttribute("pl-sort");
+                setupInitialSortIcon(elSpan, column);
+                sButton.addEventListener("click", function(ev){
+                    toggleSortIcon(elSpan, column);
+                    emitPagingUpdated();
+                    refresh();
+                })
+            }
+
+            function setupInitialSortIcon(el, column){
+                if (paging.sort.indexOf(column + ":desc") > -1){
+                    el.classList.add("desc");
+                    return 0;
+                }
+                else if (paging.sort.indexOf(column) > -1){
+                    el.classList.add("asc");
+                    return 0;
+                }
+            }
+
+            function toggleSortIcon(el, column){
+                if (el.classList.contains("asc")){
+                    el.classList.remove("asc"); 
+                    el.classList.add("desc");
+                    updateSortString(column, column+":desc");
+                }
+                else if (el.classList.contains("desc")){
+                    el.classList.remove("desc");
+                    updateSortString(column+":desc", "");
+                }
+                else {
+                    el.classList.add("asc"); 
+                    updateSortString(column);
+                }
+            }
+
+            function updateSortString(oldStr, newStr){
+                var sortArr = paging.sort.split(",");
+                if (paging.sort==""){sortArr = [];}
+                var index = sortArr.indexOf(oldStr);
+                
+                if (newStr == undefined) {
+                    sortArr.push(oldStr);
+                }else if (newStr == ""){
+                    sortArr.splice(index, 1);
+                }else{
+                    sortArr.splice(index, 1);
+                    sortArr.push(newStr);
+                }
+
+                paging.sort = sortArr.join();  
+            }
+        }
+
+		function getPaging(dParent){
+		    if (dParent != null){
+		        var values = dParent.value;
+		        if(values.paging == undefined){
+		            return {
+		                skip: 0,
+		                limit: "*",
+		                filter: "",
+		                sort: "",
+		                groupby: "",
+		                sum: "",
+		                avg: "",
+		                join_first: "",
+		                join_last: ""
+		            }
+		        }else{
+		            var p = values.paging;
+
+		            return {
+		                skip: Number(p[0].skip) || 0,
+		                limit: isNaN(p[0].limit) ? p[0].limit : Number(p[0].limit) || "*",
+		                filter: p[0].filter || "",
+		                sort: p[0].sort || "",
+		                groupby: p[0].groupby || "",
+		                sum: p[0].sum || "",
+		                avg: p[0].avg || "",
+		                join_first: p[0].join_first || "",
+		                join_last: p[0].join_last   || ""
+		            }
+		        }
+		    }
+		}
+
+		
+        async function join(docs, joinStr){
+            //expects that joinStr is formatted as "docType:docTypeField=parentField"
+            
+            //example: po_item:parent=name
+            // assume current docs are a PO list
+            // po_item is the doctype being joined to the current docs (in 'docs' variable argument).
+            // parent is a field in the doctype being joined
+            // name is a field in the current docs that should match for the join to take place
+		    if (joinStr == ""){return docs;}
+            var docLen = docs.length;
+            var strSplit = joinStr.split(":");
+            var doctype = strSplit[0];
+            var docField = strSplit[1].split("=")[0];
+            var parentField = strSplit[1].split("=")[1];
+            var jDocs = await db.find({
+                selector: {
+                    type: doctype
+                }
+            });
+            var allJDocs = jDocs.docs;
+
+            for (var i = 0; i<docLen; i++){
+                var pFieldVal = docs[i][parentField];
+                var selector = {};
+                selector[docField] = pFieldVal;
+                var jDocs = allJDocs.getAll(selector);
+                docs[i][doctype] = jDocs.slice();
+            }
+            
+            return docs;
+            
+		}
+
+		function filterAndSort(docs){
+		    var filteredDocs = plFilter(docs);
+		    var sortedDocs = plSort(filteredDocs);
+		    return sortedDocs;
+		}
+
+		
+
+		function plFilter(docs){ // split the search string and find records that containg combinations of keywords
+		    if (paging.filter == ""){return docs;}
+		    var keys = paging.filter.split(",");
+		    var keyLen = keys.length;
+		    for (var i=0; i<keyLen; i++){
+		        docs = _plFilter(docs, keys[i]);
+		    }
+		    return docs;
+		}
+
+		function _plFilter(docs, key){
+		    if ( key.includes('">"') ){
+                return _plFilterAdvanced(docs, key, '>');
+
+		    }else if ( key.includes('"<"') ){
+                return _plFilterAdvanced(docs, key, '<');
+
+		    }else if ( key.includes('"<="') ){
+                return _plFilterAdvanced(docs, key, '<=');
+
+		    }else if ( key.includes('">="') ){
+		        return _plFilterAdvanced(docs, key, '>=');
+
+		    }else if ( key.includes('"!="') ){
+		        return _plFilterAdvanced(docs, key, '!=');
+
+		    }else if ( key.includes('"="') ){
+		        return _plFilterAdvanced(docs, key, '=');
+
+		    }else {
+		        return _plFilterSimple(docs, key);
+		    }
+		}
+
+		function _plFilterSimple(docs, key){
+            var filteredDocs = [];
+		    var docLen = docs.length;
+		    for (var i=0; i<docLen; i++){
+		        var jStr = JSON.stringify(docs[i]).toLowerCase();
+		        var idx = jStr.indexOf(key.toLowerCase());
+		        if (idx > -1) {
+		            filteredDocs.push(docs[i]);
+		        }
+		    }
+		    return filteredDocs;
+		}
+
+		function _plFilterAdvanced(docs, key, sign){
+		    var keySplit = key.split(sign);
+		    var key = keySplit[0] + ':"';
+		    var kVal = keySplit[1];
+		    kVal = kVal.substr(1, kVal.length - 2); // remove quotes
+            kVal = getType(kVal); // get number, date, or string
+
+            var filteredDocs = [];
+		    var docLen = docs.length;
+		    for (var i=0; i<docLen; i++){
+		        var jStr = JSON.stringify(docs[i]).toLowerCase();
+		        var idx = jStr.indexOf(key.toLowerCase());
+		        var rValStart = idx + key.length;
+		        var rValEnd = jStr.indexOf('"', rValStart);
+		        var rVal = jStr.substring(rValStart, rValEnd);
+		        rVal = getType(rVal); // get number, date, or string
+		        
+		        switch(sign){
+		            case ">": 
+                        if (rVal > kVal){ filteredDocs.push(docs[i]) } break;
+		            case "<": 
+		                if (rVal < kVal){ filteredDocs.push(docs[i]) } break;
+		            case ">=": 
+		                if (rVal >= kVal){ filteredDocs.push(docs[i]) } break;
+		            case "<=": 
+		                if (rVal <= kVal){ filteredDocs.push(docs[i]) } break;
+		            case "!=":
+		                if (rVal != kVal){ filteredDocs.push(docs[i]) } break;
+		            case "=":
+		                if (rVal == kVal){ filteredDocs.push(docs[i]) } break;
+		        }
+
+
+		    }
+		    return filteredDocs;
+		}
+
+		function getType(_var){
+            var _a = Number(_var);  // Check to see if its a number
+            if (isNaN(_a)){
+                _a = new Date(_var).getTime();  // Check to see if its a valid date string
+            }
+            if (isNaN(_a)){
+                _a = _var.toLowerCase();  // else use regular string sort
+            }
+            return _a;
+        }
+
+        // expects a comma seperated string list of columns to sort
+        // with an optional ':desc' to sort descending
+        // example: "date:desc,customer,item"
+        
+		function plSort(docs){
+		    if (paging.sort == ""){return docs;}
+		    var keys = paging.sort.split(","); // get individual keys
+		    var keyLen = keys.length;
+		    
+		    docs.sort(plCompare);
+
+		    return docs;
+
+		    function plCompare(a,b){
+                for (var i=0; i<keyLen; i++){
+                    var keySplit = keys[i].split(":"); //extract :desc 
+                    var key = keySplit[0];
+                    var _a = getType(a[key]);
+                    var _b = getType(b[key]);
+                    if (keySplit.length > 1){ // if :desc is present, sort descending;
+                        if (_a > _b) {return -1;}
+                        if (_a < _b) {return 1;}
+                    }else{
+                        if (_a < _b) {return -1;}
+                        if (_a > _b) {return 1;}
+                    }
+                }
+                return 0;
+		    }
+
+		}
+
+		
+
+		function groupBy(docs){
+		    if (paging.groupby == ""){return docs;}
+		    var groups = paging.groupby.split(",");
+		    var groupLen = groups.length;
+		    var groupedDocs = [];
+		    var docLen = docs.length;
+		    for (var i=0; i<docLen; i++){
+                var gName = getGroupName(docs[i]);
+                if (groupedDocs[gName] == undefined){ groupedDocs[gName] = []; } //create unique group
+                groupedDocs[gName].push(docs[i]);  // push records into existing group
+		    }
+		    reFormatGroupedDocs();  // reformat object structure to work with d-data
+		    return groupedDocs;
+
+            // this function is primarily for groupby's that use more than one column
+            // it works with single column groupby's as well
+		    function getGroupName(doc){  
+                var gName = "";
+                for (var x=0; x<groupLen; x++){
+                    var col = groups[x];
+                    var cVal = doc[col];
+                    gName += "%/%" + cVal;
+                }
+
+                return gName.substr(3);
+		    }
+
+		    function reFormatGroupedDocs(){
+		        var formattedDocs = [];
+		        var groupedDocsLen = groupedDocs.length;
+		        for (var groupVal in groupedDocs){   // loop through all the groups
+		            if (!Array.isArray(groupedDocs[groupVal])){continue;}  // skip prototype properties
+		            var groupVals = groupVal.split("%/%");
+		            var newDoc = {};  // create empty root object
+		            expandGroupColumnValues(newDoc);  // expand group column values into the newdoc
+		            newDoc.records = groupedDocs[groupVal].slice();  // nest all the grouped records into the root object
+		            newDoc._record_count = newDoc.records.length; // add record count property
+		            formattedDocs.push(newDoc);  // push root doc into the formatted docs array
+		        }
+
+		        function expandGroupColumnValues(){
+		            for (var x=0; x<groupLen; x++){
+		                var col = groups[x];  // get property name
+		                newDoc[col] = groupVals[x];  // groupVals is defined above
+		            }
+		        }
+		        groupedDocs = formattedDocs;
+		    }
+
+
+
+		}
+
+		// Sum and/or Average sinlge or multi column
+		// expects sum or avg to be comma seperated string of column names
+		function sumAndOrAvg(docs){
+		    if (paging.sum == "" && paging.avg == ""){return docs;}
+		    var sumSplit = paging.sum.split(",");
+		    var avgSplit = paging.avg.split(",");
+
+		    if (sumSplit[0] == ""){ sumSplit.pop(); }
+		    if (avgSplit[0] == ""){ avgSplit.pop(); }
+		    if (paging.groupby == ""){
+                docs = [{records: docs}]; // group all records if no groupby has been performed
+		    }
+
+		    sum();
+		    avg();
+            return docs;
+
+		    function sum(){
+		        for (var i=0; i<sumSplit.length; i++){ // for each column to sum
+                    _sumGroup( sumSplit[i] );
+		        }
+		    }
+
+		    function avg(){
+		        for (var i=0; i<avgSplit.length; i++){ // for each column to avg
+                    _avgGroup( avgSplit[i] );
+		        }
+		    }
+
+		    function _sumGroup( col ){
+                for (var i=0; i<docs.length; i++){ // for each group sum this column
+                    var sumName = "sum_"+col;
+                    docs[i][sumName] = _sum( docs[i].records, col );
+                }
+		    }
+
+		    function _avgGroup( col ){
+                for (var i=0; i<docs.length; i++){ // for each group avg this column
+                    var avgName = "avg_"+col;
+                    docs[i][avgName] = _avg( docs[i].records, col );
+                }
+		    }
+
+		    function _sum( docs, col ){
+                var sum = 0;
+                for (var i=0; i<docs.length; i++){
+                    sum += Number(docs[i][col]);
+                }
+                return sum;
+		    }
+
+		    function _avg( docs, col){
+                var sum = 0;
+                for (var i=0; i<docs.length; i++){
+                    sum += Number(docs[i][col]);
+                }
+                return sum / docs.length;
+		    }
+
+		    
+		}
+
+            
+
+		function paginate(sortedDocs){
+		    var skip = Number(paging.skip);
+		    var limit = Number(paging.limit) + skip;
+		    if (paging.limit == "*"){limit = sortedDocs.length}
+		    var docs = sortedDocs.slice(skip, limit);
+		    return docs;
+		}
+
 		
 		function refresh(){
 			attrVal = attrVal || childName;
 			if (dParent && dParent.isConnected){
-				
+				var plFetchingData = new CustomEvent("plFetchingData", {bubbles:true});
+                dParent.dispatchEvent(plFetchingData);
+
 				db.find({
 				  selector: {
 					type: attrVal
-				  }
-				}).then(function(data){
-
+				  },
+				}).then(async function(data){
+				    var joinedDocs = await join(data.docs, paging.join_first); // join_first if set
+				    var fsDocs = filterAndSort(joinedDocs);
+				    var gDocs = groupBy(fsDocs);
+				    var saDocs = sumAndOrAvg(gDocs);
+					var pDocs = paginate(saDocs);
+					var joinedDocs = await join(pDocs, paging.join_last); // join_last if set
 					var docs = {};
-					docs[childName] = data.docs;
+					docs[childName] = pDocs;
+					var p = docs.paging = [];
+					p.push({});
+
+                    p[0].skip = paging.skip;
+                    p[0].limit = paging.limit;
+					p[0].filter = paging.filter;
+					p[0].sort = paging.sort;
+					p[0].groupby = paging.groupby;
+					p[0].sum = paging.sum;
+					p[0].avg = paging.avg;
+					p[0].join_first = paging.join_first;
+					p[0].join_last = paging.join_last;
+
+
+                    docs.pl_first_record_shown = paging.skip + 1;
+                    docs.pl_last_record_shown = Math.min(gDocs.length, paging.skip + paging.limit);
+                    if (isNaN(docs.pl_last_record_shown)){docs.pl_last_record_shown = gDocs.length;}
+                    docs.pl_total_rows = gDocs.length;
 					dParent.value = docs;
 
+                    var plRefresh = new CustomEvent("pListRefreshed", {bubbles:true});
+                    dParent.dispatchEvent(plRefresh);
 				});		 
 		   }
 		}
@@ -1478,6 +2153,37 @@ Array.prototype.get = function(obj){
     }
 
     return {};
+
+    function match_keys(arr, obj){
+        for (var x=0; x<keyLen; x++){
+            var key = keys[x];
+            if (arr[key] == obj[key]){ 
+                continue; 
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+Array.prototype.getAll = function(obj){
+
+    // this function searches an array of objects
+    // and returns all objects that match
+    // the keys/values inside the search Object
+    // Syntax: arr.get({id: "123"});
+
+    var len = this.length;
+    var keys = Object.keys(obj);
+    var keyLen = keys.length;
+    var objs = [];
+
+    for (var i=0; i<len; i++){
+        if( match_keys(this[i], obj) ){objs.push(this[i]);}
+    }
+
+    return objs;
 
     function match_keys(arr, obj){
         for (var x=0; x<keyLen; x++){

@@ -47,7 +47,7 @@
 
     <ol>
         <li id="checkGenUUID">Check ID Generator ( generateUUID() )</li>
-        <li id="initialViewTest">Initial View</li>
+        
         <li id="checkInitialData">Check Initial Data</li>
         <li id="addNewTestRouter">Add New (Set Route)</li>
         <li id="addNewTestPouchSave">Add New (Pouch Save)</li>
@@ -95,7 +95,7 @@ var initialHTML = `
         <div d-data="" name="test" style="border: 1px solid" has-d-data-children="true">
             <h1>List</h1>
             
-        </div>
+        <input type="hidden" name="pl_first_record_shown" value="1"><input type="hidden" name="pl_last_record_shown" value="0"><input type="hidden" name="pl_total_rows" value="0"><div d-data="" name="paging"><input type="hidden" name="skip" value="0"><input type="hidden" name="limit" value="*"><input type="hidden" name="filter" value=""><input type="hidden" name="sort" value=""></div></div>
     `;
 
         document.addEventListener("DOMContentLoaded", function(){
@@ -113,7 +113,6 @@ var initialHTML = `
 
                 dData.addNew._id = "";
                 
-                equal("initialViewTest", view.innerHTML, initialHTML);
                 dData.addNew._id = idVal;
                 
                 db.find({
@@ -185,7 +184,7 @@ var initialHTML = `
             history.back();
 
             setTimeout(function(){
-                equal("onHashChangeTest", view.querySelectorAll('[d-data]').length, 3);
+                equal("onHashChangeTest", view.querySelectorAll('[d-data]').length, 4);
 
                 var list = view.querySelector("[name=test]");
                 equal("pouchListTest", list.value.children[0].child, "Item 1");
