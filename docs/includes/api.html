@@ -408,7 +408,7 @@
     <code-block>
         Syntax:
         <ul>
-            <li>d-class="className:fieldToWatch:valueToMatch"</li>
+            <li>d-class="className:fieldToWatch:valueToMatch[:classNameifValueDoesntMatch]"</li>
         </ul>
     </code-block>
 
@@ -417,12 +417,14 @@
         <li><code>{string} className </code> : the class to be set if condition returns true </li>
         <li><code>{string} fieldToWatch </code> : name of field (input) of the dData child to watch for changes on </li>
         <li><code>{string} valueToMatch </code> : the value to compare with the value in the field to watch</li>
+        <li><code>{string} elseClass</code> OPTIONAL: Class to be set if condition is false</li>
     </ul>
 
     <p><strong>Description</strong><p>
     <p>This attribute is for assigning classes to an element based on a condition.  The condition is an equality function.
     If the value of the <code>fieldToWatch</code> is equal to the <code>valueToMatch</code> then it returns true, else false.
-    If the condition is true the class will be assigned to the element, and vice versa if the condition is false.</p>
+    If the condition is true the class will be assigned to the element, and vice versa if the condition is false.
+    If the condition is false the <code>elseClass</code> will be assigned to the element.</p>
     
     <p><strong>Example</strong><p>
      <p>See example <a href="#ExtDClass">Here</a></p>

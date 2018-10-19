@@ -96,7 +96,7 @@
                 <a name="ExtDClass"></a>
                 <h2><a href="" target="new">dClass Extension</a></h2>
 
-                <p><code>Syntax: d-class="className:fieldToWatch:valueToMatch" </code></p>
+                <p><code>Syntax: d-class="className:fieldToWatch:valueToMatch[:classNameifValueDoesntMatch]" </code></p>
                 
                 <p>
                       The dClass Extension takes 3 required arguments, separated by colons (:)
@@ -104,10 +104,14 @@
                              <li><code>className</code> the class name to be set if condition is true</li>
                              <li><code>fieldToWatch</code> the name of the field to watch for changes</li>
                              <li><code>valueToMatch</code> the value to match against the value in <code>fieldToWatch</code></li>
+                             <li><code>classNameifValueDoesntMatch</code> OPTIONAL: Class to be set if condition is false</li>
                       </ul>
 
                       If the value in <code>fieldToWatch</code> matches 
-                      <code>valueToMatch</code> then set the <code>className</code> on the element.
+                      <code>valueToMatch</code> then add the class <code>className</code> on the element.
+
+                      If the value in <code>fieldToWatch</code> DOES NOT match 
+                      <code>valueToMatch</code> then add the class <code>classNameifValueDoesntMatch</code> on the element.
                 </p>
 
                 <iframe width="100%" height="300" src="//jsfiddle.net/zachlankton/wdr8h89p/embedded/result,html,js,css/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>

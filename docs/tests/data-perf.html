@@ -1,0 +1,427 @@
+<!-- <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script> -->
+<script src="../../dData.full.js"></script>
+<script>var dDataDBName = "dataPerformance";</script>
+<h1>Tests</h1>
+<ol>
+    <li id="initialTest">Initial Test</li>
+</ol>
+
+
+<div d-data name="FLATPO" class="inline">
+        <h1>Default List</h1>
+        <p>
+            Showing Records: <span name="pl_first_record_shown"></span>
+            - <span name="pl_last_record_shown"></span>
+             of <span name="pl_total_rows"></span>
+            Total
+        
+        </p>
+
+        <pl-paging d-data name="paging">
+            <input name="skip" value="0"/>
+            <input name="limit" value="10"/>
+        </pl-paging>
+
+        Filter: <input pl-filter name="filter"/>
+        <button pl-first>&lt;&lt;</button>
+        <button pl-prev>&lt;</button>
+        <button pl-next>&gt;</button>
+        <button pl-last>&gt;&gt;</button>
+        <table border=1>
+            <thead>
+                <tr>
+                    <td pl-sort="_id">ID</td>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr pl-spinner>
+                    <td><h5>Please Wait...</h5></td>
+                </tr>
+                <tr d-data name="listItem" pouch-list="FLATPO">
+                    <td name="_id"></td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+<script>
+    function equal(id, value1, value2) {
+        var elem = document.getElementById(id);
+        if (value1 == value2) {
+            elem.style.backgroundColor = "green";
+        } else {
+            elem.style.backgroundColor = "red";
+        }
+    }
+
+    var initialTest = true;
+    equal("initialTest", initialTest, true);
+
+
+
+
+tables = `tabAbout Us Team Member
+tabAccount
+tabActivity Cost
+tabActivity Type
+tabAddress
+tabAddress Template
+tabAppraisal
+tabAppraisal Goal
+tabAppraisal Template
+tabAppraisal Template Goal
+tabAsync Task
+tabAttendance
+tabAuthorization Rule
+tabBOM
+tabBOM Explosion Item
+tabBOM Item
+tabBOM Operation
+tabBank Reconciliation Detail
+tabBatch
+tabBin
+tabBlock Module
+tabBlog Category
+tabBlog Post
+tabBlogger
+tabBranch
+tabBrand
+tabBudget Detail
+tabBulk Email
+tabC-Form
+tabC-Form Invoice Detail
+tabCampaign
+tabComment
+tabCommunication
+tabCompany
+tabCompany History
+tabConsumableLog
+tabConsumables Used
+tabContact
+tabCost Center
+tabCountry
+tabCurrency
+tabCurrency Exchange
+tabCustom Field
+tabCustom Script
+tabCustomer
+tabCustomer Group
+tabCustomize Form Field
+tabDeduction Type
+tabDefaultValue
+tabDelivery Note
+tabDelivery Note Item
+tabDepartment
+tabDependent Task
+tabDesignation
+tabDocField
+tabDocPerm
+tabDocShare
+tabDocType
+tabDocument Control
+tabEarning Type
+tabEmail Account
+tabEmail Alert
+tabEmail Alert Recipient
+tabEmail Digest
+tabEmail Unsubscribe
+tabEmployee
+tabEmployee Education
+tabEmployee External Work History
+tabEmployee Internal Work History
+tabEmployee Leave Approver
+tabEmployee Log
+tabEmployment Type
+tabEngineering Change Log
+tabEvent
+tabEvent Role
+tabExpense Claim
+tabExpense Claim Detail
+tabExpense Claim Type
+tabFeed
+tabFile
+tabFiscal Year
+tabFiscal Year Company
+tabGL Entry
+tabGeneral Log
+tabHoliday
+tabHoliday List
+tabIndustry Type
+tabInstallation Note
+tabInstallation Note Item
+tabIssue
+tabItem
+tabItem Attribute
+tabItem Attribute Value
+tabItem Customer Detail
+tabItem Group
+tabItem Price
+tabItem Quality Inspection Parameter
+tabItem Reorder
+tabItem Supplier
+tabItem Tax
+tabItem Variant
+tabItem Variant Attribute
+tabItem Website Specification
+tabJob Applicant
+tabJob Opening
+tabJournal Entry
+tabJournal Entry Account
+tabLanded Cost Item
+tabLanded Cost Purchase Receipt
+tabLanded Cost Taxes and Charges
+tabLanded Cost Voucher
+tabLead
+tabLeave Allocation
+tabLeave Application
+tabLeave Block List
+tabLeave Block List Allow
+tabLeave Block List Date
+tabLeave Type
+tabLetter Head
+tabMaintenance Log
+tabMaintenance Schedule
+tabMaintenance Schedule Detail
+tabMaintenance Schedule Item
+tabMaintenance Visit
+tabMaintenance Visit Purpose
+tabMaterial Request
+tabMaterial Request Item
+tabMode of Payment
+tabMode of Payment Account
+tabModule Def
+tabMonthly Distribution
+tabMonthly Distribution Percentage
+tabNewsletter
+tabNewsletter List
+tabNewsletter List Subscriber
+tabNote
+tabOffer Letter
+tabOffer Letter Term
+tabOffer Term
+tabOperation
+tabOpportunity
+tabOpportunity Item
+tabPOS Profile
+tabPacked Item
+tabPacking Slip
+tabPacking Slip Item
+tabPage
+tabPage Role
+tabParty Account
+tabPatch Log
+tabPayment Reconciliation Invoice
+tabPayment Reconciliation Payment
+tabPayment Tool Detail
+tabPeriod Closing Voucher
+tabPrice List
+tabPrice List Country
+tabPricing Rule
+tabPrint Format
+tabPrint Heading
+tabProcess List
+tabProcesses
+tabProduct Bundle
+tabProduct Bundle Item
+tabProduction Order
+tabProduction Order Item
+tabProduction Order Operation
+tabProduction Plan Item
+tabProduction Plan Sales Order
+tabProduction Quote
+tabProduction Quote Item
+tabProject
+tabProject Task
+tabProperty Setter
+tabPurchase Invoice
+tabPurchase Invoice Advance
+tabPurchase Invoice Item
+tabPurchase Order
+tabPurchase Order Item
+tabPurchase Order Item Supplied
+tabPurchase Receipt
+tabPurchase Receipt Item
+tabPurchase Receipt Item Supplied
+tabPurchase Taxes and Charges
+tabPurchase Taxes and Charges Template
+tabQuality Inspection
+tabQuality Inspection Reading
+tabQuotation
+tabQuotation Item
+tabQuotation Lost Reason
+tabRMA
+tabRMA Item
+tabReport
+tabRole
+tabSMS Log
+tabSMS Parameter
+tabSRS Consumables Used
+tabSRS Downtime
+tabSRS Parts
+tabSWL
+tabSalary Slip
+tabSalary Slip Deduction
+tabSalary Slip Earning
+tabSalary Structure
+tabSalary Structure Deduction
+tabSalary Structure Earning
+tabSales Invoice
+tabSales Invoice Advance
+tabSales Invoice Item
+tabSales Order
+tabSales Order Item
+tabSales Partner
+tabSales Person
+tabSales Purchase Order
+tabSales Taxes and Charges
+tabSales Taxes and Charges Template
+tabSales Team
+tabSerial No
+tabSeries
+tabSessions
+tabShift Run Summary
+tabShipping Rule
+tabShipping Rule Condition
+tabShipping Rule Country
+tabSingles
+tabStandard Reply
+tabStock Entry
+tabStock Entry Detail
+tabStock Ledger Entry
+tabStock Reconciliation
+tabStock Reconciliation Item
+tabSupplier
+tabSupplier Quotation
+tabSupplier Quotation Item
+tabSupplier Type
+tabTarget Detail
+tabTask
+tabTask Depends On
+tabTax Rule
+tabTerms and Conditions
+tabTerritory
+tabTest
+tabTime Log
+tabTime Log Batch
+tabTime Log Batch Detail
+tabToDo
+tabTool Warranties
+tabTop Bar Item
+tabUOM
+tabUOM Conversion Detail
+tabUser
+tabUserRole
+tabVersion
+tabWarehouse
+tabWarranty Claim
+tabWeb Form
+tabWeb Form Field
+tabWeb Page
+tabWebsite Item Group
+tabWebsite Slideshow
+tabWebsite Slideshow Item
+tabWebsite Theme
+tabWorkflow
+tabWorkflow Action
+tabWorkflow Document State
+tabWorkflow State
+tabWorkflow Transition
+tabWorkstation
+tabWorkstation Working Hour
+viewBomAndItem`
+
+function getAllData(){
+    var tablesArr = tables.split("\n");
+    var totalTables = tablesArr.length;
+    var tablesLoaded = 0;
+    tablesArr.forEach(function(table){
+        console.log("Fetching Table: " + table);
+        var data = get("http://erp.mmpmg.com:8023/api/" + encodeURI(table));
+        data.then(function(data){
+            var dataObj = JSON.parse(data);
+            dataObj.json.forEach(function(element){ 
+                delete element["_liked_by"] 
+                delete element["_user_tags"]
+                delete element["_comments"]
+                delete element["_last_update"]
+                delete element["_assign"]
+                var name = table.replace("tab", "");
+                element.type = name;
+                element._id = element.name.replace("_", "");
+            });
+            db.bulkDocs(dataObj.json).then(function(data){
+                tablesLoaded += 1;
+                console.log("Done Inserting Table "+tablesLoaded+"/"+totalTables+": " + table);
+            }).catch(function (err) {
+                console.log("Pouch Error Inserting Table: " + table, err);
+            });
+        })
+    });
+}
+
+function testAllDocs(){
+    console.log("test start");
+    performance.mark("testStart")
+    db.allDocs({include_docs: true}).then(function(data){
+        performance.mark("testEnd");
+        performance.measure("test", "testStart", "testEnd");
+        console.log("test done")
+    });
+
+}
+
+function testFindDocs(){
+    console.log("test start");
+    performance.mark("testStart");
+    db.find({
+      selector: {
+        type: 'FLATPO'
+      }
+    }).then(function(data){
+        console.log(data)
+        performance.mark("testEnd");
+        performance.measure("test", "testStart", "testEnd");
+        console.log("test done");
+        console.log(performance.getEntriesByName("test")[0]);
+    });
+}
+
+function testAllDocsID(){
+    console.log("test start");
+    performance.mark("allDocsTestStart");
+    db.allDocs({
+      include_docs: true,
+      attachments: true,
+      startkey: 'PO-00001',
+      endkey: 'PO-\ufff0'
+    }).then(function (data) {
+        console.log(data)
+        performance.mark("allDocsTestEnd");
+        performance.measure("allDocsTest", "allDocsTestStart", "allDocsTestEnd");
+        console.log("test done")
+        console.log(performance.getEntriesByName("allDocsTest")[0]);
+    }).catch(function (err) {
+      console.log(err);
+    });
+    }
+
+
+    function archive_some_pos(num){
+        db.find({
+          selector: {
+            type: 'FLATPO_Archive'
+          }
+        }).then(function(data){
+            var bulkData = [];
+            for (var i=0; i<num; i++){
+                data.docs[i].type = "FLATPO";
+                bulkData.push(data.docs[i]);
+            }
+            db.bulkDocs(bulkData);
+        });
+    }
+
+</script>

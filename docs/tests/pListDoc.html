@@ -1,0 +1,51 @@
+<!-- <script src="https://rawgit.com/zachlankton/DOM-Data-Mirror/master/dData.full.js" type="text/javascript"></script> -->
+<script>var dDataDBName = "pListTest";</script>
+<script src="../../dData.full.js"></script>
+<h1>Tests</h1>
+<ol>
+    <li id="initialTest">Initial Test</li>
+</ol>
+
+<div d-data name="form">
+    ID: <input name="_id" />
+    Customer: <input name="customer" />
+    Date:    <input type="date" name="date" />
+    NumTest: <input type="number" name="numTest" />
+    <button save="test">Save</button>
+    <button new="test">New</button>
+</div>
+
+<div d-data name="list">
+    Filter: <input pl-filter />
+    <table border="1">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Customer</td>
+                <td>Date</td>
+                <td>NumTest</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr d-data pouch-list="test" form="dData.form">
+                <td name="_id">ID</td>
+                <td name="customer">Customer</td>
+                <td name="date">Date</td>
+                <td name="numTest">NumTest</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    function equal(id, value1, value2) {
+        var elem = document.getElementById(id);
+        if (value1 == value2) {
+            elem.style.backgroundColor = "green";
+        } else {
+            elem.style.backgroundColor = "red";
+        }
+    }
+
+    var initialTest = true;
+    equal("initialTest", initialTest, true);
+</script>
