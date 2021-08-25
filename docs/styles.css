@@ -7,7 +7,7 @@
     "navigation content";
     grid-gap: 20px;
     font-family: initial;
-    grid-template-columns: repeat(auto-fit, 200px);
+/*     grid-template-columns: repeat(auto-fit, 200px); */
     -webkit-font-smoothing: antialiased;
 }
 
